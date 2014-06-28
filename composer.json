@@ -1,0 +1,21 @@
+{
+	"name": "wp-pay-gateways/sisow",
+	"description": "Sisow driver for the WordPress payment processing library.",
+	"keywords": ["wordpress", "wp", "pay", "sisow", "gateway", "pronamic"],
+	"homepage": "https://github.com/wp-pay-gateways/sisow",
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/wp-pay/core"
+		}
+	],
+	"require": {
+		"wp-pay/core": "dev-develop"
+	},
+	"require-dev": {
+		"satooshi/php-coveralls": "dev-master"
+	}
+}
