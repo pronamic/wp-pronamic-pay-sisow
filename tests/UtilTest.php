@@ -7,7 +7,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_UtilTest extends WP_UnitTestCase {
 
 		$test = $allowed_chars . $forbidden_chars;
 
-		$result   = Pronamic_Gateways_Sisow_Util::filter( $test );
+		$result   = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $test );
 		$expected = $allowed_chars;
 
 		$this->assertEquals( $expected, $result );

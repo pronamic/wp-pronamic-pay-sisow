@@ -3,7 +3,7 @@
 class Pronamic_WP_Pay_Gateways_Sisow_SecurityTest extends WP_UnitTestCase {
 	function test_transaction_request_sha1() {
 		// http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf #page 10
-		$sha1 = Pronamic_Gateways_Sisow_Sisow::create_transaction_sha1(
+		$sha1 = Pronamic_WP_Pay_Gateways_Sisow_Client::create_transaction_sha1(
 			'123456789', // purchase_id
 			'uniqueentrance', // entrance_code
 			10, // amount
@@ -17,7 +17,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_SecurityTest extends WP_UnitTestCase {
 
 	function test_status_request_sha1() {
 		// http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf #page 14
-		$sha1 = Pronamic_Gateways_Sisow_Sisow::create_status_sha1(
+		$sha1 = Pronamic_WP_Pay_Gateways_Sisow_Client::create_status_sha1(
 			'0050000513407955', // transaction_id
 			null, // shop_id
 			'0123456', // merchant_id

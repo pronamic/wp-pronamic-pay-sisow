@@ -9,14 +9,14 @@
  * @version 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
-	public function __construct( Pronamic_Gateways_Sisow_Config $config ) {
+	public function __construct( Pronamic_WP_Pay_Gateways_Sisow_Config $config ) {
 		parent::__construct( $config );
 
 		$this->set_method( Pronamic_WP_Pay_Gateway::METHOD_HTTP_REDIRECT );
 		$this->set_has_feedback( true );
 		$this->set_amount_minimum( 0.01 );
 
-		$this->client = new Pronamic_Gateways_Sisow_Sisow( $config->merchant_id, $config->merchant_key );
+		$this->client = new Pronamic_WP_Pay_Gateways_Sisow_Client( $config->merchant_id, $config->merchant_key );
 		$this->client->set_test_mode( $config->mode == Pronamic_IDeal_IDeal::MODE_TEST );
 	}
 
@@ -97,7 +97,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 
 		if ( $result instanceof Pronamic_WP_Pay_Gateways_Sisow_Error ) {
 			$this->error = $this->client->get_error();
-		} elseif( false === $result ) {
+		} elseif ( false === $result ) {
 			$this->error = $this->client->get_error();
 		} else {
 			$transaction = $result;

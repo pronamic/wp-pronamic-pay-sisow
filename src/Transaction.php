@@ -8,7 +8,7 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_Gateways_Sisow_Transaction {
+class Pronamic_WP_Pay_Gateways_Sisow_Transaction {
 	/**
 	 * Transaction ID
 	 *

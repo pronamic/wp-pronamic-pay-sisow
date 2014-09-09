@@ -8,7 +8,7 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_Gateways_Sisow_Sisow {
+class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	/**
 	 * Sisow REST API endpoint URL
 	 *
@@ -96,7 +96,7 @@ class Pronamic_Gateways_Sisow_Sisow {
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
 
-		return Pronamic_WP_Util::remote_get_body( $url, 200, array(
+		return Pronamic_WP_Pay_Util::remote_get_body( $url, 200, array(
 			'method'    => 'POST',
 			'sslverify' => false,
 			'body'      => $parameters,
@@ -117,17 +117,17 @@ class Pronamic_Gateways_Sisow_Sisow {
 
 		switch ( $name ) {
 			case 'errorresponse':
-				$sisow_error = Pronamic_Gateways_Sisow_XML_ErrorParser::parse( $document->error );
+				$sisow_error = Pronamic_WP_Pay_Gateways_Sisow_XML_ErrorParser::parse( $document->error );
 
 				$this->error = new WP_Error( 'ideal_sisow_error', $sisow_error->message, $sisow_error );
 
 				return $sisow_error;
 			case 'transactionrequest':
-				$transaction = Pronamic_Gateways_Sisow_XML_TransactionParser::parse( $document->transaction );
+				$transaction = Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser::parse( $document->transaction );
 
 				return $transaction;
 			case 'statusresponse':
-				$transaction = Pronamic_Gateways_Sisow_XML_TransactionParser::parse( $document->transaction );
+				$transaction = Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser::parse( $document->transaction );
 
 				return $transaction;
 			default:
@@ -151,9 +151,9 @@ class Pronamic_Gateways_Sisow_Sisow {
 		if ( $this->test_mode ) {
 			$directory = array( '99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ) );
 		} else {
-			$result = $this->send_request( Pronamic_Gateways_Sisow_Methods::DIRECTORY_REQUEST );
+			$result = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::DIRECTORY_REQUEST );
 
-			$xml = Pronamic_WP_Util::simplexml_load_string( $result );
+			$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $result );
 
 			if ( is_wp_error( $xml ) ) {
 				$this->error = $xml;
@@ -188,7 +188,7 @@ class Pronamic_Gateways_Sisow_Sisow {
 		return sha1(
 			$purchase_id .
 			$entrance_code .
-			Pronamic_WP_Util::amount_to_cents( $amount ) .
+			Pronamic_WP_Pay_Util::amount_to_cents( $amount ) .
 			$shop_id .
 			$merchant_id .
 			$merchant_key
@@ -207,7 +207,7 @@ class Pronamic_Gateways_Sisow_Sisow {
 	 * @param string $entrance_code
 	 * @param string $return_url
 	 *
-	 * @return Pronamic_Gateways_Sisow_Transaction
+	 * @return Pronamic_WP_Pay_Gateways_Sisow_Transaction
 	 */
 	public function create_transaction( $issuer_id, $purchase_id, $amount, $description, $entrance_code, $return_url ) {
 		$result = false;
@@ -217,7 +217,7 @@ class Pronamic_Gateways_Sisow_Sisow {
 		$parameters['merchantid']   = $this->merchant_id;
 		$parameters['issuerid']     = $issuer_id;
 		$parameters['purchaseid']   = $purchase_id;
-		$parameters['amount']       = Pronamic_WP_Util::amount_to_cents( $amount );
+		$parameters['amount']       = Pronamic_WP_Pay_Util::amount_to_cents( $amount );
 		$parameters['description']  = $description;
 		$parameters['entrancecode'] = $entrance_code;
 		$parameters['returnurl']    = $return_url;
@@ -226,16 +226,16 @@ class Pronamic_Gateways_Sisow_Sisow {
 		$parameters['notifyurl']    = $return_url;
 		$parameters['sha1']         = self::create_transaction_sha1( $purchase_id, $entrance_code, $amount, '', $this->merchant_id, $this->merchant_key );
 
-		$response = $this->send_request( Pronamic_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $parameters );
+		$response = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $parameters );
 
-		$xml = Pronamic_WP_Util::simplexml_load_string( $response );
+		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $response );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;
 		} else {
 			$message = $this->parse_document( $xml );
 
-			if ( $message instanceof Pronamic_Gateways_Sisow_Transaction ) {
+			if ( $message instanceof Pronamic_WP_Pay_Gateways_Sisow_Transaction ) {
 				$result = $message;
 			}
 		}
@@ -271,9 +271,9 @@ class Pronamic_Gateways_Sisow_Sisow {
 		$parameters['trxid']        = $transaction_id;
 		$parameters['sha1']         = self::create_status_sha1( $transaction_id, '', $this->merchant_id, $this->merchant_key );
 
-		$result = $this->send_request( Pronamic_Gateways_Sisow_Methods::STATUS_REQUEST, $parameters );
+		$result = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::STATUS_REQUEST, $parameters );
 
-		$xml = Pronamic_WP_Util::simplexml_load_string( $result );
+		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $result );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;

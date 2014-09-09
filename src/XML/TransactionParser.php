@@ -10,7 +10,7 @@
  */
 class Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser implements Pronamic_WP_Pay_Gateways_Sisow_XML_Parser {
 	public static function parse( SimpleXMLElement $xml ) {
-		$transaction = new Pronamic_Gateways_Sisow_Transaction();
+		$transaction = new Pronamic_WP_Pay_Gateways_Sisow_Transaction();
 
 		// Transaction request
 		if ( isset( $xml->trxid ) ) {
