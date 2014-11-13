@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Title: Sisow
+ * Title: Sisow gateway
  * Description:
  * Copyright: Copyright (c) 2005 - 2014
  * Company: Pronamic
@@ -9,6 +9,11 @@
  * @version 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
+	/**
+	 * Constructs and initialize an Sisow gateway
+	 *
+	 * @param Pronamic_WP_Pay_Gateways_Sisow_Config $config
+	 */
 	public function __construct( Pronamic_WP_Pay_Gateways_Sisow_Config $config ) {
 		parent::__construct( $config );
 
