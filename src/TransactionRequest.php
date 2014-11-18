@@ -126,14 +126,14 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 *
 	 * @return string
 	 */
-	public function get_sha1() {
+	public function get_sha1( $merchant_key ) {
 		return sha1(
 			$this->purchase_id .
 			$this->entrance_code .
 			Pronamic_WP_Pay_Util::amount_to_cents( $this->amount ) .
 			$this->shop_id .
 			$this->merchant_id .
-			$this->merchant_key
+			$merchant_key
 		);
 	}
 
@@ -144,7 +144,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 *
 	 * @return array
 	 */
-	public function get_parameters() {
+	public function get_parameters( $merchant_key ) {
 		return array(
 			'shopid'       => $this->shop_id,
 			'merchantid'   => $this->merchant_id,
@@ -159,7 +159,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 			'cancelurl'    => $this->cancel_url,
 			'callbackurl'  => $this->callback_url,
 			'notifyurl'    => $this->notify_url,
-			'sha1'         => $this->get_sha1(),
+			'sha1'         => $this->get_sha1( $merchant_key ),
 		);
 	}
 }

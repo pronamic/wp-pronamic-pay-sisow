@@ -189,7 +189,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	public function create_transaction( Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest $request ) {
 		$result = false;
 
-		$response = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $request->get_parameters() );
+		$response = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $request->get_parameters( $this->merchant_key ) );
 
 		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $response );
 
