@@ -35,7 +35,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 *
 	 * @var string
 	 */
-	public $purchase_id;
+	private $purchase_id;
 
 	/**
 	 * Amount
@@ -63,7 +63,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 *
 	 * @var string
 	 */
-	public $entrance_code;
+	private $entrance_code;
 
 	/**
 	 * Description
@@ -107,6 +107,16 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 */
 	public function __construct() {
 
+	}
+
+	/////////////////////////////////////////////////
+
+	public function set_purchase_id( $purchase_id ) {
+		$this->purchase_id = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $purchase_id );
+	}
+
+	public function set_entrance_code( $entrance_code ) {
+		$this->entrance_code = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $entrance_code );
 	}
 
 	/////////////////////////////////////////////////
