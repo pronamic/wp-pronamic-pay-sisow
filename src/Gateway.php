@@ -73,22 +73,20 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$order_id    = $data->get_order_id();
 		$purchase_id = empty( $order_id ) ? $payment->get_id() : $order_id;
 
-		$payment = null;
+		$transaction_request = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
+		$transaction_request->merchant_id   = $this->config->merchant_id;
 
 		switch ( $payment_method ) {
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
-				$payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL;
+				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL;
 
 				break;
 			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
-				$payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH;
+				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH;
 
 				break;
 		}
 
-		$transaction_request = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
-		$transaction_request->merchant_id   = $this->config->merchant_id;
-		$transaction_request->payment       = $payment;
 		$transaction_request->purchase_id   = $purchase_id;
 		$transaction_request->amount        = $data->get_amount();
 		$transaction_request->issuer_id     = $data->get_issuer_id();
