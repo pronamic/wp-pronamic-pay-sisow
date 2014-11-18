@@ -98,7 +98,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 
 		return Pronamic_WP_Pay_Util::remote_get_body( $url, 200, array(
 			'method'    => 'POST',
-			'sslverify' => false,
 			'body'      => $parameters,
 		) );
 	}
