@@ -175,29 +175,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	//////////////////////////////////////////////////
 
 	/**
-	 * Create an SHA1 for an transaction request
-	 *
-	 * @param string $purchase_id
-	 * @param string $entrance_code
-	 * @param float $amount
-	 * @param string $shop_id
-	 * @param string $merchant_id
-	 * @param string $merchant_key
-	 */
-	public static function create_transaction_sha1( $purchase_id, $entrance_code, $amount, $shop_id, $merchant_id, $merchant_key ) {
-		return sha1(
-			$purchase_id .
-			$entrance_code .
-			Pronamic_WP_Pay_Util::amount_to_cents( $amount ) .
-			$shop_id .
-			$merchant_id .
-			$merchant_key
-		);
-	}
-
-	//////////////////////////////////////////////////
-
-	/**
 	 * Create an transaction with the specified parameters
 	 *
 	 * @param string $issuer_id
@@ -209,24 +186,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	 *
 	 * @return Pronamic_WP_Pay_Gateways_Sisow_Transaction
 	 */
-	public function create_transaction( $issuer_id, $purchase_id, $amount, $description, $entrance_code, $return_url ) {
+	public function create_transaction( Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest $request ) {
 		$result = false;
 
-		$parameters = array();
-
-		$parameters['merchantid']   = $this->merchant_id;
-		$parameters['issuerid']     = $issuer_id;
-		$parameters['purchaseid']   = $purchase_id;
-		$parameters['amount']       = Pronamic_WP_Pay_Util::amount_to_cents( $amount );
-		$parameters['description']  = $description;
-		$parameters['entrancecode'] = $entrance_code;
-		$parameters['returnurl']    = $return_url;
-		$parameters['cancelurl']    = $return_url;
-		$parameters['callbackurl']  = $return_url;
-		$parameters['notifyurl']    = $return_url;
-		$parameters['sha1']         = self::create_transaction_sha1( $purchase_id, $entrance_code, $amount, '', $this->merchant_id, $this->merchant_key );
-
-		$response = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $parameters );
+		$response = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $request->get_parameters() );
 
 		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $response );
 
