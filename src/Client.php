@@ -226,23 +226,37 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 
 	//////////////////////////////////////////////////
 
+	/**
+	 * Get the status of the specified transaction ID
+	 *
+	 * @param string $transaction_id
+	 * @return boolean|Pronamic_WP_Pay_Gateways_Sisow_Transaction
+	 */
 	public function get_status( $transaction_id ) {
-		$parameters = array();
+		$result = null;
 
-		$parameters['merchantid']   = $this->merchant_id;
-		$parameters['trxid']        = $transaction_id;
-		$parameters['sha1']         = self::create_status_sha1( $transaction_id, '', $this->merchant_id, $this->merchant_key );
+		// Parameters
+		$parameters = array(
+			'merchantid' => $this->merchant_id,
+			'trxid'      => $transaction_id,
+			'sha1'       => self::create_status_sha1( $transaction_id, '', $this->merchant_id, $this->merchant_key ),
+		);
 
+		// Request
 		$result = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::STATUS_REQUEST, $parameters );
 
+		// XML
 		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $result );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;
-		} else {
+		}
+
+		if ( $xml instanceof SimpleXMLElement ) {
 			$result = $this->parse_document( $xml );
 		}
 
+		// Return
 		return $result;
 	}
 }

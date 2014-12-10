@@ -120,9 +120,17 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 
 		if ( $result instanceof Pronamic_WP_Pay_Gateways_Sisow_Error ) {
 			$this->error = $this->client->get_error();
-		} elseif ( false === $result ) {
+
+			return;
+		}
+
+		if ( false === $result ) {
 			$this->error = $this->client->get_error();
-		} else {
+
+			return;
+		}
+
+		if ( $result instanceof Pronamic_WP_Pay_Gateways_Sisow_Transaction ) {
 			$transaction = $result;
 
 			$payment->set_status( $transaction->status );
