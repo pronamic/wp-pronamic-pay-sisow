@@ -150,13 +150,26 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 		if ( $this->test_mode ) {
 			$directory = array( '99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ) );
 		} else {
+			// Request
 			$result = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::DIRECTORY_REQUEST );
 
+			if ( is_wp_error( $result ) ) {
+				$this->error = $result;
+
+				return $directory;
+			}
+
+			// XML
 			$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $result );
 
 			if ( is_wp_error( $xml ) ) {
 				$this->error = $xml;
-			} else {
+
+				return $directory;
+			}
+
+			// Parse
+			if ( $xml instanceof SimpleXMLElement ) {
 				$directory = array();
 
 				foreach ( $xml->directory->issuer as $issuer ) {
@@ -188,13 +201,26 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	public function create_transaction( Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest $request ) {
 		$result = false;
 
+		// Request
 		$response = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $request->get_parameters( $this->merchant_key ) );
 
+		if ( is_wp_error( $response ) ) {
+			$this->error = $response;
+
+			return $result;
+		}
+
+		// XML
 		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $response );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;
-		} else {
+
+			return $result;
+		}
+
+		// Parse
+		if ( $xml instanceof SimpleXMLElement ) {
 			$message = $this->parse_document( $xml );
 
 			if ( $message instanceof Pronamic_WP_Pay_Gateways_Sisow_Transaction ) {
@@ -202,6 +228,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 			}
 		}
 
+		// Return
 		return $result;
 	}
 
@@ -233,7 +260,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	 * @return boolean|Pronamic_WP_Pay_Gateways_Sisow_Transaction
 	 */
 	public function get_status( $transaction_id ) {
-		$result = null;
+		$status = false;
 
 		// Parameters
 		$parameters = array(
@@ -245,18 +272,29 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 		// Request
 		$result = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::STATUS_REQUEST, $parameters );
 
+		if ( is_wp_error( $result ) ) {
+			$this->error = $result;
+
+			return $status;
+		}
+
 		// XML
 		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $result );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;
+
+			return $status;
 		}
 
+		// Parse
 		if ( $xml instanceof SimpleXMLElement ) {
-			$result = $this->parse_document( $xml );
+			$status = $this->parse_document( $xml );
+
+			return $status;
 		}
 
 		// Return
-		return $result;
+		return $status;
 	}
 }
