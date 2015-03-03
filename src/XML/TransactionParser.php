@@ -3,10 +3,10 @@
 /**
  * Title: Error XML parser
  * Description:
- * Copyright: Copyright (c) 2005 - 2011
+ * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.0
+ * @version 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser implements Pronamic_WP_Pay_Gateways_Sisow_XML_Parser {
 	public static function parse( SimpleXMLElement $xml ) {
