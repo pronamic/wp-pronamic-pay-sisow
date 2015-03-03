@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Pay Sisow rules">
 	<rule ref="WordPress">	
-		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.Indent" />
+
 	</rule>
 </ruleset>
