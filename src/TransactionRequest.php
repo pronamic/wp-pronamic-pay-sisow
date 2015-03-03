@@ -3,7 +3,7 @@
 /**
  * Title: iDEAL Sisow transation request
  * Description:
- * Copyright: Copyright (c) 2014
+ * Copyright: Copyright (c) 2015
  * Company: Pronamic
  * @author Remco Tolsma
  * @version 1.0.0
