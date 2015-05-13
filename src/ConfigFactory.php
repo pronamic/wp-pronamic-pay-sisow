@@ -16,6 +16,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_ConfigFactory extends Pronamic_WP_Pay_Gatew
 
 		$config->merchant_id  = get_post_meta( $post_id, '_pronamic_gateway_sisow_merchant_id', true );
 		$config->merchant_key = get_post_meta( $post_id, '_pronamic_gateway_sisow_merchant_key', true );
+		$config->shop_id      = get_post_meta( $post_id, '_pronamic_gateway_sisow_shop_id', true );
 
 		return $config;
 	}
