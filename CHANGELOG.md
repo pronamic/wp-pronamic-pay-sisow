@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
-- Add missing file GatewayModule.php for Shopp < 1.3 support.
+- Added support for Shop ID.
 
 ## [1.0.3] - 2015-03-03
 - Changed WordPress pay core library requirment from ~1.0.0 to >=1.0.0.
