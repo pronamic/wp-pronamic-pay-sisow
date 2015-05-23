@@ -7,18 +7,19 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 - Add missing file GatewayModule.php for Shopp < 1.3 support.
 
-## 1.0.3
+## [1.0.3] - 2015-03-03
 - Changed WordPress pay core library requirment from ~1.0.0 to >=1.0.0.
 
-## 1.0.2
+## [1.0.2] - 2015-01-20
 - Require WordPress pay core library version 1.0.0.
 
-## [1.0.1] - 2015-03-03
+## [1.0.1] - 2014-12-12
 - Improved error handling.
 
-## 1.0.0 - 2015-02-12
+## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/gravityforms/compare/1.0.3...HEAD
-
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.0.3...HEAD
+[1.0.3]: https://github.com/wp-pay-gateways/sisow/compare/1.0.2...1.0.3
+[1.0.2]: https://github.com/wp-pay-gateways/sisow/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/wp-pay-gateways/sisow/compare/1.0.0...1.0.1
