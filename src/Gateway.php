@@ -22,7 +22,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$this->set_amount_minimum( 0.01 );
 
 		$this->client = new Pronamic_WP_Pay_Gateways_Sisow_Client( $config->merchant_id, $config->merchant_key );
-		$this->client->set_test_mode( $config->mode == Pronamic_IDeal_IDeal::MODE_TEST );
+		$this->client->set_test_mode( Pronamic_IDeal_IDeal::MODE_TEST === $config->mode );
 	}
 
 	/////////////////////////////////////////////////
@@ -91,7 +91,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->set_purchase_id( $purchase_id );
 		$transaction_request->amount        = $data->get_amount();
 		$transaction_request->issuer_id     = $data->get_issuer_id();
-		$transaction_request->test_mode     = $this->config->mode == Pronamic_IDeal_IDeal::MODE_TEST;
+		$transaction_request->test_mode     = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
 		$transaction_request->set_entrance_code( $data->get_entrance_code() );
 		$transaction_request->description   = $data->get_description();
 		$transaction_request->return_url    = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
