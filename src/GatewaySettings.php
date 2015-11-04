@@ -29,6 +29,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_GatewaySettings extends Pronamic_WP_Pay_Gat
 	public function fields( array $fields ) {
 		// Merchant ID
 		$fields[] =	array(
+			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
 			'meta_key'    => '_pronamic_gateway_sisow_merchant_id',
 			'title'       => _x( 'Merchant ID', 'sisow', 'pronamic_ideal' ),
@@ -43,6 +44,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_GatewaySettings extends Pronamic_WP_Pay_Gat
 
 		// Merchant Key
 		$fields[] =	array(
+			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
 			'meta_key'    => '_pronamic_gateway_sisow_merchant_key',
 			'title'       => _x( 'Merchant Key', 'sisow', 'pronamic_ideal' ),
@@ -57,6 +59,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_GatewaySettings extends Pronamic_WP_Pay_Gat
 
 		// Shop ID
 		$fields[] =	array(
+			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
 			'meta_key'    => '_pronamic_gateway_sisow_shop_id',
 			'title'       => _x( 'Shop ID', 'sisow', 'pronamic_ideal' ),
