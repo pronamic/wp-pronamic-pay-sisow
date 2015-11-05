@@ -94,10 +94,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->test_mode     = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
 		$transaction_request->set_entrance_code( $data->get_entrance_code() );
 		$transaction_request->description   = $data->get_description();
-		$transaction_request->return_url    = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-		$transaction_request->cancel_url    = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-		$transaction_request->callback_url  = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-		$transaction_request->notify_url    = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
+		$transaction_request->return_url    = $payment->get_return_url();
+		$transaction_request->cancel_url    = $payment->get_return_url();
+		$transaction_request->callback_url  = $payment->get_return_url();
+		$transaction_request->notify_url    = $payment->get_return_url();
 
 		$result = $this->client->create_transaction( $transaction_request );
 
