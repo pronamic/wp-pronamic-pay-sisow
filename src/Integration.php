@@ -1,6 +1,6 @@
 <?php
 
-class Pronamic_WP_Pay_Gateways_SisowIntegration {
+class Pronamic_WP_Pay_Gateways_Sisow_Integration {
 	public function __construct() {
 		$this->id            = 'sisow-ideal';
 		$this->name          = 'Sisow';
