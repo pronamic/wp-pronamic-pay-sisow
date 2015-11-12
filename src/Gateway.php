@@ -98,6 +98,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$order_id    = $data->get_order_id();
 		$purchase_id = empty( $order_id ) ? $payment->get_id() : $order_id;
 
+		// Maximum length for purchase ID is 16 characters, otherwise an error will occur:
+		// ideal_sisow_error - purchaseid too long (16)
+		$purchase_id = substr( $purchase_id, 0, 16 );
+
 		$transaction_request = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
 		$transaction_request->merchant_id   = $this->config->merchant_id;
 		$transaction_request->shop_id       = $this->config->shop_id;
