@@ -74,6 +74,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		return array(
 			Pronamic_WP_Pay_PaymentMethods::IDEAL        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
 			Pronamic_WP_Pay_PaymentMethods::MISTER_CASH  => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
+			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD  => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
 		);
 	}
 
@@ -117,6 +118,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 				break;
 			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
 				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH;
+
+				break;
+
+			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
+				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD;
 
 				break;
 		}

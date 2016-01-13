@@ -17,6 +17,13 @@ class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
 	const IDEAL = '';
 
 	/**
+	 * Indicator for 'Creditcard' payment
+	 *
+	 * @var string
+	 */
+	const CREDIT_CARD = 'creditcard';
+
+	/**
 	 * Indicator for 'Achteraf betalen' payment
 	 *
 	 * @var string
