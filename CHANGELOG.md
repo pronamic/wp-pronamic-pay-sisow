@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
+-
+
+## [1.1.2] - 2016-02-01
 - Added an gateway settings class.
+- Added support for creditcard payment method.
 
 ## [1.1.1] - 2015-08-04
 - Use wp-pay/core XML security filter function.

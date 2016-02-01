@@ -3,8 +3,9 @@
 /**
  * Title: Sisow gateway settings
  * Description:
- * Copyright: Copyright (c) 2005 - 2015
+ * Copyright: Copyright (c) 2005 - 2016
  * Company: Pronamic
+ *
  * @author Remco Tolsma
  * @version 1.2.0
  * @since 1.2.0
@@ -22,13 +23,12 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 			'methods' => array( 'sisow' ),
 		);
 
-		// Return
 		return $sections;
 	}
 
 	public function fields( array $fields ) {
 		// Merchant ID
-		$fields[] =	array(
+		$fields[] = array(
 			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
 			'meta_key'    => '_pronamic_gateway_sisow_merchant_id',
@@ -43,7 +43,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 		);
 
 		// Merchant Key
-		$fields[] =	array(
+		$fields[] = array(
 			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
 			'meta_key'    => '_pronamic_gateway_sisow_merchant_key',
@@ -58,7 +58,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 		);
 
 		// Shop ID
-		$fields[] =	array(
+		$fields[] = array(
 			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
 			'meta_key'    => '_pronamic_gateway_sisow_shop_id',
@@ -73,7 +73,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 			),
 		);
 
-		// Return
 		return $fields;
 	}
 }
