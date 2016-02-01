@@ -3,10 +3,12 @@
 /**
  * Title: iDEAL Sisow payment methods
  * Description:
- * Copyright: Copyright (c) 2005 - 2015
+ * Copyright: Copyright (c) 2005 - 2016
  * Company: Pronamic
+ *
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.1.2
+ * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
 	/**
@@ -15,6 +17,14 @@ class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
 	 * @var string
 	 */
 	const IDEAL = '';
+
+	/**
+	 * Indicator for 'Creditcard' payment
+	 *
+	 * @var string
+	 * @since 1.1.2
+	 */
+	const CREDIT_CARD = 'creditcard';
 
 	/**
 	 * Indicator for 'Achteraf betalen' payment

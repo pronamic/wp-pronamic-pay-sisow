@@ -3,8 +3,9 @@
 /**
  * Title: Sisow
  * Description:
- * Copyright: Copyright (c) 2005 - 2015
+ * Copyright: Copyright (c) 2005 - 2016
  * Company: Pronamic
+ *
  * @author Remco Tolsma
  * @version 1.0.0
  */
@@ -228,7 +229,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 			}
 		}
 
-		// Return
 		return $result;
 	}
 
@@ -294,7 +294,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 			return $status;
 		}
 
-		// Return
 		return $status;
 	}
 }

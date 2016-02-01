@@ -3,8 +3,9 @@
 /**
  * Title: Sisow gateway
  * Description:
- * Copyright: Copyright (c) 2005 - 2015
+ * Copyright: Copyright (c) 2005 - 2016
  * Company: Pronamic
+ *
  * @author Remco Tolsma
  * @version 1.0.0
  */
@@ -51,14 +52,40 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	/////////////////////////////////////////////////
 
 	public function get_issuer_field() {
+		if ( Pronamic_WP_Pay_PaymentMethods::IDEAL === $this->get_payment_method() ) {
+			return array(
+				'id'       => 'pronamic_ideal_issuer_id',
+				'name'     => 'pronamic_ideal_issuer_id',
+				'label'    => __( 'Choose your bank', 'pronamic_ideal' ),
+				'required' => true,
+				'type'     => 'select',
+				'choices'  => $this->get_transient_issuers(),
+			);
+		}
+	}
+
+	/////////////////////////////////////////////////
+
+	/**
+	 * Get supported payment methods
+	 *
+	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()
+	 */
+	public function get_supported_payment_methods() {
 		return array(
-			'id'       => 'pronamic_ideal_issuer_id',
-			'name'     => 'pronamic_ideal_issuer_id',
-			'label'    => __( 'Choose your bank', 'pronamic_ideal' ),
-			'required' => true,
-			'type'     => 'select',
-			'choices'  => $this->get_transient_issuers(),
+			Pronamic_WP_Pay_PaymentMethods::IDEAL        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
+			Pronamic_WP_Pay_PaymentMethods::MISTER_CASH  => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
+			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD  => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
 		);
+	}
+
+	/**
+	 * Is payment method required to start transaction?
+	 *
+	 * @see Pronamic_WP_Pay_Gateway::payment_method_is_required()
+	 */
+	public function payment_method_is_required() {
+		return true;
 	}
 
 	/////////////////////////////////////////////////
@@ -73,9 +100,17 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$order_id    = $data->get_order_id();
 		$purchase_id = empty( $order_id ) ? $payment->get_id() : $order_id;
 
+		// Maximum length for purchase ID is 16 characters, otherwise an error will occur:
+		// ideal_sisow_error - purchaseid too long (16)
+		$purchase_id = substr( $purchase_id, 0, 16 );
+
 		$transaction_request = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
 		$transaction_request->merchant_id   = $this->config->merchant_id;
 		$transaction_request->shop_id       = $this->config->shop_id;
+
+		if ( null !== $payment_method ) {
+			$gateway->set_payment_method( $payment_method );
+		}
 
 		switch ( $payment_method ) {
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
@@ -86,6 +121,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH;
 
 				break;
+
+			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
+				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD;
+
+				break;
 		}
 
 		$transaction_request->set_purchase_id( $purchase_id );
@@ -94,10 +134,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->test_mode     = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
 		$transaction_request->set_entrance_code( $data->get_entrance_code() );
 		$transaction_request->description   = $data->get_description();
-		$transaction_request->return_url    = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-		$transaction_request->cancel_url    = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-		$transaction_request->callback_url  = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
-		$transaction_request->notify_url    = add_query_arg( 'payment', $payment->get_id(), home_url( '/' ) );
+		$transaction_request->return_url    = $payment->get_return_url();
+		$transaction_request->cancel_url    = $payment->get_return_url();
+		$transaction_request->callback_url  = $payment->get_return_url();
+		$transaction_request->notify_url    = $payment->get_return_url();
 
 		$result = $this->client->create_transaction( $transaction_request );
 
