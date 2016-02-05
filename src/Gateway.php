@@ -109,9 +109,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->merchant_id   = $this->config->merchant_id;
 		$transaction_request->shop_id       = $this->config->shop_id;
 
-		if ( null !== $payment_method ) {
-			$this->set_payment_method( $payment_method );
+		if ( is_null( $payment_method ) ) {
+			$payment_method = Pronamic_WP_Pay_PaymentMethods::IDEAL;
 		}
+
+		$this->set_payment_method( $payment_method );
 
 		switch ( $payment_method ) {
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
@@ -131,7 +133,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 
 		$transaction_request->set_purchase_id( $purchase_id );
 		$transaction_request->amount        = $data->get_amount();
-		$transaction_request->issuer_id     = $data->get_issuer_id();
+		$transaction_request->issuer_id     = $issuer_id;
 		$transaction_request->test_mode     = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
 		$transaction_request->set_entrance_code( $data->get_entrance_code() );
 		$transaction_request->description   = $data->get_description();
