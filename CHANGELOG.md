@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.1.4] - 2016-02-10
+- Set default payment method to iDEAL if none set.
+
 ## [1.1.3] - 2016-02-05
 - Fixed 'Fatal error: Call to a member function set_payment_method() on null'.
 
