@@ -109,9 +109,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->merchant_id   = $this->config->merchant_id;
 		$transaction_request->shop_id       = $this->config->shop_id;
 
-		if ( null !== $payment_method ) {
-			$this->set_payment_method( $payment_method );
+		if ( is_null( $payment_method ) ) {
+			$payment_method = Pronamic_WP_Pay_PaymentMethods::IDEAL;
 		}
+
+		$this->set_payment_method( $payment_method );
 
 		switch ( $payment_method ) {
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
