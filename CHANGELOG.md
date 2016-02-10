@@ -36,7 +36,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.1.3...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.1.4...HEAD
+[1.1.4]: https://github.com/wp-pay-gateways/sisow/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/wp-pay-gateways/sisow/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/wp-pay-gateways/sisow/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/wp-pay-gateways/sisow/compare/1.1.0...1.1.1
