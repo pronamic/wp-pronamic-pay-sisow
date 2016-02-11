@@ -12,7 +12,7 @@
 
 ## Strange Behavior Sisow API
 
-Please note that if you send an Sisow `TransactionRequest` with an empty `issuerid` Sisow will not return a `trxid` in the `transactionrequest` XML response message.
+Please note that if you send a Sisow `TransactionRequest` with a empty `issuerid` Sisow will not return a `trxid` in the `transactionrequest` XML response message.
 So if the Sisow transaction IDs are empty you probably left the `issuerid` empty in the `TransactionRequest` message.
 
 ## Documentation
