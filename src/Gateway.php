@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.1.4
+ * @version 1.1.5
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -53,7 +53,9 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	/////////////////////////////////////////////////
 
 	public function get_issuer_field() {
-		if ( Pronamic_WP_Pay_PaymentMethods::IDEAL === $this->get_payment_method() ) {
+		$payment_method = $this->get_payment_method();
+
+		if ( null === $payment_method || Pronamic_WP_Pay_PaymentMethods::IDEAL === $payment_method ) {
 			return array(
 				'id'       => 'pronamic_ideal_issuer_id',
 				'name'     => 'pronamic_ideal_issuer_id',
