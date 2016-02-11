@@ -10,6 +10,11 @@
 [![License](https://poser.pugx.org/wp-pay-gateways/sisow/license.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
+## Strange Behavior Sisow API
+
+Please note that if you send an Sisow `TransactionRequest` with an empty `issuerid` Sisow will not return a `trxid` in the `transactionrequest` XML response message.
+So if the Sisow transaction IDs are empty you probably left the `issuerid` empty in the `TransactionRequest` message.
+
 ## Documentation
 
 *	[Sisow REST API v3.2.1](http://pronamic.nl/wp-content/uploads/2014/11/sisow-rest-api-v3.2.1.pdf)
