@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.1.5] - 2016-02-11
+- Use iDEAL payment method also if none set in issuer field.
+
 ## [1.1.4] - 2016-02-10
 - Set default payment method to iDEAL if none set.
 
