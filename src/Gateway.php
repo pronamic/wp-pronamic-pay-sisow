@@ -55,7 +55,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	public function get_issuer_field() {
 		$payment_method = $this->get_payment_method();
 
-		if ( null == $payment_method || Pronamic_WP_Pay_PaymentMethods::IDEAL === $payment_method ) {
+		if ( null === $payment_method || Pronamic_WP_Pay_PaymentMethods::IDEAL === $payment_method ) {
 			return array(
 				'id'       => 'pronamic_ideal_issuer_id',
 				'name'     => 'pronamic_ideal_issuer_id',
