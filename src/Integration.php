@@ -31,10 +31,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Integration extends Pronamic_WP_Pay_Gateway
 		return 'Pronamic_WP_Pay_Gateways_Sisow_Settings';
 	}
 
-	public function get_gateway_class() {
-		return 'Pronamic_WP_Pay_Gateways_Sisow_Gateway';
-	}
-
 	/**
 	 * Get required settings for this integration.
 	 *

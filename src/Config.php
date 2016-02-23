@@ -15,4 +15,8 @@ class Pronamic_WP_Pay_Gateways_Sisow_Config extends Pronamic_WP_Pay_GatewayConfi
 	public $merchant_key;
 
 	public $shop_id;
+
+	public function get_gateway_class() {
+		return 'Pronamic_WP_Pay_Gateways_Sisow_Gateway';
+	}
 }
