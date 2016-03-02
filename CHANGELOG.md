@@ -7,6 +7,11 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.1.6] - 2016-03-02
+- Added an get_settings function.
+- Moved get_gateway_class() function to the configuration class.
+- Removed get_config_class(), no longer required.
+
 ## [1.1.5] - 2016-02-11
 - Use iDEAL payment method also if none set in issuer field.
 
@@ -39,7 +44,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.1.5...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.1.6...HEAD
+[1.1.6]: https://github.com/wp-pay-gateways/sisow/compare/1.1.5...1.1.6
 [1.1.5]: https://github.com/wp-pay-gateways/sisow/compare/1.1.4...1.1.5
 [1.1.4]: https://github.com/wp-pay-gateways/sisow/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/wp-pay-gateways/sisow/compare/1.1.2...1.1.3
