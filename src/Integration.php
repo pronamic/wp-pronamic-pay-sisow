@@ -15,7 +15,8 @@ class Pronamic_WP_Pay_Gateways_Sisow_Integration extends Pronamic_WP_Pay_Gateway
 		$this->id            = 'sisow-ideal';
 		$this->name          = 'Sisow';
 		$this->url           = 'https://www.sisow.nl/';
-		$this->dashboard_url = 'https://www.sisow.nl/';
+		$this->product_url   = 'https://www.sisow.nl/epay-online-betaalmogelijkheden/epay-informatie';
+		$this->dashboard_url = 'https://www.sisow.nl/Sisow/iDeal/Login.aspx';
 		$this->provider      = 'sisow';
 	}
 
