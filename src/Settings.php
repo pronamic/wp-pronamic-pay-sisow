@@ -21,6 +21,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 		$sections['sisow'] = array(
 			'title'   => __( 'Sisow', 'pronamic_ideal' ),
 			'methods' => array( 'sisow' ),
+			'description' => sprintf(
+				__( 'Account details are provided by %s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
+				__( 'Sisow', 'pronamic_ideal' )
+			),
 		);
 
 		return $sections;
@@ -35,11 +39,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 			'title'       => _x( 'Merchant ID', 'sisow', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'code' ),
-			'description' => sprintf(
-				__( 'You can find your Merchant ID on your <a href="%s" target="_blank">Sisow account page</a> under <a href="%s" target="_blank">My profile</a>.', 'pronamic_ideal' ),
-				'https://www.sisow.nl/Sisow/iDeal/Login.aspx',
-				'https://www.sisow.nl/Sisow/Opdrachtgever/Profiel2.aspx'
-			),
+			'tooltip'     => __( 'Merchant ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
 		);
 
 		// Merchant Key
@@ -50,11 +50,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 			'title'       => _x( 'Merchant Key', 'sisow', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
-			'description' => sprintf(
-				__( 'You can find your Merchant Key on your <a href="%s" target="_blank">Sisow account page</a> under <a href="%s" target="_blank">My profile</a>.', 'pronamic_ideal' ),
-				'https://www.sisow.nl/Sisow/iDeal/Login.aspx',
-				'https://www.sisow.nl/Sisow/Opdrachtgever/Profiel2.aspx'
-			),
+			'tooltip'     => __( 'Merchant Key as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
 		);
 
 		// Shop ID
@@ -65,11 +61,19 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 			'title'       => _x( 'Shop ID', 'sisow', 'pronamic_ideal' ),
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
-			'description' => sprintf(
-				__( 'You can find your Shop ID on your <a href="%s" target="_blank">Sisow account page</a> under <a href="%s" target="_blank">My profile</a>. The default is: %s.', 'pronamic_ideal' ),
-				'https://www.sisow.nl/Sisow/iDeal/Login.aspx',
-				'https://www.sisow.nl/Sisow/Opdrachtgever/Profiel2.aspx',
-				0
+			'tooltip'     => __( 'Shop ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
+			'description' => sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), 0 ),
+			'default'     => 0,
+		);
+
+		// Transaction feedback
+		$fields[] = array(
+			'section'     => 'sisow',
+			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
+			'type'        => 'description',
+			'html'        => sprintf(
+				'<span class="dashicons dashicons-yes pronamic-pay-yes"></span> %s',
+				__( 'Payment status updates will be processed without any additional configuration.', 'pronamic_ideal' )
 			),
 		);
 
