@@ -33,30 +33,33 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 	public function fields( array $fields ) {
 		// Merchant ID
 		$fields[] = array(
-			'filter'      => FILTER_SANITIZE_STRING,
-			'section'     => 'sisow',
-			'meta_key'    => '_pronamic_gateway_sisow_merchant_id',
-			'title'       => _x( 'Merchant ID', 'sisow', 'pronamic_ideal' ),
-			'type'        => 'text',
-			'classes'     => array( 'code' ),
-			'tooltip'     => __( 'Merchant ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
+			'filter'   => FILTER_SANITIZE_STRING,
+			'section'  => 'sisow',
+			'methods'  => array( 'sisow' ),
+			'meta_key' => '_pronamic_gateway_sisow_merchant_id',
+			'title'    => _x( 'Merchant ID', 'sisow', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'code' ),
+			'tooltip'  => __( 'Merchant ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
 		);
 
 		// Merchant Key
 		$fields[] = array(
-			'filter'      => FILTER_SANITIZE_STRING,
-			'section'     => 'sisow',
-			'meta_key'    => '_pronamic_gateway_sisow_merchant_key',
-			'title'       => _x( 'Merchant Key', 'sisow', 'pronamic_ideal' ),
-			'type'        => 'text',
-			'classes'     => array( 'regular-text', 'code' ),
-			'tooltip'     => __( 'Merchant Key as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
+			'filter'   => FILTER_SANITIZE_STRING,
+			'section'  => 'sisow',
+			'methods'  => array( 'sisow' ),
+			'meta_key' => '_pronamic_gateway_sisow_merchant_key',
+			'title'    => _x( 'Merchant Key', 'sisow', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'regular-text', 'code' ),
+			'tooltip'  => __( 'Merchant Key as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
 		);
 
 		// Shop ID
 		$fields[] = array(
 			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
+			'methods'     => array( 'sisow' ),
 			'meta_key'    => '_pronamic_gateway_sisow_shop_id',
 			'title'       => _x( 'Shop ID', 'sisow', 'pronamic_ideal' ),
 			'type'        => 'text',
@@ -68,10 +71,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 
 		// Transaction feedback
 		$fields[] = array(
-			'section'     => 'sisow',
-			'title'       => __( 'Transaction feedback', 'pronamic_ideal' ),
-			'type'        => 'description',
-			'html'        => sprintf(
+			'section' => 'sisow',
+			'methods' => array( 'sisow' ),
+			'title'   => __( 'Transaction feedback', 'pronamic_ideal' ),
+			'type'    => 'description',
+			'html'    => sprintf(
 				'<span class="dashicons dashicons-yes pronamic-pay-yes"></span> %s',
 				__( 'Payment status updates will be processed without any additional configuration.', 'pronamic_ideal' )
 			),
