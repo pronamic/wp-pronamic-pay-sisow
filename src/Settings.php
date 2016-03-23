@@ -19,8 +19,8 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 	public function sections( array $sections ) {
 		// Sisow
 		$sections['sisow'] = array(
-			'title'   => __( 'Sisow', 'pronamic_ideal' ),
-			'methods' => array( 'sisow' ),
+			'title'       => __( 'Sisow', 'pronamic_ideal' ),
+			'methods'     => array( 'sisow' ),
 			'description' => sprintf(
 				__( 'Account details are provided by %s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
 				__( 'Sisow', 'pronamic_ideal' )
