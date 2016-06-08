@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.1.5
+ * @version 1.1.8
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -96,10 +96,9 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	/**
 	 * Start
 	 *
-	 * @param Pronamic_Pay_PaymentDataInterface $data
 	 * @see Pronamic_WP_Pay_Gateway::start()
 	 */
-	public function start( Pronamic_Pay_PaymentDataInterface $data, Pronamic_Pay_Payment $payment, $payment_method = null ) {
+	public function start( Pronamic_Pay_Payment $payment ) {
 		$order_id    = $data->get_order_id();
 		$purchase_id = empty( $order_id ) ? $payment->get_id() : $order_id;
 
@@ -110,6 +109,8 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
 		$transaction_request->merchant_id   = $this->config->merchant_id;
 		$transaction_request->shop_id       = $this->config->shop_id;
+
+		$payment_method = $payment->get_method();
 
 		if ( is_null( $payment_method ) ) {
 			$payment_method = Pronamic_WP_Pay_PaymentMethods::IDEAL;
@@ -134,11 +135,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		}
 
 		$transaction_request->set_purchase_id( $purchase_id );
-		$transaction_request->amount        = $data->get_amount();
-		$transaction_request->issuer_id     = $data->get_issuer_id();
+		$transaction_request->amount        = $payment->get_amount();
+		$transaction_request->issuer_id     = $payment->get_issuer();
 		$transaction_request->test_mode     = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
-		$transaction_request->set_entrance_code( $data->get_entrance_code() );
-		$transaction_request->description   = $data->get_description();
+		$transaction_request->set_entrance_code( $payment->get_entrance_code() );
+		$transaction_request->description   = $payment->get_description();
 		$transaction_request->return_url    = $payment->get_return_url();
 		$transaction_request->cancel_url    = $payment->get_return_url();
 		$transaction_request->callback_url  = $payment->get_return_url();
