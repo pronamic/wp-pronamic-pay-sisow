@@ -74,6 +74,13 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	public $description;
 
 	/**
+	 * Billing email address
+	 *
+	 * @var string
+	 */
+	public $billing_mail;
+
+	/**
 	 * Return URL
 	 *
 	 * @var string
@@ -156,6 +163,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 			'testmode'     => Pronamic_WP_Pay_Util::to_string_boolean( $this->test_mode ),
 			'entrancecode' => $this->entrance_code,
 			'description'  => $this->description,
+			'billing_mail' => $this->billing_mail,
 			'returnurl'    => $this->return_url,
 			'cancelurl'    => $this->cancel_url,
 			'callbackurl'  => $this->callback_url,

@@ -76,9 +76,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			Pronamic_WP_Pay_PaymentMethods::IDEAL        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
-			Pronamic_WP_Pay_PaymentMethods::MISTER_CASH  => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
-			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD  => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
+			Pronamic_WP_Pay_PaymentMethods::IDEAL         => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
+			Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING,
+			Pronamic_WP_Pay_PaymentMethods::MISTER_CASH   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
+			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
 		);
 	}
 
@@ -119,6 +120,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$this->set_payment_method( $payment_method );
 
 		switch ( $payment_method ) {
+			case Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER :
+				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING;
+
+				break;
 			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
 				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL;
 
@@ -127,7 +132,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH;
 
 				break;
-
 			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
 				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD;
 
@@ -140,6 +144,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->test_mode     = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
 		$transaction_request->set_entrance_code( $payment->get_entrance_code() );
 		$transaction_request->description   = $payment->get_description();
+		$transaction_request->billing_mail  = $payment->get_email();
 		$transaction_request->return_url    = $payment->get_return_url();
 		$transaction_request->cancel_url    = $payment->get_return_url();
 		$transaction_request->callback_url  = $payment->get_return_url();
