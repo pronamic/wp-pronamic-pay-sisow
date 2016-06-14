@@ -7,7 +7,8 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.2.0
+ * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	/**
@@ -77,6 +78,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 * Billing email address
 	 *
 	 * @var string
+	 * @since 1.2.0
 	 */
 	public $billing_mail;
 
