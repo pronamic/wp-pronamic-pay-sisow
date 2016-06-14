@@ -7,7 +7,8 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.2.0
+ * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	/**
@@ -72,6 +73,14 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 * @var string
 	 */
 	public $description;
+
+	/**
+	 * Billing email address
+	 *
+	 * @var string
+	 * @since 1.2.0
+	 */
+	public $billing_mail;
 
 	/**
 	 * Return URL
@@ -156,6 +165,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 			'testmode'     => Pronamic_WP_Pay_Util::to_string_boolean( $this->test_mode ),
 			'entrancecode' => $this->entrance_code,
 			'description'  => $this->description,
+			'billing_mail' => $this->billing_mail,
 			'returnurl'    => $this->return_url,
 			'cancelurl'    => $this->cancel_url,
 			'callbackurl'  => $this->callback_url,
