@@ -262,6 +262,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	public function get_status( $transaction_id ) {
 		$status = false;
 
+		if ( '' === $transaction_id ) {
+			return $status;
+		}
+
 		// Parameters
 		$parameters = array(
 			'merchantid' => $this->merchant_id,
