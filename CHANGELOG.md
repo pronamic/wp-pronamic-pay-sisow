@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.2.1] - 2016-10-19
+- Added support for new Bancontact constant.
+
 ## [1.2.0] - 2016-06-14
 - Added support for bank transfer payment method.
 
@@ -57,7 +60,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.2.0...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.2.1...HEAD
+[1.2.1]: https://github.com/wp-pay-gateways/sisow/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/wp-pay-gateways/sisow/compare/1.1.9...1.2.0
 [1.1.9]: https://github.com/wp-pay-gateways/sisow/compare/1.1.8...1.1.9
 [1.1.8]: https://github.com/wp-pay-gateways/sisow/compare/1.1.7...1.1.8
