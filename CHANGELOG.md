@@ -8,6 +8,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 -
 
 ## [1.2.1] - 2016-10-20
+- Only send status check if transaction ID is not empty.
+- Added feature support `payment_status_request`.
 - Added support for new Bancontact constant.
 
 ## [1.2.0] - 2016-06-14
