@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 1.2.1
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -18,6 +18,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	 */
 	public function __construct( Pronamic_WP_Pay_Gateways_Sisow_Config $config ) {
 		parent::__construct( $config );
+
+		$this->supports = array(
+			'payment_status_request',
+		);
 
 		$this->set_method( Pronamic_WP_Pay_Gateway::METHOD_HTTP_REDIRECT );
 		$this->set_has_feedback( true );
@@ -76,10 +80,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			Pronamic_WP_Pay_PaymentMethods::IDEAL         => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
-			Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING,
-			Pronamic_WP_Pay_PaymentMethods::MISTER_CASH   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
-			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
+			Pronamic_WP_Pay_PaymentMethods::IDEAL,
+			Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER,
+			Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
+			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
 		);
 	}
 
@@ -128,6 +132,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL;
 
 				break;
+			case Pronamic_WP_Pay_PaymentMethods::BANCONTACT :
 			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
 				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH;
 

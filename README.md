@@ -8,7 +8,7 @@
 [![Total Downloads](https://poser.pugx.org/wp-pay-gateways/sisow/downloads.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
 [![Latest Unstable Version](https://poser.pugx.org/wp-pay-gateways/sisow/v/unstable.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
 [![License](https://poser.pugx.org/wp-pay-gateways/sisow/license.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
-[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
 
 ## Strange Behavior Sisow API
 
