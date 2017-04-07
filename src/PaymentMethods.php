@@ -3,11 +3,11 @@
 /**
  * Title: iDEAL Sisow payment methods
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.1.2
+ * @version 1.2.2
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
@@ -95,13 +95,13 @@ class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
 	 * @var array
 	 */
 	private static $map = array(
-		Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER      => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING,
-		Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
-		Pronamic_WP_Pay_PaymentMethods::BANCONTACT         => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
-		Pronamic_WP_Pay_PaymentMethods::MISTER_CASH        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
-		Pronamic_WP_Pay_PaymentMethods::PAYPAL             => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::PAYPAL_EXPRESS_CHECKOUT,
-		Pronamic_WP_Pay_PaymentMethods::SOFORT             => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::SOFORT,
-		Pronamic_WP_Pay_PaymentMethods::IDEAL              => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
+		Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING,
+		Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
+		Pronamic_WP_Pay_PaymentMethods::BANCONTACT    => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
+		Pronamic_WP_Pay_PaymentMethods::MISTER_CASH   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
+		Pronamic_WP_Pay_PaymentMethods::PAYPAL        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::PAYPAL_EXPRESS_CHECKOUT,
+		Pronamic_WP_Pay_PaymentMethods::SOFORT        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::SOFORT,
+		Pronamic_WP_Pay_PaymentMethods::IDEAL         => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
 	);
 
 	/**
