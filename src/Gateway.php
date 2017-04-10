@@ -3,11 +3,11 @@
 /**
  * Title: Sisow gateway
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.1
+ * @version 1.2.2
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -80,10 +80,12 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			Pronamic_WP_Pay_PaymentMethods::IDEAL,
 			Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER,
 			Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
 			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
+			Pronamic_WP_Pay_PaymentMethods::IDEAL,
+			Pronamic_WP_Pay_PaymentMethods::PAYPAL,
+			Pronamic_WP_Pay_PaymentMethods::SOFORT,
 		);
 	}
 
@@ -123,24 +125,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 
 		$this->set_payment_method( $payment_method );
 
-		switch ( $payment_method ) {
-			case Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER :
-				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING;
+		$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::transform( $payment_method );
 
-				break;
-			case Pronamic_WP_Pay_PaymentMethods::IDEAL :
-				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL;
-
-				break;
-			case Pronamic_WP_Pay_PaymentMethods::BANCONTACT :
-			case Pronamic_WP_Pay_PaymentMethods::MISTER_CASH :
-				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH;
-
-				break;
-			case Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD :
-				$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD;
-
-				break;
+		if ( empty( $transaction_request->payment ) && ! empty( $payment_method ) ) {
+			// Leap of faith if the WordPress payment method could not transform to a Mollie method?
+			$transaction_request->payment = $payment_method;
 		}
 
 		$transaction_request->set_purchase_id( $purchase_id );
