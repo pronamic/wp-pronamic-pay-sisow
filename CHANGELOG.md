@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
--
+- Added support for bunq payment method.
 
 ## [1.2.2] - 2017-04-10
 - Added support for PayPal, Sofort and 'leap of faith' payment methods.

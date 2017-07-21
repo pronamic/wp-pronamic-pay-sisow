@@ -19,6 +19,14 @@ class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
 	const IDEAL = '';
 
 	/**
+	 * Indicator for 'bunq' payment
+	 *
+	 * @var string
+	 * @since unreleased
+	 */
+	const BUNQ = 'bunq';
+
+	/**
 	 * Indicator for 'Creditcard' payment
 	 *
 	 * @var string
@@ -96,6 +104,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
 	 */
 	private static $map = array(
 		Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING,
+		Pronamic_WP_Pay_PaymentMethods::BUNQ          => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::BUNQ,
 		Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
 		Pronamic_WP_Pay_PaymentMethods::BANCONTACT    => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
 		Pronamic_WP_Pay_PaymentMethods::MISTER_CASH   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
