@@ -129,7 +129,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::transform( $payment_method );
 
 		if ( empty( $transaction_request->payment ) && ! empty( $payment_method ) ) {
-			// Leap of faith if the WordPress payment method could not transform to a Mollie method?
+			// Leap of faith if the WordPress payment method could not transform to a Sisow method?
 			$transaction_request->payment = $payment_method;
 		}
 
