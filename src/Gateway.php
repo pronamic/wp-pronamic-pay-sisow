@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.2
+ * @version 1.2.3
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
@@ -82,6 +82,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		return array(
 			Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER,
 			Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
+			Pronamic_WP_Pay_PaymentMethods::BUNQ,
 			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
 			Pronamic_WP_Pay_PaymentMethods::IDEAL,
 			Pronamic_WP_Pay_PaymentMethods::PAYPAL,
@@ -128,7 +129,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::transform( $payment_method );
 
 		if ( empty( $transaction_request->payment ) && ! empty( $payment_method ) ) {
-			// Leap of faith if the WordPress payment method could not transform to a Mollie method?
+			// Leap of faith if the WordPress payment method could not transform to a Sisow method?
 			$transaction_request->payment = $payment_method;
 		}
 
