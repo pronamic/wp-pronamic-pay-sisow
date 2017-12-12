@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.2.4] - 2017-12-12
+- WordPress Coding Standards improvements.
+
 ## [1.2.3] - 2017-09-13
 - Added support for bunq payment method.
 
@@ -68,7 +71,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.2.3...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.2.4...HEAD
+[1.2.4]: https://github.com/wp-pay-gateways/sisow/compare/1.2.3...1.2.4
 [1.2.3]: https://github.com/wp-pay-gateways/sisow/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/wp-pay-gateways/sisow/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/wp-pay-gateways/sisow/compare/1.2.0...1.2.1

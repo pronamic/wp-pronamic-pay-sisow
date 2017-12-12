@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.1.7
+ * @version 1.2.4
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySettings {
