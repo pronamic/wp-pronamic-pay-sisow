@@ -114,9 +114,9 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		// ideal_sisow_error - purchaseid too long (16)
 		$purchase_id = substr( $purchase_id, 0, 16 );
 
-		$transaction_request = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
-		$transaction_request->merchant_id   = $this->config->merchant_id;
-		$transaction_request->shop_id       = $this->config->shop_id;
+		$transaction_request              = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
+		$transaction_request->merchant_id = $this->config->merchant_id;
+		$transaction_request->shop_id     = $this->config->shop_id;
 
 		$payment_method = $payment->get_method();
 
@@ -134,16 +134,17 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		}
 
 		$transaction_request->set_purchase_id( $purchase_id );
-		$transaction_request->amount        = $payment->get_amount();
-		$transaction_request->issuer_id     = $payment->get_issuer();
-		$transaction_request->test_mode     = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
 		$transaction_request->set_entrance_code( $payment->get_entrance_code() );
-		$transaction_request->description   = $payment->get_description();
-		$transaction_request->billing_mail  = $payment->get_email();
-		$transaction_request->return_url    = $payment->get_return_url();
-		$transaction_request->cancel_url    = $payment->get_return_url();
-		$transaction_request->callback_url  = $payment->get_return_url();
-		$transaction_request->notify_url    = $payment->get_return_url();
+
+		$transaction_request->amount       = $payment->get_amount();
+		$transaction_request->issuer_id    = $payment->get_issuer();
+		$transaction_request->test_mode    = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
+		$transaction_request->description  = $payment->get_description();
+		$transaction_request->billing_mail = $payment->get_email();
+		$transaction_request->return_url   = $payment->get_return_url();
+		$transaction_request->cancel_url   = $payment->get_return_url();
+		$transaction_request->callback_url = $payment->get_return_url();
+		$transaction_request->notify_url   = $payment->get_return_url();
 
 		$result = $this->client->create_transaction( $transaction_request );
 

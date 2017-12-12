@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.1.7
+ * @version 1.2.4
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySettings {
@@ -22,7 +22,8 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 			'title'       => __( 'Sisow', 'pronamic_ideal' ),
 			'methods'     => array( 'sisow' ),
 			'description' => sprintf(
-				__( 'Account details are provided by %s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
+				/* translators: %s: Sisow */
+				__( 'Account details are provided by %1$s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
 				__( 'Sisow', 'pronamic_ideal' )
 			),
 		);
@@ -65,6 +66,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Settings extends Pronamic_WP_Pay_GatewaySet
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
 			'tooltip'     => __( 'Shop ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
+			/* translators: %s: 0 */
 			'description' => sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), 0 ),
 			'default'     => 0,
 		);
