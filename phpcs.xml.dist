@@ -15,6 +15,14 @@
 
 		<exclude name="Squiz.Commenting" />
 
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+
 		<exclude name="WordPress.VIP.SlowDBQuery.slow_db_query" />
+	</rule>
+
+	<rule ref="WordPress.VIP.SlowDBQuery.slow_db_query_meta_key">
+		<!-- The 'meta_key' is not related to an slow database query. -->
+		<exclude-pattern>/src/Settings.php</exclude-pattern>
 	</rule>
 </ruleset>

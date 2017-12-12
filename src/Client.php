@@ -98,8 +98,8 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 		$url = self::API_URL . '/' . $method;
 
 		return Pronamic_WP_Pay_Util::remote_get_body( $url, 200, array(
-			'method'    => 'POST',
-			'body'      => $parameters,
+			'method' => 'POST',
+			'body'   => $parameters,
 		) );
 	}
 
@@ -133,6 +133,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 			default:
 				return new WP_Error(
 					'ideal_sisow_error',
+					/* translators: %s: XML document element name */
 					sprintf( __( 'Unknwon Sisow message (%s)', 'pronamic_ideal' ), $name )
 				);
 		}
