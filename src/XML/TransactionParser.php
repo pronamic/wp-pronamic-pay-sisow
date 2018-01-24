@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Util;
 
 /**
  * Title: Error XML parser
@@ -28,7 +29,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser implements Pronamic_W
 		}
 
 		if ( isset( $xml->amount ) ) {
-			$transaction->amount = Pronamic_WP_Util::cents_to_amount( Pronamic_WP_Pay_XML_Security::filter( $xml->amount ) );
+			$transaction->amount = Util::cents_to_amount( Pronamic_WP_Pay_XML_Security::filter( $xml->amount ) );
 		}
 
 		if ( isset( $xml->purchaseid ) ) {
