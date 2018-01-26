@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\XML\Security;
 
 /**
  * Title: Error XML parser
@@ -12,8 +13,8 @@
 class Pronamic_WP_Pay_Gateways_Sisow_XML_ErrorParser implements Pronamic_WP_Pay_Gateways_Sisow_XML_Parser {
 	public static function parse( SimpleXMLElement $xml ) {
 		$error = new Pronamic_WP_Pay_Gateways_Sisow_Error(
-			Pronamic_WP_Pay_XML_Security::filter( $xml->errorcode ),
-			Pronamic_WP_Pay_XML_Security::filter( $xml->errormessage )
+			Security::filter( $xml->errorcode ),
+			Security::filter( $xml->errormessage )
 		);
 
 		return $error;

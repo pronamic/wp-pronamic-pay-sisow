@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
 
 /**
  * Title: Sisow integration
@@ -10,7 +11,7 @@
  * @version 1.1.7
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_Integration extends Pronamic_WP_Pay_Gateways_AbstractIntegration {
+class Pronamic_WP_Pay_Gateways_Sisow_Integration extends AbstractIntegration {
 	public function __construct() {
 		$this->id            = 'sisow-ideal';
 		$this->name          = 'Sisow';

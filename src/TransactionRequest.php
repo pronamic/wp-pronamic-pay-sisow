@@ -1,7 +1,8 @@
 <?php
+use Pronamic\WordPress\Pay\Core\Util;
 
 /**
- * Title: iDEAL Sisow transation request
+ * Title: iDEAL Sisow transaction request
  * Description:
  * Copyright: Copyright (c) 2015
  * Company: Pronamic
@@ -140,7 +141,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 		return sha1(
 			$this->purchase_id .
 			$this->entrance_code .
-			Pronamic_WP_Pay_Util::amount_to_cents( $this->amount ) .
+			Util::amount_to_cents( $this->amount ) .
 			$this->shop_id .
 			$this->merchant_id .
 			$merchant_key
@@ -160,9 +161,9 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 			'merchantid'   => $this->merchant_id,
 			'payment'      => $this->payment,
 			'purchaseid'   => $this->purchase_id,
-			'amount'       => Pronamic_WP_Pay_Util::amount_to_cents( $this->amount ),
+			'amount'       => Util::amount_to_cents( $this->amount ),
 			'issuerid'     => $this->issuer_id,
-			'testmode'     => Pronamic_WP_Pay_Util::to_string_boolean( $this->test_mode ),
+			'testmode'     => Util::to_string_boolean( $this->test_mode ),
 			'entrancecode' => $this->entrance_code,
 			'description'  => $this->description,
 			'billing_mail' => $this->billing_mail,

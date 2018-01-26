@@ -1,4 +1,6 @@
 <?php
+use Pronamic\WordPress\Pay\Core\Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
  * Title: Sisow gateway
@@ -10,7 +12,7 @@
  * @version 1.2.3
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
+class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 	/**
 	 * Constructs and initialize an Sisow gateway
 	 *
@@ -23,12 +25,12 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 			'payment_status_request',
 		);
 
-		$this->set_method( Pronamic_WP_Pay_Gateway::METHOD_HTTP_REDIRECT );
+		$this->set_method( Gateway::METHOD_HTTP_REDIRECT );
 		$this->set_has_feedback( true );
 		$this->set_amount_minimum( 0.01 );
 
 		$this->client = new Pronamic_WP_Pay_Gateways_Sisow_Client( $config->merchant_id, $config->merchant_key );
-		$this->client->set_test_mode( Pronamic_IDeal_IDeal::MODE_TEST === $config->mode );
+		$this->client->set_test_mode( Gateway::MODE_TEST === $config->mode );
 	}
 
 	/////////////////////////////////////////////////
@@ -59,7 +61,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	public function get_issuer_field() {
 		$payment_method = $this->get_payment_method();
 
-		if ( null === $payment_method || Pronamic_WP_Pay_PaymentMethods::IDEAL === $payment_method ) {
+		if ( null === $payment_method || PaymentMethods::IDEAL === $payment_method ) {
 			return array(
 				'id'       => 'pronamic_ideal_issuer_id',
 				'name'     => 'pronamic_ideal_issuer_id',
@@ -80,13 +82,13 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER,
-			Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
-			Pronamic_WP_Pay_PaymentMethods::BUNQ,
-			Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
-			Pronamic_WP_Pay_PaymentMethods::IDEAL,
-			Pronamic_WP_Pay_PaymentMethods::PAYPAL,
-			Pronamic_WP_Pay_PaymentMethods::SOFORT,
+			PaymentMethods::BANK_TRANSFER,
+			PaymentMethods::BANCONTACT,
+			PaymentMethods::BUNQ,
+			PaymentMethods::CREDIT_CARD,
+			PaymentMethods::IDEAL,
+			PaymentMethods::PAYPAL,
+			PaymentMethods::SOFORT,
 		);
 	}
 
@@ -121,7 +123,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 		$payment_method = $payment->get_method();
 
 		if ( is_null( $payment_method ) ) {
-			$payment_method = Pronamic_WP_Pay_PaymentMethods::IDEAL;
+			$payment_method = PaymentMethods::IDEAL;
 		}
 
 		$this->set_payment_method( $payment_method );
@@ -138,7 +140,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Pronamic_WP_Pay_Gateway {
 
 		$transaction_request->amount       = $payment->get_amount();
 		$transaction_request->issuer_id    = $payment->get_issuer();
-		$transaction_request->test_mode    = Pronamic_IDeal_IDeal::MODE_TEST === $this->config->mode;
+		$transaction_request->test_mode    = Gateway::MODE_TEST === $this->config->mode;
 		$transaction_request->description  = $payment->get_description();
 		$transaction_request->billing_mail = $payment->get_email();
 		$transaction_request->return_url   = $payment->get_return_url();

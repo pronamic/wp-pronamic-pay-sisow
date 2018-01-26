@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\GatewayConfigFactory;
 
 /**
  * Title: Sisow config factory
@@ -9,7 +10,7 @@
  * @author Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_ConfigFactory extends Pronamic_WP_Pay_GatewayConfigFactory {
+class Pronamic_WP_Pay_Gateways_Sisow_ConfigFactory extends GatewayConfigFactory {
 	public function get_config( $post_id ) {
 		$config = new Pronamic_WP_Pay_Gateways_Sisow_Config();
 

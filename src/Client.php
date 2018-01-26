@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\Util;
 
 /**
  * Title: Sisow
@@ -97,7 +98,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
 
-		return Pronamic_WP_Pay_Util::remote_get_body( $url, 200, array(
+		return Util::remote_get_body( $url, 200, array(
 			'method' => 'POST',
 			'body'   => $parameters,
 		) );
@@ -162,7 +163,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 			}
 
 			// XML
-			$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $result );
+			$xml = Util::simplexml_load_string( $result );
 
 			if ( is_wp_error( $xml ) ) {
 				$this->error = $xml;
@@ -213,7 +214,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 		}
 
 		// XML
-		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $response );
+		$xml = Util::simplexml_load_string( $response );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;
@@ -284,7 +285,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 		}
 
 		// XML
-		$xml = Pronamic_WP_Pay_Util::simplexml_load_string( $result );
+		$xml = Util::simplexml_load_string( $result );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;

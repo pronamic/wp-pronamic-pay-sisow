@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
  * Title: iDEAL Sisow payment methods
@@ -103,14 +104,14 @@ class Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods {
 	 * @var array
 	 */
 	private static $map = array(
-		Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING,
-		Pronamic_WP_Pay_PaymentMethods::BUNQ          => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::BUNQ,
-		Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
-		Pronamic_WP_Pay_PaymentMethods::BANCONTACT    => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
-		Pronamic_WP_Pay_PaymentMethods::MISTER_CASH   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
-		Pronamic_WP_Pay_PaymentMethods::PAYPAL        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::PAYPAL_EXPRESS_CHECKOUT,
-		Pronamic_WP_Pay_PaymentMethods::SOFORT        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::SOFORT,
-		Pronamic_WP_Pay_PaymentMethods::IDEAL         => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
+		PaymentMethods::BANK_TRANSFER => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::OVERBOEKING,
+		PaymentMethods::BUNQ          => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::BUNQ,
+		PaymentMethods::CREDIT_CARD   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::CREDIT_CARD,
+		PaymentMethods::BANCONTACT    => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
+		PaymentMethods::MISTER_CASH   => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::MISTER_CASH,
+		PaymentMethods::PAYPAL        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::PAYPAL_EXPRESS_CHECKOUT,
+		PaymentMethods::SOFORT        => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::SOFORT,
+		PaymentMethods::IDEAL         => Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::IDEAL,
 	);
 
 	/**
