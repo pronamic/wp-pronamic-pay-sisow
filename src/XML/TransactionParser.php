@@ -1,6 +1,12 @@
 <?php
+
+namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
+
+use DateTime;
 use Pronamic\WordPress\Pay\Core\XML\Security;
-use Pronamic\WordPress\Pay\Util;
+use Pronamic\WordPress\Pay\Gateways\Sisow\Transaction;
+use Pronamic\WordPress\Pay\Util as Pay_Util;
+use SimpleXMLElement;
 
 /**
  * Title: Error XML parser
@@ -8,12 +14,12 @@ use Pronamic\WordPress\Pay\Util;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
+ * @author  Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser implements Pronamic_WP_Pay_Gateways_Sisow_XML_Parser {
+class TransactionParser implements Parser {
 	public static function parse( SimpleXMLElement $xml ) {
-		$transaction = new Pronamic_WP_Pay_Gateways_Sisow_Transaction();
+		$transaction = new Transaction();
 
 		// Transaction request
 		if ( isset( $xml->trxid ) ) {
@@ -30,7 +36,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser implements Pronamic_W
 		}
 
 		if ( isset( $xml->amount ) ) {
-			$transaction->amount = Util::cents_to_amount( Security::filter( $xml->amount ) );
+			$transaction->amount = Pay_Util::cents_to_amount( Security::filter( $xml->amount ) );
 		}
 
 		if ( isset( $xml->purchaseid ) ) {

@@ -1,5 +1,7 @@
 <?php
 
+use Pronamic\WordPress\Pay\Gateways\Sisow\Error as Sisow_Error;
+
 /**
  * Title: Sisow error test
  * Description:
@@ -11,7 +13,7 @@
  */
 class Pronamic_WP_Pay_Gateways_Sisow_ErrorTest extends PHPUnit_Framework_TestCase {
 	public function testToStringError() {
-		$error = new Pronamic_WP_Pay_Gateways_Sisow_Error( '1', 'Error' );
+		$error = new Sisow_Error( '1', 'Error' );
 
 		$string = (string) $error;
 

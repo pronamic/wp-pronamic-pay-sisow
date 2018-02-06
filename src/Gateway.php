@@ -1,6 +1,10 @@
 <?php
-use Pronamic\WordPress\Pay\Core\Gateway;
+
+namespace Pronamic\WordPress\Pay\Gateways\Sisow;
+
+use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
  * Title: Sisow gateway
@@ -8,17 +12,17 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
+ * @author  Remco Tolsma
  * @version 1.2.3
- * @since 1.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
+class Gateway extends Core_Gateway {
 	/**
 	 * Constructs and initialize an Sisow gateway
 	 *
-	 * @param Pronamic_WP_Pay_Gateways_Sisow_Config $config
+	 * @param Config $config
 	 */
-	public function __construct( Pronamic_WP_Pay_Gateways_Sisow_Config $config ) {
+	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
 		$this->supports = array(
@@ -29,7 +33,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 		$this->set_has_feedback( true );
 		$this->set_amount_minimum( 0.01 );
 
-		$this->client = new Pronamic_WP_Pay_Gateways_Sisow_Client( $config->merchant_id, $config->merchant_key );
+		$this->client = new Client( $config->merchant_id, $config->merchant_key );
 		$this->client->set_test_mode( Gateway::MODE_TEST === $config->mode );
 	}
 
@@ -38,7 +42,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 	/**
 	 * Get issuers
 	 *
-	 * @see Pronamic_WP_Pay_Gateway::get_issuers()
+	 * @see Core_Gateway::get_issuers()
 	 */
 	public function get_issuers() {
 		$groups = array();
@@ -95,7 +99,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 	/**
 	 * Is payment method required to start transaction?
 	 *
-	 * @see Pronamic_WP_Pay_Gateway::payment_method_is_required()
+	 * @see Core_Gateway_Gateway::payment_method_is_required()
 	 */
 	public function payment_method_is_required() {
 		return true;
@@ -106,9 +110,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 	/**
 	 * Start
 	 *
-	 * @see Pronamic_WP_Pay_Gateway::start()
+	 * @see Core_Gateway::start()
+	 *
+	 * @param Payment $payment
 	 */
-	public function start( Pronamic_Pay_Payment $payment ) {
+	public function start( Payment $payment ) {
 		$order_id    = $payment->get_order_id();
 		$purchase_id = empty( $order_id ) ? $payment->get_id() : $order_id;
 
@@ -116,7 +122,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 		// ideal_sisow_error - purchaseid too long (16)
 		$purchase_id = substr( $purchase_id, 0, 16 );
 
-		$transaction_request              = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
+		$transaction_request              = new TransactionRequest();
 		$transaction_request->merchant_id = $this->config->merchant_id;
 		$transaction_request->shop_id     = $this->config->shop_id;
 
@@ -128,7 +134,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 
 		$this->set_payment_method( $payment_method );
 
-		$transaction_request->payment = Pronamic_WP_Pay_Gateways_Sisow_PaymentMethods::transform( $payment_method );
+		$transaction_request->payment = Methods::transform( $payment_method );
 
 		if ( empty( $transaction_request->payment ) && ! empty( $payment_method ) ) {
 			// Leap of faith if the WordPress payment method could not transform to a Sisow method?
@@ -163,12 +169,12 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 	/**
 	 * Update status of the specified payment
 	 *
-	 * @param Pronamic_Pay_Payment $payment
+	 * @param Payment $payment
 	 */
-	public function update_status( Pronamic_Pay_Payment $payment ) {
+	public function update_status( Payment $payment ) {
 		$result = $this->client->get_status( $payment->get_transaction_id() );
 
-		if ( $result instanceof Pronamic_WP_Pay_Gateways_Sisow_Error ) {
+		if ( $result instanceof Error ) {
 			$this->error = $this->client->get_error();
 
 			return;
@@ -180,7 +186,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Gateway extends Gateway {
 			return;
 		}
 
-		if ( $result instanceof Pronamic_WP_Pay_Gateways_Sisow_Transaction ) {
+		if ( $result instanceof Transaction ) {
 			$transaction = $result;
 
 			$payment->set_status( $transaction->status );

@@ -1,5 +1,9 @@
 <?php
-use Pronamic\WordPress\Pay\Core\Util;
+
+namespace Pronamic\WordPress\Pay\Gateways\Sisow;
+
+use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
+use Pronamic\WordPress\Pay\Gateways\Sisow\Util;
 
 /**
  * Title: iDEAL Sisow transaction request
@@ -7,11 +11,11 @@ use Pronamic\WordPress\Pay\Core\Util;
  * Copyright: Copyright (c) 2015
  * Company: Pronamic
  *
- * @author Remco Tolsma
+ * @author  Remco Tolsma
  * @version 1.2.0
- * @since 1.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
+class TransactionRequest {
 	/**
 	 * Shop ID
 	 *
@@ -123,11 +127,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	/////////////////////////////////////////////////
 
 	public function set_purchase_id( $purchase_id ) {
-		$this->purchase_id = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $purchase_id );
+		$this->purchase_id = Util::filter( $purchase_id );
 	}
 
 	public function set_entrance_code( $entrance_code ) {
-		$this->entrance_code = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $entrance_code );
+		$this->entrance_code = Util::filter( $entrance_code );
 	}
 
 	/////////////////////////////////////////////////
@@ -141,7 +145,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 		return sha1(
 			$this->purchase_id .
 			$this->entrance_code .
-			Util::amount_to_cents( $this->amount ) .
+			Pay_Util::amount_to_cents( $this->amount ) .
 			$this->shop_id .
 			$this->merchant_id .
 			$merchant_key
@@ -161,9 +165,9 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 			'merchantid'   => $this->merchant_id,
 			'payment'      => $this->payment,
 			'purchaseid'   => $this->purchase_id,
-			'amount'       => Util::amount_to_cents( $this->amount ),
+			'amount'       => Pay_Util::amount_to_cents( $this->amount ),
 			'issuerid'     => $this->issuer_id,
-			'testmode'     => Util::to_string_boolean( $this->test_mode ),
+			'testmode'     => Pay_Util::boolean_to_string( $this->test_mode ),
 			'entrancecode' => $this->entrance_code,
 			'description'  => $this->description,
 			'billing_mail' => $this->billing_mail,

@@ -1,15 +1,19 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Sisow;
+
+use DateTime;
+
 /**
  * Title: iDEAL Sisow error
  * Description:
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
+ * @author  Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_Transaction {
+class Transaction {
 	/**
 	 * Transaction ID
 	 *

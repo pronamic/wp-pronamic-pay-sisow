@@ -1,5 +1,7 @@
 <?php
 
+use Pronamic\WordPress\Pay\Gateways\Sisow\Util;
+
 /**
  * Title: Sisow util test
  * Description:
@@ -10,13 +12,13 @@
  * @version 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_UtilTest extends WP_UnitTestCase {
-	function test_charachters() {
+	public function test_charachters() {
 		$allowed_chars   = 'ABCabc123= %*+-./&@"\':;?()$';
 		$forbidden_chars = '#!€^_{}';
 
 		$test = $allowed_chars . $forbidden_chars;
 
-		$result   = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $test );
+		$result   = Util::filter( $test );
 		$expected = $allowed_chars;
 
 		$this->assertEquals( $expected, $result );

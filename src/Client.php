@@ -1,5 +1,15 @@
 <?php
+
+namespace Pronamic\WordPress\Pay\Gateways\Sisow;
+
 use Pronamic\WordPress\Pay\Core\Util;
+use Pronamic\WordPress\Pay\Gateways\Sisow\RequestMethods;
+use Pronamic\WordPress\Pay\Gateways\Sisow\Transaction;
+use Pronamic\WordPress\Pay\Gateways\Sisow\TransactionRequest;
+use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ErrorParser;
+use Pronamic\WordPress\Pay\Gateways\Sisow\XML\TransactionParser;
+use SimpleXMLElement;
+use WP_Error;
 
 /**
  * Title: Sisow
@@ -7,10 +17,10 @@ use Pronamic\WordPress\Pay\Core\Util;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
+ * @author  Remco Tolsma
  * @version 1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_Client {
+class Client {
 	/**
 	 * Sisow REST API endpoint URL
 	 *
@@ -93,7 +103,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	 * Send request with the specified action and parameters
 	 *
 	 * @param string $action
-	 * @param array $parameters
+	 * @param array  $parameters
 	 */
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
@@ -118,17 +128,17 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 
 		switch ( $name ) {
 			case 'errorresponse':
-				$sisow_error = Pronamic_WP_Pay_Gateways_Sisow_XML_ErrorParser::parse( $document->error );
+				$sisow_error = ErrorParser::parse( $document->error );
 
 				$this->error = new WP_Error( 'ideal_sisow_error', $sisow_error->message, $sisow_error );
 
 				return $sisow_error;
 			case 'transactionrequest':
-				$transaction = Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser::parse( $document->transaction );
+				$transaction = TransactionParser::parse( $document->transaction );
 
 				return $transaction;
 			case 'statusresponse':
-				$transaction = Pronamic_WP_Pay_Gateways_Sisow_XML_TransactionParser::parse( $document->transaction );
+				$transaction = TransactionParser::parse( $document->transaction );
 
 				return $transaction;
 			default:
@@ -154,7 +164,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 			$directory = array( '99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ) );
 		} else {
 			// Request
-			$result = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::DIRECTORY_REQUEST );
+			$result = $this->send_request( RequestMethods::DIRECTORY_REQUEST );
 
 			if ( is_wp_error( $result ) ) {
 				$this->error = $result;
@@ -194,18 +204,18 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	 *
 	 * @param string $issuer_id
 	 * @param string $purchase_id
-	 * @param float $amount
+	 * @param float  $amount
 	 * @param string $description
 	 * @param string $entrance_code
 	 * @param string $return_url
 	 *
-	 * @return Pronamic_WP_Pay_Gateways_Sisow_Transaction
+	 * @return Transaction
 	 */
-	public function create_transaction( Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest $request ) {
+	public function create_transaction( TransactionRequest $request ) {
 		$result = false;
 
 		// Request
-		$response = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::TRANSACTION_REQUEST, $request->get_parameters( $this->merchant_key ) );
+		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters( $this->merchant_key ) );
 
 		if ( is_wp_error( $response ) ) {
 			$this->error = $response;
@@ -226,7 +236,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 		if ( $xml instanceof SimpleXMLElement ) {
 			$message = $this->parse_document( $xml );
 
-			if ( $message instanceof Pronamic_WP_Pay_Gateways_Sisow_Transaction ) {
+			if ( $message instanceof Transaction ) {
 				$result = $message;
 			}
 		}
@@ -259,7 +269,8 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 	 * Get the status of the specified transaction ID
 	 *
 	 * @param string $transaction_id
-	 * @return boolean|Pronamic_WP_Pay_Gateways_Sisow_Transaction
+	 *
+	 * @return boolean|Transaction
 	 */
 	public function get_status( $transaction_id ) {
 		$status = false;
@@ -276,7 +287,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Client {
 		);
 
 		// Request
-		$result = $this->send_request( Pronamic_WP_Pay_Gateways_Sisow_Methods::STATUS_REQUEST, $parameters );
+		$result = $this->send_request( RequestMethods::STATUS_REQUEST, $parameters );
 
 		if ( is_wp_error( $result ) ) {
 			$this->error = $result;

@@ -1,5 +1,8 @@
 <?php
 
+use Pronamic\WordPress\Pay\Gateways\Sisow\Client;
+use Pronamic\WordPress\Pay\Gateways\Sisow\TransactionRequest;
+
 /**
  * Title: Sisow security test
  * Description:
@@ -10,9 +13,9 @@
  * @version 1.0.0
  */
 class Pronamic_WP_Pay_Gateways_Sisow_SecurityTest extends WP_UnitTestCase {
-	function test_transaction_request_sha1() {
+	public function test_transaction_request_sha1() {
 		// http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf #page 10
-		$transaction_request = new Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest();
+		$transaction_request = new TransactionRequest();
 		$transaction_request->set_purchase_id( '123456789' );
 		$transaction_request->set_entrance_code( 'uniqueentrance' );
 		$transaction_request->amount      = 10;
@@ -26,9 +29,9 @@ class Pronamic_WP_Pay_Gateways_Sisow_SecurityTest extends WP_UnitTestCase {
 		$this->assertEquals( 'cb2461bd40ed1a77a6d837a560bfcbc3e03d6c3c', $sha1 );
 	}
 
-	function test_status_request_sha1() {
+	public function test_status_request_sha1() {
 		// http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf #page 14
-		$sha1 = Pronamic_WP_Pay_Gateways_Sisow_Client::create_status_sha1(
+		$sha1 = Client::create_status_sha1(
 			'0050000513407955', // transaction_id
 			null, // shop_id
 			'0123456', // merchant_id
