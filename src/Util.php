@@ -19,8 +19,6 @@ class Util {
 	 */
 	private static $pattern;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get unallowed character pattern
 	 *
@@ -86,8 +84,6 @@ class Util {
 
 		return self::$pattern;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Filter all Sisow unallowed charachters

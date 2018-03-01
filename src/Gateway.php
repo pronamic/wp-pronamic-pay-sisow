@@ -37,8 +37,6 @@ class Gateway extends Core_Gateway {
 		$this->client->set_test_mode( Gateway::MODE_TEST === $config->mode );
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get issuers
 	 *
@@ -60,8 +58,6 @@ class Gateway extends Core_Gateway {
 		return $groups;
 	}
 
-	/////////////////////////////////////////////////
-
 	public function get_issuer_field() {
 		$payment_method = $this->get_payment_method();
 
@@ -76,8 +72,6 @@ class Gateway extends Core_Gateway {
 			);
 		}
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Get supported payment methods
@@ -104,8 +98,6 @@ class Gateway extends Core_Gateway {
 	public function payment_method_is_required() {
 		return true;
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Start
@@ -163,8 +155,6 @@ class Gateway extends Core_Gateway {
 			$this->error = $this->client->get_error();
 		}
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Update status of the specified payment

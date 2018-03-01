@@ -26,8 +26,6 @@ class Error {
 	 */
 	public $message;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Constructs and initializes an Sisow error object
 	 *
@@ -39,11 +37,7 @@ class Error {
 		$this->message = $message;
 	}
 
-	//////////////////////////////////////////////////
-
 	// @todo getters and setters
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Create an string representation of this object

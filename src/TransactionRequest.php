@@ -115,16 +115,12 @@ class TransactionRequest {
 	 */
 	public $notify_url;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Constructs and initializes an Sisow trannsaction request object
 	 */
 	public function __construct() {
 
 	}
-
-	/////////////////////////////////////////////////
 
 	public function set_purchase_id( $purchase_id ) {
 		$this->purchase_id = Util::filter( $purchase_id );
@@ -133,8 +129,6 @@ class TransactionRequest {
 	public function set_entrance_code( $entrance_code ) {
 		$this->entrance_code = Util::filter( $entrance_code );
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Get SHA1
@@ -151,8 +145,6 @@ class TransactionRequest {
 			$merchant_key
 		);
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Get parameters

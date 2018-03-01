@@ -28,8 +28,6 @@ class Client {
 	 */
 	const API_URL = 'https://www.sisow.nl/Sisow/iDeal/RestHandler.ashx';
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Sisow merchant ID
 	 *
@@ -44,8 +42,6 @@ class Client {
 	 */
 	private $merchant_key;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Indicator to use test mode or not
 	 *
@@ -53,16 +49,12 @@ class Client {
 	 */
 	private $test_mode;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Error
 	 *
 	 * @var WP_Error
 	 */
 	private $error;
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Constructs and initializes an Sisow client object
@@ -75,8 +67,6 @@ class Client {
 		$this->merchant_key = $merchant_key;
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Error
 	 *
@@ -86,8 +76,6 @@ class Client {
 		return $this->error;
 	}
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Set test mode
 	 *
@@ -96,8 +84,6 @@ class Client {
 	public function set_test_mode( $test_mode ) {
 		$this->test_mode = $test_mode;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Send request with the specified action and parameters
@@ -113,8 +99,6 @@ class Client {
 			'body'   => $parameters,
 		) );
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Parse the specified document and return parsed result
@@ -149,8 +133,6 @@ class Client {
 				);
 		}
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get directory
@@ -197,8 +179,6 @@ class Client {
 		return $directory;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Create an transaction with the specified parameters
 	 *
@@ -244,8 +224,6 @@ class Client {
 		return $result;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Create an SHA1 for an status request
 	 *
@@ -262,8 +240,6 @@ class Client {
 			$merchant_key
 		);
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get the status of the specified transaction ID
