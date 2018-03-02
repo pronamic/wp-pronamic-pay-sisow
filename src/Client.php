@@ -2,7 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use Pronamic\WordPress\Pay\Core\Util;
+use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Gateways\Sisow\RequestMethods;
 use Pronamic\WordPress\Pay\Gateways\Sisow\Transaction;
 use Pronamic\WordPress\Pay\Gateways\Sisow\TransactionRequest;
@@ -94,7 +94,7 @@ class Client {
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
 
-		return Util::remote_get_body( $url, 200, array(
+		return Core_Util::remote_get_body( $url, 200, array(
 			'method' => 'POST',
 			'body'   => $parameters,
 		) );
@@ -155,7 +155,7 @@ class Client {
 			}
 
 			// XML
-			$xml = Util::simplexml_load_string( $result );
+			$xml = Core_Util::simplexml_load_string( $result );
 
 			if ( is_wp_error( $xml ) ) {
 				$this->error = $xml;
@@ -204,7 +204,7 @@ class Client {
 		}
 
 		// XML
-		$xml = Util::simplexml_load_string( $response );
+		$xml = Core_Util::simplexml_load_string( $response );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;
@@ -272,7 +272,7 @@ class Client {
 		}
 
 		// XML
-		$xml = Util::simplexml_load_string( $result );
+		$xml = Core_Util::simplexml_load_string( $result );
 
 		if ( is_wp_error( $xml ) ) {
 			$this->error = $xml;
