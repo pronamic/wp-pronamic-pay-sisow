@@ -3,9 +3,6 @@
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
-use Pronamic\WordPress\Pay\Gateways\Sisow\RequestMethods;
-use Pronamic\WordPress\Pay\Gateways\Sisow\Transaction;
-use Pronamic\WordPress\Pay\Gateways\Sisow\TransactionRequest;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ErrorParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\TransactionParser;
 use SimpleXMLElement;

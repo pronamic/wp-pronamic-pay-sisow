@@ -82,9 +82,12 @@ class Gateway extends Core_Gateway {
 		return array(
 			PaymentMethods::BANK_TRANSFER,
 			PaymentMethods::BANCONTACT,
+			PaymentMethods::BELFIUS,
 			PaymentMethods::BUNQ,
 			PaymentMethods::CREDIT_CARD,
+			PaymentMethods::GIROPAY,
 			PaymentMethods::IDEAL,
+			PaymentMethods::IDEALQR,
 			PaymentMethods::PAYPAL,
 			PaymentMethods::SOFORT,
 		);
@@ -145,6 +148,10 @@ class Gateway extends Core_Gateway {
 		$transaction_request->cancel_url   = $payment->get_return_url();
 		$transaction_request->callback_url = $payment->get_return_url();
 		$transaction_request->notify_url   = $payment->get_return_url();
+
+		if ( Methods::IDEALQR === $transaction_request->payment ) {
+			$transaction_request->qrcode = true;
+		}
 
 		$result = $this->client->create_transaction( $transaction_request );
 

@@ -59,6 +59,13 @@ class TransactionRequest {
 	public $issuer_id;
 
 	/**
+	 * QR Code
+	 *
+	 * @var string
+	 */
+	public $qrcode;
+
+	/**
 	 * Test mode
 	 *
 	 * @var boolean
@@ -159,6 +166,7 @@ class TransactionRequest {
 			'purchaseid'   => $this->purchase_id,
 			'amount'       => Pay_Util::amount_to_cents( $this->amount ),
 			'issuerid'     => $this->issuer_id,
+			'qrcode'       => Pay_Util::boolean_to_string( $this->qrcode ),
 			'testmode'     => Pay_Util::boolean_to_string( $this->test_mode ),
 			'entrancecode' => $this->entrance_code,
 			'description'  => $this->description,

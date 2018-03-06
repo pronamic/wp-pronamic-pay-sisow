@@ -16,11 +16,25 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  */
 class Methods {
 	/**
+	 * Indicator for 'Belfius' payment
+	 *
+	 * @var string
+	 */
+	const BELFIUS = 'belfius';
+
+	/**
 	 * Indicator for 'iDEAL' payment
 	 *
 	 * @var string
 	 */
 	const IDEAL = '';
+
+	/**
+	 * Indicator for 'iDEAL QR' payment
+	 *
+	 * @var string
+	 */
+	const IDEALQR = 'idealqr';
 
 	/**
 	 * Indicator for 'bunq' payment
@@ -51,6 +65,13 @@ class Methods {
 	 * @var string
 	 */
 	const EBILL = 'ebill';
+
+	/**
+	 * Indicator for 'Giropay' payment
+	 *
+	 * @var string
+	 */
+	const GIROPAY = 'giropay';
 
 	/**
 	 * Indicator for 'Bank/giro betaling' payment
@@ -109,9 +130,12 @@ class Methods {
 	private static $map = array(
 		PaymentMethods::BANCONTACT    => Methods::MISTER_CASH,
 		PaymentMethods::BANK_TRANSFER => Methods::OVERBOEKING,
+		PaymentMethods::BELFIUS       => Methods::BELFIUS,
 		PaymentMethods::BUNQ          => Methods::BUNQ,
 		PaymentMethods::CREDIT_CARD   => Methods::CREDIT_CARD,
+		PaymentMethods::GIROPAY       => Methods::GIROPAY,
 		PaymentMethods::IDEAL         => Methods::IDEAL,
+		PaymentMethods::IDEALQR       => Methods::IDEALQR,
 		PaymentMethods::MISTER_CASH   => Methods::MISTER_CASH,
 		PaymentMethods::PAYPAL        => Methods::PAYPAL_EXPRESS_CHECKOUT,
 		PaymentMethods::SOFORT        => Methods::SOFORT,
