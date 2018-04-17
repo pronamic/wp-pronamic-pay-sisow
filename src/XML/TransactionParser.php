@@ -2,7 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
 
-use DateTime;
+use Pronamic\WordPress\Pay\Core\DateTime;
 use Pronamic\WordPress\Pay\Core\XML\Security;
 use Pronamic\WordPress\Pay\Gateways\Sisow\Transaction;
 use Pronamic\WordPress\Pay\Util as Pay_Util;

@@ -2,7 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use DateTime;
+use Pronamic\WordPress\Pay\Core\DateTime;
 
 /**
  * Title: iDEAL Sisow error
