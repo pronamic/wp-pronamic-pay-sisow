@@ -139,7 +139,7 @@ class Gateway extends Core_Gateway {
 		$transaction_request->set_purchase_id( $purchase_id );
 		$transaction_request->set_entrance_code( $payment->get_entrance_code() );
 
-		$transaction_request->amount       = $payment->get_amount();
+		$transaction_request->amount       = $payment->get_amount()->get_amount();
 		$transaction_request->issuer_id    = $payment->get_issuer();
 		$transaction_request->test_mode    = Gateway::MODE_TEST === $this->config->mode;
 		$transaction_request->description  = $payment->get_description();
