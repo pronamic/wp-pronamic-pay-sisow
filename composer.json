@@ -35,6 +35,7 @@
 	},
 	"require": {
 		"php": "^5.3",
+		"pronamic/wp-datetime": "^1.0",
 		"wp-pay/core": "^2.0",
 		"wp-pay-gateways/common": "^2.0"
 	},

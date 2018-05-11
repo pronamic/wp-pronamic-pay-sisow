@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4c5b36f8fb5062d481dfab774d3a1628",
+    "content-hash": "1609d0ad7c35772d69a0799b069d03cb",
     "packages": [
+        {
+            "name": "pronamic/wp-datetime",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pronamic/wp-datetime.git",
+                "reference": "807265df543b60079377d5c0ff5ed10564f73914"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pronamic/wp-datetime/zipball/807265df543b60079377d5c0ff5ed10564f73914",
+                "reference": "807265df543b60079377d5c0ff5ed10564f73914",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "johnpbloch/wordpress": "^4.9",
+                "php-coveralls/php-coveralls": "^1.1",
+                "phpmd/phpmd": "^2.4",
+                "phpunit/phpunit": "^4.8",
+                "vlucas/phpdotenv": "^2.0",
+                "wimg/php-compatibility": "^8.1",
+                "wp-coding-standards/wpcs": "^0.14.1",
+                "wp-phpunit/wp-phpunit": "^4.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Pronamic\\WordPress\\DateTime\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "time": "2018-05-11T12:27:26+00:00"
+        },
         {
             "name": "wp-pay-gateways/common",
             "version": "2.0.0",
