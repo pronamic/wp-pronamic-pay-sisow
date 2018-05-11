@@ -1,15 +1,18 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Sisow;
+
 /**
  * Title: Sisow utility class
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
- * @version 1.0.0
+ * @author  Remco Tolsma
+ * @version 2.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_Util {
+class Util {
 	/**
 	 * Holds the unallowed character pattern
 	 *
@@ -17,12 +20,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Util {
 	 */
 	private static $pattern;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get unallowed character pattern
 	 *
 	 * Karakterset
+	 *
 	 * @see http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf
 	 *
 	 * Hieronder de tabel toegestane karakters.
@@ -84,12 +86,11 @@ class Pronamic_WP_Pay_Gateways_Sisow_Util {
 		return self::$pattern;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Filter all Sisow unallowed charachters
 	 *
 	 * @param string $string
+	 *
 	 * @return mixed
 	 */
 	public static function filter( $string ) {

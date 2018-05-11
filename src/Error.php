@@ -1,15 +1,18 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Sisow;
+
 /**
  * Title: Sisow error
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
- * @version 1.0.0
+ * @author  Remco Tolsma
+ * @version 2.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_Error {
+class Error {
 	/**
 	 * Sisow error code
 	 *
@@ -24,8 +27,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_Error {
 	 */
 	public $message;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Constructs and initializes an Sisow error object
 	 *
@@ -37,11 +38,7 @@ class Pronamic_WP_Pay_Gateways_Sisow_Error {
 		$this->message = $message;
 	}
 
-	//////////////////////////////////////////////////
-
 	// @todo getters and setters
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Create an string representation of this object

@@ -1,16 +1,21 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Sisow;
+
+use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
+use Pronamic\WordPress\Pay\Gateways\Sisow\Util;
+
 /**
- * Title: iDEAL Sisow transation request
+ * Title: iDEAL Sisow transaction request
  * Description:
  * Copyright: Copyright (c) 2015
  * Company: Pronamic
  *
- * @author Remco Tolsma
- * @version 1.2.0
- * @since 1.0.0
+ * @author  Remco Tolsma
+ * @version 2.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
+class TransactionRequest {
 	/**
 	 * Shop ID
 	 *
@@ -52,6 +57,13 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 * @var string
 	 */
 	public $issuer_id;
+
+	/**
+	 * QR Code
+	 *
+	 * @var string
+	 */
+	public $qrcode;
 
 	/**
 	 * Test mode
@@ -110,8 +122,6 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 	 */
 	public $notify_url;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Constructs and initializes an Sisow trannsaction request object
 	 */
@@ -119,17 +129,13 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 
 	}
 
-	/////////////////////////////////////////////////
-
 	public function set_purchase_id( $purchase_id ) {
-		$this->purchase_id = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $purchase_id );
+		$this->purchase_id = Util::filter( $purchase_id );
 	}
 
 	public function set_entrance_code( $entrance_code ) {
-		$this->entrance_code = Pronamic_WP_Pay_Gateways_Sisow_Util::filter( $entrance_code );
+		$this->entrance_code = Util::filter( $entrance_code );
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Get SHA1
@@ -140,14 +146,12 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 		return sha1(
 			$this->purchase_id .
 			$this->entrance_code .
-			Pronamic_WP_Pay_Util::amount_to_cents( $this->amount ) .
+			Pay_Util::amount_to_cents( $this->amount ) .
 			$this->shop_id .
 			$this->merchant_id .
 			$merchant_key
 		);
 	}
-
-	/////////////////////////////////////////////////
 
 	/**
 	 * Get parameters
@@ -160,9 +164,10 @@ class Pronamic_WP_Pay_Gateways_Sisow_TransactionRequest {
 			'merchantid'   => $this->merchant_id,
 			'payment'      => $this->payment,
 			'purchaseid'   => $this->purchase_id,
-			'amount'       => Pronamic_WP_Pay_Util::amount_to_cents( $this->amount ),
+			'amount'       => Pay_Util::amount_to_cents( $this->amount ),
 			'issuerid'     => $this->issuer_id,
-			'testmode'     => Pronamic_WP_Pay_Util::to_string_boolean( $this->test_mode ),
+			'qrcode'       => Pay_Util::boolean_to_string( $this->qrcode ),
+			'testmode'     => Pay_Util::boolean_to_string( $this->test_mode ),
 			'entrancecode' => $this->entrance_code,
 			'description'  => $this->description,
 			'billing_mail' => $this->billing_mail,

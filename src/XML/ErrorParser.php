@@ -1,19 +1,26 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
+
+use Pronamic\WordPress\Pay\Core\XML\Security;
+use Pronamic\WordPress\Pay\Gateways\Sisow\Error as Sisow_Error;
+use SimpleXMLElement;
+
 /**
  * Title: Error XML parser
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
- * @version 1.0.0
+ * @author  Remco Tolsma
+ * @version 2.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Gateways_Sisow_XML_ErrorParser implements Pronamic_WP_Pay_Gateways_Sisow_XML_Parser {
+class ErrorParser implements Parser {
 	public static function parse( SimpleXMLElement $xml ) {
-		$error = new Pronamic_WP_Pay_Gateways_Sisow_Error(
-			Pronamic_WP_Pay_XML_Security::filter( $xml->errorcode ),
-			Pronamic_WP_Pay_XML_Security::filter( $xml->errormessage )
+		$error = new Sisow_Error(
+			Security::filter( $xml->errorcode ),
+			Security::filter( $xml->errormessage )
 		);
 
 		return $error;

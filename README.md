@@ -17,4 +17,5 @@ So if the Sisow transaction IDs are empty you probably left the `issuerid` empty
 
 ## Documentation
 
-*	[Sisow REST API v3.2.1](http://pronamic.nl/wp-content/uploads/2014/11/sisow-rest-api-v3.2.1.pdf)
+*	[Sisow REST API v5.0.0](https://www.pronamic.nl/wp-content/uploads/2018/01/Sisow-REST-API-Versie-5.0.0.pdf)
+*	[Sisow REST API v3.2.1](https://www.pronamic.nl/wp-content/uploads/2014/11/sisow-rest-api-v3.2.1.pdf)
