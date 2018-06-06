@@ -58,21 +58,6 @@ class Gateway extends Core_Gateway {
 		return $groups;
 	}
 
-	public function get_issuer_field() {
-		$payment_method = $this->get_payment_method();
-
-		if ( null === $payment_method || PaymentMethods::IDEAL === $payment_method ) {
-			return array(
-				'id'       => 'pronamic_ideal_issuer_id',
-				'name'     => 'pronamic_ideal_issuer_id',
-				'label'    => __( 'Choose your bank', 'pronamic_ideal' ),
-				'required' => true,
-				'type'     => 'select',
-				'choices'  => $this->get_transient_issuers(),
-			);
-		}
-	}
-
 	/**
 	 * Get supported payment methods
 	 *
