@@ -30,8 +30,6 @@ class Gateway extends Core_Gateway {
 		);
 
 		$this->set_method( Gateway::METHOD_HTTP_REDIRECT );
-		$this->set_has_feedback( true );
-		$this->set_amount_minimum( 0.01 );
 
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
 		$this->client->set_test_mode( Gateway::MODE_TEST === $config->mode );
