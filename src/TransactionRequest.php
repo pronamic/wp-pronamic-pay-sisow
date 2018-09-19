@@ -3,7 +3,6 @@
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
-use Pronamic\WordPress\Pay\Gateways\Sisow\Util;
 
 /**
  * Title: iDEAL Sisow transaction request
@@ -129,16 +128,28 @@ class TransactionRequest {
 
 	}
 
+	/**
+	 * Set purchase ID.
+	 *
+	 * @param string $purchase_id Purchase ID.
+	 */
 	public function set_purchase_id( $purchase_id ) {
 		$this->purchase_id = Util::filter( $purchase_id );
 	}
 
+	/**
+	 * Set entrance code.
+	 *
+	 * @param string $entrance_code Entrance code.
+	 */
 	public function set_entrance_code( $entrance_code ) {
 		$this->entrance_code = Util::filter( $entrance_code );
 	}
 
 	/**
-	 * Get SHA1
+	 * Get SHA1.
+	 *
+	 * @param string $merchant_key Merchant key.
 	 *
 	 * @return string
 	 */
@@ -154,28 +165,74 @@ class TransactionRequest {
 	}
 
 	/**
-	 * Get parameters
+	 * Get parameters.
+	 *
+	 * @param string $merchant_key Merchant key.
 	 *
 	 * @return array
 	 */
 	public function get_parameters( $merchant_key ) {
-		return array(
-			'shopid'       => $this->shop_id,
-			'merchantid'   => $this->merchant_id,
-			'payment'      => $this->payment,
-			'purchaseid'   => $this->purchase_id,
-			'amount'       => Pay_Util::amount_to_cents( $this->amount ),
-			'issuerid'     => $this->issuer_id,
-			'qrcode'       => Pay_Util::boolean_to_string( $this->qrcode ),
-			'testmode'     => Pay_Util::boolean_to_string( $this->test_mode ),
-			'entrancecode' => $this->entrance_code,
-			'description'  => $this->description,
-			'billing_mail' => $this->billing_mail,
-			'returnurl'    => $this->return_url,
-			'cancelurl'    => $this->cancel_url,
-			'callbackurl'  => $this->callback_url,
-			'notifyurl'    => $this->notify_url,
-			'sha1'         => $this->get_sha1( $merchant_key ),
+		$params = array(
+			'shopid'                => $this->shop_id,
+			'merchantid'            => $this->merchant_id,
+			'payment'               => $this->payment,
+			'purchaseid'            => $this->purchase_id,
+			'amount'                => Pay_Util::amount_to_cents( $this->amount ),
+			'issuerid'              => $this->issuer_id,
+			'qrcode'                => Pay_Util::boolean_to_string( $this->qrcode ),
+			'testmode'              => Pay_Util::boolean_to_string( $this->test_mode ),
+			'entrancecode'          => $this->entrance_code,
+			'description'           => $this->description,
+			'billing_mail'          => $this->billing_mail,
+			'returnurl'             => $this->return_url,
+			'cancelurl'             => $this->cancel_url,
+			'callbackurl'           => $this->callback_url,
+			'notifyurl'             => $this->notify_url,
+			'sha1'                  => $this->get_sha1( $merchant_key ),
+
+			// Post-pay required parameters.
+			'ipaddress'             => $_SERVER['REMOTE_ADDR'],
+			'gender'                => 'm',
+			'birthdate'             => '01011970',
+
+			// Billing.
+			'billing_firstname'     => 'Test',
+			'billing_lastname'      => 'van Pronamic',
+			'billing_company'       => 'Test BV',
+			'billing_coc'           => '',
+			'billing_address1'      => 'Test 1',
+			'billing_address2'      => '',
+			'billing_zip'           => '0000TT',
+			'billing_city'          => 'Test',
+			'billing_country'       => 'Nederland',
+			'billing_countrycode'   => 'NL',
+			'billing_phone'         => '0000000000',
+
+			// Shipping.
+			'shipping_firstname'    => 'Test',
+			'shipping_lastname'     => 'van Pronamic',
+			'shipping_mail'         => 'reuel@pronamic.nl',
+			'shipping_company'      => 'Test BV',
+			'shipping_coc'          => '',
+			'shipping_address1'     => 'Test 1',
+			'shipping_address2'     => '',
+			'shipping_zip'          => '0000TT',
+			'shipping_city'         => 'Test',
+			'shipping_country'      => 'Nederland',
+			'shipping_countrycode'  => 'NL',
+			'shipping_phone'        => '0000000000',
+
+			// Product.
+			'product_id_1'          => 'TEST01',
+			'product_description_1' => 'Test product',
+			'product_quantity_1'    => 2,
+			'product_netprice_1'    => 1000,
+			'product_total_1'       => 2420,
+			'product_nettotal_1'    => 2000,
+			'product_tax_1'         => 420,
+			'product_taxrate_1'     => 2100,
 		);
+
+		return $params;
 	}
 }
