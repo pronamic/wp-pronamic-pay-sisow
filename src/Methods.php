@@ -165,7 +165,7 @@ class Methods {
 		PaymentMethods::BANK_TRANSFER    => self::OVERBOEKING,
 		PaymentMethods::BELFIUS          => self::BELFIUS,
 		PaymentMethods::BUNQ             => self::BUNQ,
-		PaymentMethods::CAPAYABLE        => self::CAPAYABLE,
+		PaymentMethods::IN3              => self::CAPAYABLE,
 		PaymentMethods::CREDIT_CARD      => self::CREDIT_CARD,
 		PaymentMethods::FOCUM            => self::FOCUM,
 		PaymentMethods::GIROPAY          => self::GIROPAY,
