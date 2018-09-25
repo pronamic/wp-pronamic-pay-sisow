@@ -155,54 +155,45 @@ class Gateway extends Core_Gateway {
 			case Methods::CAPAYABLE:
 			case Methods::FOCUM:
 			case Methods::KLARNA:
-				$billing = array(
-					'firstname'   => 'Test',
-					'lastname'    => 'van Pronamic',
-					'company'     => 'Test BV',
-					'coc'         => '',
-					'address1'    => 'Test 1',
-					'address2'    => '',
-					'zip'         => '0000TT',
-					'city'        => 'Test',
-					'country'     => 'Nederland',
-					'countrycode' => 'NL',
-					'phone'       => '0000000000',
+				$billing_address  = $payment->get_billing_address();
+				$shipping_address = $payment->get_shipping_address();
+				$birth_date       = $payment->get_contact()->get_birth_date();
+
+				$transaction_request->billing_address = array(
+					'first_name'   => $billing_address->get_name()->get_first_name(),
+					'last_name'    => $billing_address->get_name()->get_last_name(),
+					'company'      => $billing_address->get_company_name(),
+					'company_coc'  => $billing_address->get_company_coc(),
+					'address_1'    => $billing_address->get_address_1(),
+					'address_2'    => $billing_address->get_address_2(),
+					'zip'          => $billing_address->get_zip(),
+					'city'         => $billing_address->get_city(),
+					'country'      => $billing_address->get_country(),
+					'country_code' => $billing_address->get_country_code(),
+					'phone'        => $billing_address->get_phone(),
 				);
 
-				$shipping = array(
-					'firstname'   => 'Test',
-					'lastname'    => 'van Pronamic',
-					'company'     => 'Test BV',
-					'coc'         => '',
-					'address1'    => 'Test 1',
-					'address2'    => '',
-					'zip'         => '0000TT',
-					'city'        => 'Test',
-					'country'     => 'Nederland',
-					'countrycode' => 'NL',
-					'phone'       => '0000000000',
+				$transaction_request->shipping_address = array(
+					'first_name'   => $shipping_address->get_name()->get_first_name(),
+					'last_name'    => $shipping_address->get_name()->get_last_name(),
+					'company'      => $shipping_address->get_company_name(),
+					'company_coc'  => $shipping_address->get_company_coc(),
+					'address_1'    => $shipping_address->get_address_1(),
+					'address_2'    => $shipping_address->get_address_2(),
+					'zip'          => $shipping_address->get_zip(),
+					'city'         => $shipping_address->get_city(),
+					'country'      => $shipping_address->get_country(),
+					'country_code' => $shipping_address->get_country_code(),
+					'phone'        => $shipping_address->get_phone(),
+					'email'        => $shipping_address->get_email(),
 				);
 
-				$products = array(
-					array(
-						'id'          => 'TEST01',
-						'description' => 'Test product',
-						'quantity'    => 2,
-						'netprice'    => 1000,
-						'total'       => 2420,
-						'nettotal'    => 2000,
-						'tax'         => 420,
-						'taxrate'     => 2100,
-					),
-				);
+				$transaction_request->ip_address = $payment->get_contact()->get_ip_address();
+				$transaction_request->birth_date = ( $birth_date instanceof \DateTime ) ? $payment->get_contact()->get_birth_date()->format( 'ddmmYYYY' ) : null;
+				$transaction_request->gender     = $payment->get_contact()->get_gender();
 
-				$transaction_request->ipaddress = $payment->user_ip;
-				$transaction_request->gender    = 'm';
-				$transaction_request->birthdate = '01011970';
+				$transaction_request->set_products( $payment->get_order_items() );
 
-				//$transaction_request->set_billing( $billing );
-				//$transaction_request->set_shipping( $shipping );
-				//$transaction_request->set_products( $products );
 				break;
 		}
 
