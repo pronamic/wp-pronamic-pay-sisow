@@ -157,7 +157,7 @@ class Gateway extends Core_Gateway {
 			case Methods::KLARNA:
 				$billing_address  = $payment->get_billing_address();
 				$shipping_address = $payment->get_shipping_address();
-				$birth_date       = $payment->get_contact()->get_birth_date();
+				$birth_date       = $payment->get_customer()->get_birth_date();
 
 				$transaction_request->billing_address = array(
 					'first_name'   => $billing_address->get_name()->get_first_name(),
@@ -188,9 +188,9 @@ class Gateway extends Core_Gateway {
 					'email'        => $shipping_address->get_email(),
 				);
 
-				$transaction_request->ip_address = $payment->get_contact()->get_ip_address();
-				$transaction_request->birth_date = ( $birth_date instanceof \DateTime ) ? $payment->get_contact()->get_birth_date()->format( 'ddmmYYYY' ) : null;
-				$transaction_request->gender     = $payment->get_contact()->get_gender();
+				$transaction_request->ip_address = $payment->get_customer()->get_ip_address();
+				$transaction_request->birth_date = ( $birth_date instanceof \DateTime ) ? $payment->get_customer()->get_birth_date()->format( 'ddmmYYYY' ) : null;
+				$transaction_request->gender     = $payment->get_customer()->get_gender();
 
 				$transaction_request->set_products( $payment->get_order_items() );
 
