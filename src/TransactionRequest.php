@@ -293,9 +293,7 @@ class TransactionRequest {
 		if ( $this->products instanceof Items ) {
 			$products = $this->products->getIterator();
 
-			while ( $products->valid() ) {
-				$product = $products->current();
-
+			foreach ( $products as $product ) {
 				$key = $products->key() + 1;
 
 				$params[ 'product_id_' . $key ]          = $product->get_id();
@@ -311,8 +309,6 @@ class TransactionRequest {
 				);
 
 				$params[ 'product_total_' . $key ] = $params[ 'product_nettotal_' . $key ] + $params[ 'product_tax_' . $key ];
-
-				$products->next();
 			}
 		}
 

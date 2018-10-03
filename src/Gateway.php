@@ -90,7 +90,7 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Is payment method required to start transaction?
 	 *
-	 * @see Core_Gateway_Gateway::payment_method_is_required()
+	 * @see Core_Gateway::payment_method_is_required()
 	 */
 	public function payment_method_is_required() {
 		return true;
@@ -151,51 +151,47 @@ class Gateway extends Core_Gateway {
 				$transaction_request->qrcode = true;
 
 				break;
-			case Methods::AFTERPAY:
-			case Methods::CAPAYABLE:
-			case Methods::FOCUM:
-			case Methods::KLARNA:
-				$billing_address  = $payment->get_billing_address();
-				$shipping_address = $payment->get_shipping_address();
-				$birth_date       = $payment->get_customer()->get_birth_date();
-
-				$transaction_request->billing_address = array(
-					'first_name'   => $billing_address->get_name()->get_first_name(),
-					'last_name'    => $billing_address->get_name()->get_last_name(),
-					'company'      => $billing_address->get_company_name(),
-					'company_coc'  => $billing_address->get_company_coc(),
-					'line_1'       => $billing_address->get_line_1(),
-					'line_2'       => $billing_address->get_line_2(),
-					'zip'          => $billing_address->get_postal_code(),
-					'city'         => $billing_address->get_city(),
-					'country'      => $billing_address->get_country(),
-					'country_code' => $billing_address->get_country_code(),
-					'phone'        => $billing_address->get_phone(),
-				);
-
-				$transaction_request->shipping_address = array(
-					'first_name'   => $shipping_address->get_name()->get_first_name(),
-					'last_name'    => $shipping_address->get_name()->get_last_name(),
-					'company'      => $shipping_address->get_company_name(),
-					'company_coc'  => $shipping_address->get_company_coc(),
-					'line_1'       => $shipping_address->get_line_1(),
-					'line_2'       => $shipping_address->get_line_2(),
-					'zip'          => $shipping_address->get_postal_code(),
-					'city'         => $shipping_address->get_city(),
-					'country'      => $shipping_address->get_country(),
-					'country_code' => $shipping_address->get_country_code(),
-					'phone'        => $shipping_address->get_phone(),
-					'email'        => $shipping_address->get_email(),
-				);
-
-				$transaction_request->ip_address = $payment->get_customer()->get_ip_address();
-				$transaction_request->birth_date = ( $birth_date instanceof \DateTime ) ? $payment->get_customer()->get_birth_date()->format( 'ddmmYYYY' ) : null;
-				$transaction_request->gender     = $payment->get_customer()->get_gender();
-
-				$transaction_request->set_products( $payment->get_order_items() );
-
-				break;
 		}
+
+		// Customer, address and items.
+		$billing_address  = $payment->get_billing_address();
+		$shipping_address = $payment->get_shipping_address();
+		$birth_date       = $payment->get_customer()->get_birth_date();
+
+		$transaction_request->billing_address = array(
+			'first_name'   => $billing_address->get_name()->get_first_name(),
+			'last_name'    => $billing_address->get_name()->get_last_name(),
+			'company'      => $billing_address->get_company_name(),
+			'company_coc'  => $billing_address->get_company_coc(),
+			'line_1'       => $billing_address->get_line_1(),
+			'line_2'       => $billing_address->get_line_2(),
+			'zip'          => $billing_address->get_postal_code(),
+			'city'         => $billing_address->get_city(),
+			'country'      => $billing_address->get_country(),
+			'country_code' => $billing_address->get_country_code(),
+			'phone'        => $billing_address->get_phone(),
+		);
+
+		$transaction_request->shipping_address = array(
+			'first_name'   => $shipping_address->get_name()->get_first_name(),
+			'last_name'    => $shipping_address->get_name()->get_last_name(),
+			'company'      => $shipping_address->get_company_name(),
+			'company_coc'  => $shipping_address->get_company_coc(),
+			'line_1'       => $shipping_address->get_line_1(),
+			'line_2'       => $shipping_address->get_line_2(),
+			'zip'          => $shipping_address->get_postal_code(),
+			'city'         => $shipping_address->get_city(),
+			'country'      => $shipping_address->get_country(),
+			'country_code' => $shipping_address->get_country_code(),
+			'phone'        => $shipping_address->get_phone(),
+			'email'        => $shipping_address->get_email(),
+		);
+
+		$transaction_request->ip_address = $payment->get_customer()->get_ip_address();
+		$transaction_request->birth_date = ( $birth_date instanceof \DateTime ) ? $birth_date->format( 'ddmmYYYY' ) : null;
+		$transaction_request->gender     = $payment->get_customer()->get_gender();
+
+		$transaction_request->set_products( $payment->get_order_items() );
 
 		// Create transaction.
 		$result = $this->client->create_transaction( $transaction_request );
