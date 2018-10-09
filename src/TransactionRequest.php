@@ -15,7 +15,7 @@ use Pronamic\WordPress\Pay\Payments\Items;
  * @version 2.0.0
  * @since   1.0.0
  */
-class TransactionRequest {
+class TransactionRequest extends Request {
 	/**
 	 * Shop ID
 	 *

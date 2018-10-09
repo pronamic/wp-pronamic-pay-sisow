@@ -114,20 +114,23 @@ class Gateway extends Core_Gateway {
 
 		// New transaction request.
 		$transaction_request               = new TransactionRequest();
-		$transaction_request->merchant_id  = $this->config->merchant_id;
-		$transaction_request->shop_id      = $this->config->shop_id;
-		$transaction_request->amount       = $payment->get_amount()->get_amount();
 		$transaction_request->issuer_id    = $payment->get_issuer();
-		$transaction_request->test_mode    = self::MODE_TEST === $this->config->mode;
-		$transaction_request->description  = $payment->get_description();
 		$transaction_request->billing_mail = $payment->get_email();
-		$transaction_request->return_url   = $payment->get_return_url();
-		$transaction_request->cancel_url   = $payment->get_return_url();
-		$transaction_request->callback_url = $payment->get_return_url();
-		$transaction_request->notify_url   = $payment->get_return_url();
 
-		$transaction_request->set_purchase_id( $purchase_id );
-		$transaction_request->set_entrance_code( $payment->get_entrance_code() );
+		$transaction_request->set_parameters( array(
+			'merchantid'   => $this->config->merchant_id,
+			'shopid'       => $this->config->shop_id,
+			'payment'      => Methods::transform( $payment->get_method() ),
+			'purchaseid'   => substr( $purchase_id, 0, 16 ),
+			'entrancecode' => $payment->get_entrance_code(),
+			'amount'       => $payment->get_amount()->get_cents(),
+			'description'  => substr( $payment->get_description(), 0, 32 ),
+			'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
+			'returnurl'    => $payment->get_return_url(),
+			'cancelurl'    => $payment->get_return_url(),
+			'notifyurl'    => $payment->get_return_url(),
+			'callbackurl'  => $payment->get_return_url(),
+		) );
 
 		// Payment method.
 		$payment_method = $payment->get_method();
@@ -153,45 +156,111 @@ class Gateway extends Core_Gateway {
 				break;
 		}
 
-		// Customer, address and items.
-		$billing_address  = $payment->get_billing_address();
-		$shipping_address = $payment->get_shipping_address();
-		$birth_date       = $payment->get_customer()->get_birth_date();
+		// Billing address.
+		if ( null !== $payment->get_billing_address() ) {
+			$address = $payment->get_billing_address();
 
-		$transaction_request->billing_address = array(
-			'first_name'   => $billing_address->get_name()->get_first_name(),
-			'last_name'    => $billing_address->get_name()->get_last_name(),
-			'company'      => $billing_address->get_company_name(),
-			'company_coc'  => $billing_address->get_company_coc(),
-			'line_1'       => $billing_address->get_line_1(),
-			'line_2'       => $billing_address->get_line_2(),
-			'zip'          => $billing_address->get_postal_code(),
-			'city'         => $billing_address->get_city(),
-			'country'      => $billing_address->get_country(),
-			'country_code' => $billing_address->get_country_code(),
-			'phone'        => $billing_address->get_phone(),
-		);
+			if ( null !== $address->get_name() ) {
+				$name = $address->get_name();
 
-		$transaction_request->shipping_address = array(
-			'first_name'   => $shipping_address->get_name()->get_first_name(),
-			'last_name'    => $shipping_address->get_name()->get_last_name(),
-			'company'      => $shipping_address->get_company_name(),
-			'company_coc'  => $shipping_address->get_company_coc(),
-			'line_1'       => $shipping_address->get_line_1(),
-			'line_2'       => $shipping_address->get_line_2(),
-			'zip'          => $shipping_address->get_postal_code(),
-			'city'         => $shipping_address->get_city(),
-			'country'      => $shipping_address->get_country(),
-			'country_code' => $shipping_address->get_country_code(),
-			'phone'        => $shipping_address->get_phone(),
-			'email'        => $shipping_address->get_email(),
-		);
+				$transaction_request->set_parameters(
+					array(
+						'billing_firstname' => $name->get_first_name(),
+						'billing_lastname'  => $name->get_first_name(),
+					)
+				);
+			}
 
-		$transaction_request->ip_address = $payment->get_customer()->get_ip_address();
-		$transaction_request->birth_date = ( $birth_date instanceof \DateTime ) ? $birth_date->format( 'ddmmYYYY' ) : null;
-		$transaction_request->gender     = $payment->get_customer()->get_gender();
+			$transaction_request->set_parameters(
+				array(
+					'billing_mail'        => $address->get_email(),
+					'billing_company'     => $address->get_company_name(),
+					'billing_coc'         => $address->get_kvk_number(),
+					'billing_address1'    => $address->get_line_1(),
+					'billing_address2'    => $address->get_line_2(),
+					'billing_zip'         => $address->get_postal_code(),
+					'billing_city'        => $address->get_city(),
+					'billing_country'     => null, // @todo?
+					'billing_countrycode' => $address->get_country_code(),
+					'billing_phone'       => $address->get_phone(),
+				)
+			);
+		}
 
-		$transaction_request->set_products( $payment->get_order_items() );
+		// Shipping address.
+		if ( null !== $payment->get_shipping_address() ) {
+			$address = $payment->get_shipping_address();
+
+			if ( null !== $address->get_name() ) {
+				$name = $address->get_name();
+
+				$transaction_request->set_parameters(
+					array(
+						'shipping_firstname' => $name->get_first_name(),
+						'shipping_lastname'  => $name->get_first_name(),
+					)
+				);
+			}
+
+			$transaction_request->set_parameters(
+				array(
+					'shipping_mail'        => $address->get_email(),
+					'shipping_company'     => $address->get_company_name(),
+					'shipping_address1'    => $address->get_line_1(),
+					'shipping_address2'    => $address->get_line_2(),
+					'shipping_zip'         => $address->get_postal_code(),
+					'shipping_city'        => $address->get_city(),
+					'shipping_country'     => null, // @todo?
+					'shipping_countrycode' => $address->get_country_code(),
+					'shipping_phone'       => $address->get_phone(),
+				)
+			);
+		}
+
+		// Customer.
+		if ( null !== $payment->get_customer() ) {
+			$customer = $payment->get_customer();
+
+			$transaction_request->set_parameters(
+				array(
+					'ipaddress' => $customer->get_ip_address(),
+					'gender'    => $customer->get_gender(),
+				)
+			);
+
+			if ( null !== $customer->get_birth_date() ) {
+				$transaction_request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'ddmmYYYY' ) );
+			}
+		}
+
+		// Lines.
+		if ( null !== $payment->get_lines() ) {
+			$lines = $payment->get_lines();
+
+			$x = 1;
+
+			foreach ( $lines as $line ) {
+				$net_price = ( null === $line->get_unit_price() ) ? null : $line->get_unit_price()->get_cents();
+				$total     = ( null === $line->get_total_amount() ) ? null : $line->get_total_amount()->get_cents(),
+				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents(),
+				$net_total = ( $total - $tax );
+
+				$transaction_request->set_parameters(
+					array(
+						'product_id_' . $x          => $line->get_id(),
+						'product_description_' . $x => $line->get_description(),
+						'product_quantity_' . $x    => $line->get_quantity(),
+						'product_netprice_' . $x    => $net_price,
+						'product_total_' . $x       => $total,
+						'product_nettotal_' . $x    => $net_total,
+						'product_tax_' . $x         => $tax,
+						'product_taxrate_' . $x     => $line->get_tax_percentage() * 100,
+					)
+				);
+
+				$x++;
+			}
+		}
 
 		// Create transaction.
 		$result = $this->client->create_transaction( $transaction_request );
