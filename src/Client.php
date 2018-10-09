@@ -92,10 +92,14 @@ class Client {
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
 
-		return Core_Util::remote_get_body( $url, 200, array(
-			'method' => 'POST',
-			'body'   => $parameters,
-		) );
+		return Core_Util::remote_get_body(
+			$url,
+			200,
+			array(
+				'method' => 'POST',
+				'body'   => $parameters,
+			)
+		);
 	}
 
 	/**
