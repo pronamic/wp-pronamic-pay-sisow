@@ -180,7 +180,7 @@ class Gateway extends Core_Gateway {
 					'billing_address2'    => $address->get_line_2(),
 					'billing_zip'         => $address->get_postal_code(),
 					'billing_city'        => $address->get_city(),
-					'billing_country'     => null, // @todo?
+					'billing_country'     => $address->get_country_name(),
 					'billing_countrycode' => $address->get_country_code(),
 					'billing_phone'       => $address->get_phone(),
 				)
@@ -210,7 +210,7 @@ class Gateway extends Core_Gateway {
 					'shipping_address2'    => $address->get_line_2(),
 					'shipping_zip'         => $address->get_postal_code(),
 					'shipping_city'        => $address->get_city(),
-					'shipping_country'     => null, // @todo?
+					'shipping_country'     => $address->get_country_name(),
 					'shipping_countrycode' => $address->get_country_code(),
 					'shipping_phone'       => $address->get_phone(),
 				)
