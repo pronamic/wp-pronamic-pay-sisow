@@ -184,24 +184,6 @@ class TransactionRequest extends Request {
 		$this->entrance_code = Util::filter( $entrance_code );
 	}
 
-	/**
-	 * Get SHA1.
-	 *
-	 * @param string $merchant_key Merchant key.
-	 *
-	 * @return string
-	 */
-	public function get_sha1( $merchant_key ) {
-		return sha1(
-			$this->purchase_id .
-			$this->entrance_code .
-			Pay_Util::amount_to_cents( $this->amount ) .
-			$this->shop_id .
-			$this->merchant_id .
-			$merchant_key
-		);
-	}
-
 	public function get_signature_data() {
 		return array(
 			$this->get_parameter( 'purchaseid' ),
@@ -211,6 +193,9 @@ class TransactionRequest extends Request {
 			 */
 			null !== $this->get_parameter( 'entrancecode' ) ? $this->get_parameter( 'entrancecode' ) : $this->get_parameter( 'purchaseid' ),
 			$this->get_parameter( 'amount' ),
+			/*
+			 * Indien er geen gebruik wordt gemaakt van de shopid dan kunt u deze weglaten uit de berekening.
+			 */
 			$this->get_parameter( 'shopid' ),
 			$this->get_parameter( 'merchantid' ),
 			$this->get_parameter( 'merchantkey' ),
