@@ -22,14 +22,14 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
  */
 class Util {
 	/**
-	 * Holds the unallowed character pattern
+	 * Holds the unallowed character pattern.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	private static $pattern;
 
 	/**
-	 * Get unallowed character pattern
+	 * Get unallowed character pattern.
 	 *
 	 * Karakterset
 	 *
@@ -87,7 +87,7 @@ class Util {
 			);
 
 			/*
-			 * We use a # as a regex delimiter instead of a / so we don't have to escape the slash
+			 * We use a # as a regex delimiter instead of a / so we don't have to escape the slash.
 			 * @see http://stackoverflow.com/q/12239424
 			 */
 			self::$pattern = '#[^' . implode( $characters ) . ']#';
