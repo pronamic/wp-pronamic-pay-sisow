@@ -1,4 +1,12 @@
 <?php
+/**
+ * Parser
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
 
@@ -16,9 +24,9 @@ use SimpleXMLElement;
  */
 interface Parser {
 	/**
-	 * Parse the specified XML element
+	 * Parse the specified XML element.
 	 *
-	 * @param SimpleXMLElement $xml
+	 * @param SimpleXMLElement $xml XML element to parse.
 	 */
 	public static function parse( SimpleXMLElement $xml );
 }

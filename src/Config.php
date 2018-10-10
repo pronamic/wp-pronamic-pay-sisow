@@ -1,4 +1,12 @@
 <?php
+/**
+ * Config
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -15,9 +23,24 @@ use Pronamic\WordPress\Pay\Core\GatewayConfig;
  * @since   1.0.0
  */
 class Config extends GatewayConfig {
+	/**
+	 * Merchant ID.
+	 *
+	 * @var string
+	 */
 	public $merchant_id;
 
+	/**
+	 * Merchant key.
+	 *
+	 * @var string
+	 */
 	public $merchant_key;
 
+	/**
+	 * Shop ID.
+	 *
+	 * @var string
+	 */
 	public $shop_id;
 }

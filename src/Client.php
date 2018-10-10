@@ -1,4 +1,12 @@
 <?php
+/**
+ * Client
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -20,45 +28,45 @@ use WP_Error;
  */
 class Client {
 	/**
-	 * Sisow REST API endpoint URL
+	 * Sisow REST API endpoint URL.
 	 *
 	 * @var string
 	 */
 	const API_URL = 'https://www.sisow.nl/Sisow/iDeal/RestHandler.ashx';
 
 	/**
-	 * Sisow merchant ID
+	 * Sisow merchant ID.
 	 *
 	 * @var string
 	 */
 	private $merchant_id;
 
 	/**
-	 * Sisow merchant key
+	 * Sisow merchant key.
 	 *
 	 * @var string
 	 */
 	private $merchant_key;
 
 	/**
-	 * Indicator to use test mode or not
+	 * Indicator to use test mode or not.
 	 *
 	 * @var boolean
 	 */
 	private $test_mode;
 
 	/**
-	 * Error
+	 * Error.
 	 *
 	 * @var WP_Error
 	 */
 	private $error;
 
 	/**
-	 * Constructs and initializes an Sisow client object
+	 * Constructs and initializes a Sisow client object.
 	 *
-	 * @param string $merchant_id
-	 * @param string $merchant_key
+	 * @param string $merchant_id  Merchant ID.
+	 * @param string $merchant_key Merchant key.
 	 */
 	public function __construct( $merchant_id, $merchant_key ) {
 		$this->merchant_id  = $merchant_id;
@@ -66,7 +74,7 @@ class Client {
 	}
 
 	/**
-	 * Error
+	 * Error.
 	 *
 	 * @return WP_Error
 	 */
@@ -75,19 +83,19 @@ class Client {
 	}
 
 	/**
-	 * Set test mode
+	 * Set test mode.
 	 *
-	 * @param boolean $test_mode
+	 * @param boolean $test_mode True if test mode, false otherwise.
 	 */
 	public function set_test_mode( $test_mode ) {
 		$this->test_mode = $test_mode;
 	}
 
 	/**
-	 * Send request with the specified action and parameters
+	 * Send request with the specified action and parameters.
 	 *
-	 * @param string $action
-	 * @param array  $parameters
+	 * @param string $method     Method.
+	 * @param array  $parameters Parameters.
 	 */
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
@@ -103,9 +111,9 @@ class Client {
 	}
 
 	/**
-	 * Parse the specified document and return parsed result
+	 * Parse the specified document and return parsed result.
 	 *
-	 * @param SimpleXMLElement $document
+	 * @param SimpleXMLElement $document Document.
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
@@ -137,9 +145,9 @@ class Client {
 	}
 
 	/**
-	 * Get directory
+	 * Get directory.
 	 *
-	 * @return array an array with issuers
+	 * @return array
 	 */
 	public function get_directory() {
 		$directory = false;
@@ -147,7 +155,7 @@ class Client {
 		if ( $this->test_mode ) {
 			$directory = array( '99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ) );
 		} else {
-			// Request
+			// Request.
 			$result = $this->send_request( RequestMethods::DIRECTORY_REQUEST );
 
 			if ( is_wp_error( $result ) ) {
@@ -156,7 +164,7 @@ class Client {
 				return $directory;
 			}
 
-			// XML
+			// XML.
 			$xml = Core_Util::simplexml_load_string( $result );
 
 			if ( is_wp_error( $xml ) ) {
@@ -165,7 +173,7 @@ class Client {
 				return $directory;
 			}
 
-			// Parse
+			// Parse.
 			if ( $xml instanceof SimpleXMLElement ) {
 				$directory = array();
 
@@ -182,21 +190,15 @@ class Client {
 	}
 
 	/**
-	 * Create an transaction with the specified parameters
+	 * Create an transaction with the specified parameters.
 	 *
-	 * @param string $issuer_id
-	 * @param string $purchase_id
-	 * @param float  $amount
-	 * @param string $description
-	 * @param string $entrance_code
-	 * @param string $return_url
-	 *
+	 * @param TransactionRequest $request Transaction request.
 	 * @return Transaction
 	 */
 	public function create_transaction( TransactionRequest $request ) {
 		$result = false;
 
-		// Request
+		// Request.
 		$request->sign( $this->merchant_key );
 
 		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters() );
@@ -207,7 +209,7 @@ class Client {
 			return $result;
 		}
 
-		// XML
+		// XML.
 		$xml = Core_Util::simplexml_load_string( $response );
 
 		if ( is_wp_error( $xml ) ) {
@@ -216,7 +218,7 @@ class Client {
 			return $result;
 		}
 
-		// Parse
+		// Parse.
 		if ( $xml instanceof SimpleXMLElement ) {
 			$message = $this->parse_document( $xml );
 
@@ -229,12 +231,12 @@ class Client {
 	}
 
 	/**
-	 * Create an SHA1 for an status request
+	 * Create an SHA1 for an status request.
 	 *
-	 * @param string $transaction_id
-	 * @param string $shop_id
-	 * @param string $merchant_id
-	 * @param string $merchant_key
+	 * @param string $transaction_id Transaction ID.
+	 * @param string $shop_id        Shop ID.
+	 * @param string $merchant_id    Merchant ID.
+	 * @param string $merchant_key   Merchant key.
 	 */
 	public static function create_status_sha1( $transaction_id, $shop_id, $merchant_id, $merchant_key ) {
 		return sha1(
@@ -246,10 +248,9 @@ class Client {
 	}
 
 	/**
-	 * Get the status of the specified transaction ID
+	 * Get the status of the specified transaction ID.
 	 *
-	 * @param string $transaction_id
-	 *
+	 * @param string $transaction_id Transaction ID.
 	 * @return boolean|Transaction
 	 */
 	public function get_status( $transaction_id ) {
@@ -259,14 +260,14 @@ class Client {
 			return $status;
 		}
 
-		// Parameters
+		// Parameters.
 		$parameters = array(
 			'merchantid' => $this->merchant_id,
 			'trxid'      => $transaction_id,
 			'sha1'       => self::create_status_sha1( $transaction_id, '', $this->merchant_id, $this->merchant_key ),
 		);
 
-		// Request
+		// Request.
 		$result = $this->send_request( RequestMethods::STATUS_REQUEST, $parameters );
 
 		if ( is_wp_error( $result ) ) {
@@ -275,7 +276,7 @@ class Client {
 			return $status;
 		}
 
-		// XML
+		// XML.
 		$xml = Core_Util::simplexml_load_string( $result );
 
 		if ( is_wp_error( $xml ) ) {
@@ -284,7 +285,7 @@ class Client {
 			return $status;
 		}
 
-		// Parse
+		// Parse.
 		if ( $xml instanceof SimpleXMLElement ) {
 			$status = $this->parse_document( $xml );
 

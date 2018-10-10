@@ -1,4 +1,12 @@
 <?php
+/**
+ * Integration
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -15,6 +23,9 @@ use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
  * @since   1.0.0
  */
 class Integration extends AbstractIntegration {
+	/**
+	 * Construct integration.
+	 */
 	public function __construct() {
 		$this->id            = 'sisow-ideal';
 		$this->name          = 'Sisow';
@@ -24,10 +35,20 @@ class Integration extends AbstractIntegration {
 		$this->provider      = 'sisow';
 	}
 
+	/**
+	 * Get config factory class.
+	 *
+	 * @return string
+	 */
 	public function get_config_factory_class() {
 		return __NAMESPACE__ . '\ConfigFactory';
 	}
 
+	/**
+	 * Get settings class.
+	 *
+	 * @return string
+	 */
 	public function get_settings_class() {
 		return __NAMESPACE__ . '\Settings';
 	}

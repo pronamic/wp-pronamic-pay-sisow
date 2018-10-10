@@ -1,4 +1,12 @@
 <?php
+/**
+ * Gateway
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -117,7 +125,7 @@ class Gateway extends Core_Gateway {
 		$transaction_request->issuer_id    = $payment->get_issuer();
 		$transaction_request->billing_mail = $payment->get_email();
 
-		$transaction_request->set_parameters(
+		$transaction_request->merge_parameters(
 			array(
 				'merchantid'   => $this->config->merchant_id,
 				'shopid'       => $this->config->shop_id,
@@ -165,7 +173,7 @@ class Gateway extends Core_Gateway {
 			if ( null !== $address->get_name() ) {
 				$name = $address->get_name();
 
-				$transaction_request->set_parameters(
+				$transaction_request->merge_parameters(
 					array(
 						'billing_firstname' => $name->get_first_name(),
 						'billing_lastname'  => $name->get_first_name(),
@@ -173,7 +181,7 @@ class Gateway extends Core_Gateway {
 				);
 			}
 
-			$transaction_request->set_parameters(
+			$transaction_request->merge_parameters(
 				array(
 					'billing_mail'        => $address->get_email(),
 					'billing_company'     => $address->get_company_name(),
@@ -196,7 +204,7 @@ class Gateway extends Core_Gateway {
 			if ( null !== $address->get_name() ) {
 				$name = $address->get_name();
 
-				$transaction_request->set_parameters(
+				$transaction_request->merge_parameters(
 					array(
 						'shipping_firstname' => $name->get_first_name(),
 						'shipping_lastname'  => $name->get_first_name(),
@@ -204,7 +212,7 @@ class Gateway extends Core_Gateway {
 				);
 			}
 
-			$transaction_request->set_parameters(
+			$transaction_request->merge_parameters(
 				array(
 					'shipping_mail'        => $address->get_email(),
 					'shipping_company'     => $address->get_company_name(),
@@ -223,7 +231,7 @@ class Gateway extends Core_Gateway {
 		if ( null !== $payment->get_customer() ) {
 			$customer = $payment->get_customer();
 
-			$transaction_request->set_parameters(
+			$transaction_request->merge_parameters(
 				array(
 					'ipaddress' => $customer->get_ip_address(),
 					'gender'    => $customer->get_gender(),
@@ -247,7 +255,7 @@ class Gateway extends Core_Gateway {
 				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents();
 				$net_total = ( $total - $tax );
 
-				$transaction_request->set_parameters(
+				$transaction_request->merge_parameters(
 					array(
 						'product_id_' . $x          => $line->get_id(),
 						'product_description_' . $x => $line->get_description(),

@@ -1,4 +1,12 @@
 <?php
+/**
+ * Request
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -23,6 +31,12 @@ class Request {
 	 */
 	private $parameters = array();
 
+	/**
+	 * Get parameter.
+	 *
+	 * @param string $parameter Parameter.
+	 * @return string
+	 */
 	public function get_parameter( $parameter ) {
 		if ( isset( $this->parameters[ $parameter ] ) ) {
 			return $this->parameters[ $parameter ];
@@ -31,22 +45,49 @@ class Request {
 		return null;
 	}
 
+	/**
+	 * Set parameter.
+	 *
+	 * @param string $parameter Parameter.
+	 * @param string $value     Value.
+	 */
 	public function set_parameter( $parameter, $value ) {
 		$this->parameters[ $parameter ] = $value;
 	}
 
+	/**
+	 * Get parameters.
+	 *
+	 * @return array
+	 */
 	public function get_parameters() {
 		return $this->parameters;
 	}
 
-	public function set_parameters( $parameters ) {
+	/**
+	 * Merge parameters.
+	 *
+	 * @param array $parameters Parameters.
+	 */
+	public function merge_parameters( $parameters ) {
 		$this->parameters = array_merge( $this->parameters, $parameters );
 	}
 
+	/**
+	 * Get signature data.
+	 *
+	 * @return array
+	 */
 	public function get_signature_data() {
 		return array();
 	}
 
+	/**
+	 * Get signature.
+	 *
+	 * @param string $merchant_key Merchant key.
+	 * @return string
+	 */
 	public function get_signature( $merchant_key ) {
 		$data = $this->get_signature_data();
 
@@ -59,6 +100,11 @@ class Request {
 		return $signature;
 	}
 
+	/**
+	 * Sign this request with the specified merchant key.
+	 *
+	 * @param string $merchant_key Merchant key.
+	 */
 	public function sign( $merchant_key ) {
 		$signature = $this->get_signature( $merchant_key );
 

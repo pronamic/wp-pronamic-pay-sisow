@@ -1,4 +1,12 @@
 <?php
+/**
+ * Transaction
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -105,8 +113,6 @@ class Transaction {
 	public function __construct() {
 
 	}
-
-	// @todo getters and setters
 
 	/**
 	 * Create an string representation of this object

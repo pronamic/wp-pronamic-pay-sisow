@@ -1,4 +1,12 @@
 <?php
+/**
+ * Methods
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -180,10 +188,7 @@ class Methods {
 	/**
 	 * Transform WordPress payment method to Sisow method.
 	 *
-	 * @since unreleased
-	 *
-	 * @param $payment_method
-	 *
+	 * @param mixed $payment_method Payment method.
 	 * @return string
 	 */
 	public static function transform( $payment_method ) {
