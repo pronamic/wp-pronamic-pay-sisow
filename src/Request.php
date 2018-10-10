@@ -21,20 +21,47 @@ class Request {
 	 *
 	 * @var array
 	 */
-	private $parameters;
+	private $parameters = array();
 
-	/**
-	 * Construct request.
-	 */
-	public function __construct() {
-		$this->parameters = array();
+	public function get_parameter( $parameter ) {
+		if ( isset( $this->parameters[ $parameter ] ) ) {
+			return $this->parameters[ $parameter ];
+		}
+
+		return null;
 	}
 
 	public function set_parameter( $parameter, $value ) {
 		$this->parameters[ $parameter ] = $value;
 	}
 
+	public function get_parameters() {
+		return $this->parameters;
+	}
+
 	public function set_parameters( $parameters ) {
 		$this->parameters = array_merge( $this->parameters, $parameters );
+	}
+
+	public function get_signature_data() {
+		return array();
+	}
+
+	public function get_signature( $merchant_key ) {
+		$data = $this->get_signature_data();
+
+		$data[] = $merchant_key;
+
+		$string = implode( '', $data );
+
+		$signature = sha1( $string );
+
+		return $signature;
+	}
+
+	public function sign( $merchant_key ) {
+		$signature = $this->get_signature( $merchant_key );
+
+		$this->set_parameter( 'sha1', $signature );
 	}
 }

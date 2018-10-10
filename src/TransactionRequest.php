@@ -166,14 +166,6 @@ class TransactionRequest extends Request {
 	 * @var string
 	 */
 	public $notify_url;
-
-	/**
-	 * Constructs and initializes an Sisow trannsaction request object
-	 */
-	public function __construct() {
-
-	}
-
 	/**
 	 * Set purchase ID.
 	 *
@@ -190,26 +182,6 @@ class TransactionRequest extends Request {
 	 */
 	public function set_entrance_code( $entrance_code ) {
 		$this->entrance_code = Util::filter( $entrance_code );
-	}
-
-	/**
-	 * Get products.
-	 *
-	 * @return Items
-	 */
-	public function get_products() {
-		return $this->products;
-	}
-
-	/**
-	 * Set products.
-	 *
-	 * @param Items $items Order items.
-	 *
-	 * @return void
-	 */
-	public function set_products( Items $items ) {
-		$this->products = $items;
 	}
 
 	/**
@@ -230,88 +202,18 @@ class TransactionRequest extends Request {
 		);
 	}
 
-	/**
-	 * Get parameters.
-	 *
-	 * @param string $merchant_key Merchant key.
-	 *
-	 * @return array
-	 */
-	public function get_parameters( $merchant_key ) {
-		$params = array(
-			'shopid'               => $this->shop_id,
-			'merchantid'           => $this->merchant_id,
-			'payment'              => $this->payment,
-			'purchaseid'           => $this->purchase_id,
-			'amount'               => Pay_Util::amount_to_cents( $this->amount ),
-			'issuerid'             => $this->issuer_id,
-			'qrcode'               => Pay_Util::boolean_to_string( $this->qrcode ),
-			'testmode'             => Pay_Util::boolean_to_string( $this->test_mode ),
-			'entrancecode'         => $this->entrance_code,
-			'description'          => $this->description,
-			'returnurl'            => $this->return_url,
-			'cancelurl'            => $this->cancel_url,
-			'callbackurl'          => $this->callback_url,
-			'notifyurl'            => $this->notify_url,
-			'sha1'                 => $this->get_sha1( $merchant_key ),
-
-			// Post-pay required parameters.
-			'ipaddress'            => $this->ip_address,
-			'gender'               => $this->gender,
-			'birthdate'            => $this->birth_date,
-
-			// Billing.
-			'billing_firstname'    => isset( $this->billing_address['first_name'] ) ? $this->billing_address['first_name'] : null,
-			'billing_lastname'     => isset( $this->billing_address['last_name'] ) ? $this->billing_address['last_name'] : null,
-			'billing_company'      => isset( $this->billing_address['company'] ) ? $this->billing_address['company'] : null,
-			'billing_coc'          => isset( $this->billing_address['company_coc'] ) ? $this->billing_address['company_coc'] : null,
-			'billing_address1'     => isset( $this->billing_address['line_1'] ) ? $this->billing_address['line_1'] : null,
-			'billing_address2'     => isset( $this->billing_address['line_2'] ) ? $this->billing_address['line_2'] : null,
-			'billing_zip'          => isset( $this->billing_address['zip'] ) ? $this->billing_address['zip'] : null,
-			'billing_city'         => isset( $this->billing_address['city'] ) ? $this->billing_address['city'] : null,
-			'billing_country'      => isset( $this->billing_address['country'] ) ? $this->billing_address['country'] : null,
-			'billing_countrycode'  => isset( $this->billing_address['country_code'] ) ? $this->billing_address['country_code'] : null,
-			'billing_phone'        => isset( $this->billing_address['phone'] ) ? $this->billing_address['phone'] : null,
-			'billing_mail'         => $this->billing_mail,
-
-			// Shipping.
-			'shipping_firstname'   => isset( $this->shipping_address['first_name'] ) ? $this->shipping_address['first_name'] : null,
-			'shipping_lastname'    => isset( $this->shipping_address['last_name'] ) ? $this->shipping_address['last_name'] : null,
-			'shipping_company'     => isset( $this->shipping_address['company'] ) ? $this->shipping_address['company'] : null,
-			'shipping_coc'         => isset( $this->shipping_address['company_coc'] ) ? $this->shipping_address['company_coc'] : null,
-			'shipping_address1'    => isset( $this->shipping_address['line_1'] ) ? $this->shipping_address['line_1'] : null,
-			'shipping_address2'    => isset( $this->shipping_address['line_2'] ) ? $this->shipping_address['line_2'] : null,
-			'shipping_zip'         => isset( $this->shipping_address['zip'] ) ? $this->shipping_address['zip'] : null,
-			'shipping_city'        => isset( $this->shipping_address['city'] ) ? $this->shipping_address['city'] : null,
-			'shipping_country'     => isset( $this->shipping_address['country'] ) ? $this->shipping_address['country'] : null,
-			'shipping_countrycode' => isset( $this->shipping_address['country_code'] ) ? $this->shipping_address['country_code'] : null,
-			'shipping_phone'       => isset( $this->shipping_address['phone'] ) ? $this->shipping_address['phone'] : null,
-			'shipping_mail'        => isset( $this->shipping_address['email'] ) ? $this->shipping_address['email'] : null,
+	public function get_signature_data() {
+		return array(
+			$this->get_parameter( 'purchaseid' ),
+			/*
+			 * Wordt er geen gebruik gemaakt van de entrancecode dan dient er twee keer de purchaseid te worden opgenomen, u krijgt dan onderstaande volgorde.
+			 * purchaseid/purchaseid/amount/shopid/merchantid/merchantkey
+			 */
+			null !== $this->get_parameter( 'entrancecode' ) ? $this->get_parameter( 'entrancecode' ) : $this->get_parameter( 'purchaseid' ),
+			$this->get_parameter( 'amount' ),
+			$this->get_parameter( 'shopid' ),
+			$this->get_parameter( 'merchantid' ),
+			$this->get_parameter( 'merchantkey' ),
 		);
-
-		// Products.
-		if ( $this->products instanceof Items ) {
-			$products = $this->products->getIterator();
-
-			foreach ( $products as $product ) {
-				$key = $products->key() + 1;
-
-				$params[ 'product_id_' . $key ]          = $product->get_id();
-				$params[ 'product_description_' . $key ] = $product->get_description();
-				$params[ 'product_quantity_' . $key ]    = $product->get_quantity();
-				$params[ 'product_netprice_' . $key ]    = Pay_Util::amount_to_cents( $product->get_price() );
-				$params[ 'product_nettotal_' . $key ]    = $params[ 'product_netprice_' . $key ] * $product->get_quantity();
-
-				// @todo get tax rate and amount from product?
-				$params[ 'product_taxrate_' . $key ] = 0000;
-				$params[ 'product_tax_' . $key ]     = Pay_Util::amount_to_cents(
-					( $params[ 'product_nettotal_' . $key ] / 100 ) * ( $params[ 'product_taxrate_' . $key ] / 10000 )
-				);
-
-				$params[ 'product_total_' . $key ] = $params[ 'product_nettotal_' . $key ] + $params[ 'product_tax_' . $key ];
-			}
-		}
-
-		return $params;
 	}
 }

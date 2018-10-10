@@ -241,8 +241,8 @@ class Gateway extends Core_Gateway {
 
 			foreach ( $lines as $line ) {
 				$net_price = ( null === $line->get_unit_price() ) ? null : $line->get_unit_price()->get_cents();
-				$total     = ( null === $line->get_total_amount() ) ? null : $line->get_total_amount()->get_cents(),
-				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents(),
+				$total     = ( null === $line->get_total_amount() ) ? null : $line->get_total_amount()->get_cents();
+				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents();
 				$net_total = ( $total - $tax );
 
 				$transaction_request->set_parameters(

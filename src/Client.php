@@ -197,7 +197,9 @@ class Client {
 		$result = false;
 
 		// Request
-		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters( $this->merchant_key ) );
+		$request->sign( $this->merchant_key );
+
+		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters() );
 
 		if ( is_wp_error( $response ) ) {
 			$this->error = $response;
