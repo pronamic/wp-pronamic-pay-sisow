@@ -114,22 +114,20 @@ class Gateway extends Core_Gateway {
 	public function start( Payment $payment ) {
 		// Order and purchase ID.
 		$order_id    = $payment->get_order_id();
-		$purchase_id = empty( $order_id ) ? $payment->get_id() : $order_id;
+		$purchase_id = strval( empty( $order_id ) ? $payment->get_id() : $order_id );
 
 		// Maximum length for purchase ID is 16 characters, otherwise an error will occur:
 		// ideal_sisow_error - purchaseid too long (16).
 		$purchase_id = substr( $purchase_id, 0, 16 );
 
 		// New transaction request.
-		$transaction_request               = new TransactionRequest();
-		$transaction_request->issuer_id    = $payment->get_issuer();
-		$transaction_request->billing_mail = $payment->get_email();
+		$request = new TransactionRequest();
 
-		$transaction_request->merge_parameters(
+		$request->merge_parameters(
 			array(
 				'merchantid'   => $this->config->merchant_id,
 				'shopid'       => $this->config->shop_id,
-				'payment'      => Methods::transform( $payment->get_method() ),
+				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
 				'entrancecode' => $payment->get_entrance_code(),
 				'amount'       => $payment->get_amount()->get_cents(),
@@ -139,31 +137,18 @@ class Gateway extends Core_Gateway {
 				'cancelurl'    => $payment->get_return_url(),
 				'notifyurl'    => $payment->get_return_url(),
 				'callbackurl'  => $payment->get_return_url(),
+				// Other parameters.
+				'issuerid'     => $payment->get_issuer(),
+				'billing_mail' => $payment->get_email(),
 			)
 		);
 
 		// Payment method.
-		$payment_method = $payment->get_method();
-
-		if ( is_null( $payment_method ) ) {
-			$payment_method = PaymentMethods::IDEAL;
-		}
-
-		$this->set_payment_method( $payment_method );
-
-		$transaction_request->payment = Methods::transform( $payment_method );
-
-		if ( empty( $transaction_request->payment ) && ! empty( $payment_method ) ) {
-			// Leap of faith if the WordPress payment method could not transform to a Sisow method?
-			$transaction_request->payment = $payment_method;
-		}
+		$this->set_payment_method( null === $payment->get_method() ? PaymentMethods::IDEAL : $payment->get_method() );
 
 		// Additional parameters for payment method.
-		switch ( $transaction_request->payment ) {
-			case Methods::IDEALQR:
-				$transaction_request->qrcode = true;
-
-				break;
+		if ( PaymentMethods::IDEALQR === $payment->get_method() ) {
+			$request->set_parameter( 'qrcode', 'true' );
 		}
 
 		// Billing address.
@@ -173,7 +158,7 @@ class Gateway extends Core_Gateway {
 			if ( null !== $address->get_name() ) {
 				$name = $address->get_name();
 
-				$transaction_request->merge_parameters(
+				$request->merge_parameters(
 					array(
 						'billing_firstname' => $name->get_first_name(),
 						'billing_lastname'  => $name->get_first_name(),
@@ -181,7 +166,7 @@ class Gateway extends Core_Gateway {
 				);
 			}
 
-			$transaction_request->merge_parameters(
+			$request->merge_parameters(
 				array(
 					'billing_mail'        => $address->get_email(),
 					'billing_company'     => $address->get_company_name(),
@@ -204,7 +189,7 @@ class Gateway extends Core_Gateway {
 			if ( null !== $address->get_name() ) {
 				$name = $address->get_name();
 
-				$transaction_request->merge_parameters(
+				$request->merge_parameters(
 					array(
 						'shipping_firstname' => $name->get_first_name(),
 						'shipping_lastname'  => $name->get_first_name(),
@@ -212,7 +197,7 @@ class Gateway extends Core_Gateway {
 				);
 			}
 
-			$transaction_request->merge_parameters(
+			$request->merge_parameters(
 				array(
 					'shipping_mail'        => $address->get_email(),
 					'shipping_company'     => $address->get_company_name(),
@@ -231,7 +216,7 @@ class Gateway extends Core_Gateway {
 		if ( null !== $payment->get_customer() ) {
 			$customer = $payment->get_customer();
 
-			$transaction_request->merge_parameters(
+			$request->merge_parameters(
 				array(
 					'ipaddress' => $customer->get_ip_address(),
 					'gender'    => $customer->get_gender(),
@@ -239,7 +224,7 @@ class Gateway extends Core_Gateway {
 			);
 
 			if ( null !== $customer->get_birth_date() ) {
-				$transaction_request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'ddmmYYYY' ) );
+				$request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'ddmmYYYY' ) );
 			}
 		}
 
@@ -255,7 +240,7 @@ class Gateway extends Core_Gateway {
 				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents();
 				$net_total = ( $total - $tax );
 
-				$transaction_request->merge_parameters(
+				$request->merge_parameters(
 					array(
 						'product_id_' . $x          => $line->get_id(),
 						'product_description_' . $x => $line->get_description(),
@@ -273,7 +258,7 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Create transaction.
-		$result = $this->client->create_transaction( $transaction_request );
+		$result = $this->client->create_transaction( $request );
 
 		if ( false !== $result ) {
 			$payment->set_transaction_id( $result->id );

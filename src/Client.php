@@ -58,7 +58,7 @@ class Client {
 	/**
 	 * Error.
 	 *
-	 * @var WP_Error
+	 * @var WP_Error|null
 	 */
 	private $error;
 
@@ -147,7 +147,7 @@ class Client {
 	/**
 	 * Get directory.
 	 *
-	 * @return array
+	 * @return array<int|string, string>|false
 	 */
 	public function get_directory() {
 		$directory = false;

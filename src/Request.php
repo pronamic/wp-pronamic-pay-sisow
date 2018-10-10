@@ -35,7 +35,7 @@ class Request {
 	 * Get parameter.
 	 *
 	 * @param string $parameter Parameter.
-	 * @return string
+	 * @return string|null
 	 */
 	public function get_parameter( $parameter ) {
 		if ( isset( $this->parameters[ $parameter ] ) ) {

@@ -188,10 +188,11 @@ class Methods {
 	/**
 	 * Transform WordPress payment method to Sisow method.
 	 *
-	 * @param mixed $payment_method Payment method.
-	 * @return string
+	 * @param mixed       $payment_method Payment method.
+	 * @param string|null $default        Value to return if method could not be transformed.
+	 * @return string|null
 	 */
-	public static function transform( $payment_method ) {
+	public static function transform( $payment_method, $default = null ) {
 		if ( ! is_scalar( $payment_method ) ) {
 			return null;
 		}
@@ -200,6 +201,6 @@ class Methods {
 			return self::$map[ $payment_method ];
 		}
 
-		return null;
+		return $default;
 	}
 }
