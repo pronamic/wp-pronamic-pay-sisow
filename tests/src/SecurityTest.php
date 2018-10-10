@@ -17,15 +17,15 @@ class Pronamic_WP_Pay_Gateways_Sisow_SecurityTest extends WP_UnitTestCase {
 	public function test_transaction_request_sha1() {
 		// http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf #page 10
 		$transaction_request = new TransactionRequest();
-		$transaction_request->set_purchase_id( '123456789' );
-		$transaction_request->set_entrance_code( 'uniqueentrance' );
-		$transaction_request->amount      = 10;
-		$transaction_request->shop_id     = null;
-		$transaction_request->merchant_id = '0123456';
+		$transaction_request->set_parameter( 'purchaseid', '123456789' );
+		$transaction_request->set_parameter( 'entrancecode', 'uniqueentrance' );
+		$transaction_request->set_parameter( 'amount', 10 * 100 );
+		$transaction_request->set_parameter( 'shopid', null );
+		$transaction_request->set_parameter( 'merchantid',  '0123456' );
 
 		$merchant_key = 'b36d8259346eaddb3c03236b37ad3a1d7a67cec6';
 
-		$sha1 = $transaction_request->get_sha1( $merchant_key );
+		$sha1 = $transaction_request->get_signature( $merchant_key );
 
 		$this->assertEquals( 'cb2461bd40ed1a77a6d837a560bfcbc3e03d6c3c', $sha1 );
 	}
