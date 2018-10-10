@@ -117,20 +117,22 @@ class Gateway extends Core_Gateway {
 		$transaction_request->issuer_id    = $payment->get_issuer();
 		$transaction_request->billing_mail = $payment->get_email();
 
-		$transaction_request->set_parameters( array(
-			'merchantid'   => $this->config->merchant_id,
-			'shopid'       => $this->config->shop_id,
-			'payment'      => Methods::transform( $payment->get_method() ),
-			'purchaseid'   => substr( $purchase_id, 0, 16 ),
-			'entrancecode' => $payment->get_entrance_code(),
-			'amount'       => $payment->get_amount()->get_cents(),
-			'description'  => substr( $payment->get_description(), 0, 32 ),
-			'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
-			'returnurl'    => $payment->get_return_url(),
-			'cancelurl'    => $payment->get_return_url(),
-			'notifyurl'    => $payment->get_return_url(),
-			'callbackurl'  => $payment->get_return_url(),
-		) );
+		$transaction_request->set_parameters(
+			array(
+				'merchantid'   => $this->config->merchant_id,
+				'shopid'       => $this->config->shop_id,
+				'payment'      => Methods::transform( $payment->get_method() ),
+				'purchaseid'   => substr( $purchase_id, 0, 16 ),
+				'entrancecode' => $payment->get_entrance_code(),
+				'amount'       => $payment->get_amount()->get_cents(),
+				'description'  => substr( $payment->get_description(), 0, 32 ),
+				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
+				'returnurl'    => $payment->get_return_url(),
+				'cancelurl'    => $payment->get_return_url(),
+				'notifyurl'    => $payment->get_return_url(),
+				'callbackurl'  => $payment->get_return_url(),
+			)
+		);
 
 		// Payment method.
 		$payment_method = $payment->get_method();
