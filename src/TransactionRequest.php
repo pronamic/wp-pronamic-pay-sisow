@@ -119,14 +119,6 @@ class TransactionRequest extends Request {
 	public $shipping_address;
 
 	/**
-	 * Products.
-	 *
-	 * @var Items
-	 * @since 2.0.1
-	 */
-	private $products;
-
-	/**
 	 * IP address.
 	 *
 	 * @var string
