@@ -96,6 +96,7 @@ class Client {
 	 *
 	 * @param string $method     Method.
 	 * @param array  $parameters Parameters.
+	 * @return string|WP_Error
 	 */
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
@@ -114,6 +115,7 @@ class Client {
 	 * Parse the specified document and return parsed result.
 	 *
 	 * @param SimpleXMLElement $document Document.
+	 * @return WP_Error|Transaction
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
@@ -158,7 +160,7 @@ class Client {
 			// Request.
 			$result = $this->send_request( RequestMethods::DIRECTORY_REQUEST );
 
-			if ( is_wp_error( $result ) ) {
+			if ( $result instanceof WP_Error ) {
 				$this->error = $result;
 
 				return $directory;
@@ -193,7 +195,7 @@ class Client {
 	 * Create an transaction with the specified parameters.
 	 *
 	 * @param TransactionRequest $request Transaction request.
-	 * @return Transaction
+	 * @return Transaction|false
 	 */
 	public function create_transaction( TransactionRequest $request ) {
 		$result = false;
@@ -203,7 +205,7 @@ class Client {
 
 		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters() );
 
-		if ( is_wp_error( $response ) ) {
+		if ( $response instanceof WP_Error ) {
 			$this->error = $response;
 
 			return $result;
@@ -212,7 +214,7 @@ class Client {
 		// XML.
 		$xml = Core_Util::simplexml_load_string( $response );
 
-		if ( is_wp_error( $xml ) ) {
+		if ( $xml instanceof WP_Error) ) {
 			$this->error = $xml;
 
 			return $result;
@@ -251,7 +253,7 @@ class Client {
 	 * Get the status of the specified transaction ID.
 	 *
 	 * @param string $transaction_id Transaction ID.
-	 * @return boolean|Transaction
+	 * @return Transaction|false
 	 */
 	public function get_status( $transaction_id ) {
 		$status = false;
@@ -270,7 +272,7 @@ class Client {
 		// Request.
 		$result = $this->send_request( RequestMethods::STATUS_REQUEST, $parameters );
 
-		if ( is_wp_error( $result ) ) {
+		if ( $result instanceof WP_Error ) {
 			$this->error = $result;
 
 			return $status;
@@ -279,7 +281,7 @@ class Client {
 		// XML.
 		$xml = Core_Util::simplexml_load_string( $result );
 
-		if ( is_wp_error( $xml ) ) {
+		if ( $xml instanceof WP_Error ) {
 			$this->error = $xml;
 
 			return $status;
