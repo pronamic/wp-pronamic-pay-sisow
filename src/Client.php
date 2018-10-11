@@ -214,7 +214,7 @@ class Client {
 		// XML.
 		$xml = Core_Util::simplexml_load_string( $response );
 
-		if ( $xml instanceof WP_Error) ) {
+		if ( $xml instanceof WP_Error ) {
 			$this->error = $xml;
 
 			return $result;
