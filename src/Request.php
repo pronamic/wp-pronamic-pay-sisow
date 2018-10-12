@@ -59,8 +59,8 @@ class Request {
 	/**
 	 * Set parameter.
 	 *
-	 * @param string $parameter Parameter.
-	 * @param string $value     Value.
+	 * @param string      $parameter Parameter.
+	 * @param string|null $value     Value.
 	 */
 	public function set_parameter( $parameter, $value ) {
 		$this->parameters[ $parameter ] = $value;

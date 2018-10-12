@@ -76,7 +76,7 @@ class Client {
 	/**
 	 * Error.
 	 *
-	 * @return WP_Error
+	 * @return WP_Error|null
 	 */
 	public function get_error() {
 		return $this->error;
@@ -96,7 +96,7 @@ class Client {
 	 *
 	 * @param string $method     Method.
 	 * @param array  $parameters Parameters.
-	 * @return string|WP_Error|array
+	 * @return array|bool|string|WP_Error
 	 */
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
@@ -236,7 +236,7 @@ class Client {
 	 * Get the status of the specified transaction ID.
 	 *
 	 * @param StatusRequest $request Status request object.
-	 * @return Transaction|Error|false
+	 * @return Transaction|Error|WP_Error|false
 	 */
 	public function get_status( StatusRequest $request ) {
 		$status = false;
