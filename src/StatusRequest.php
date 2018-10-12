@@ -29,7 +29,7 @@ class StatusRequest extends Request {
 	 * @param string|null $shop_id        Shop ID.
 	 */
 	public function __construct( $transaction_id, $merhant_id, $shop_id = null ) {
-		parent::__construct( $merhant_id, $shop_id = null );
+		parent::__construct( $merhant_id, $shop_id );
 
 		$this->set_parameter( 'trxid', $transaction_id );
 	}
