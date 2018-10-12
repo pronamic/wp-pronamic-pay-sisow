@@ -96,7 +96,7 @@ class Client {
 	 *
 	 * @param string $method     Method.
 	 * @param array  $parameters Parameters.
-	 * @return string|WP_Error
+	 * @return string|WP_Error|array
 	 */
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
@@ -169,7 +169,7 @@ class Client {
 			// XML.
 			$xml = Core_Util::simplexml_load_string( $result );
 
-			if ( is_wp_error( $xml ) ) {
+			if ( $xml instanceof WP_Error ) {
 				$this->error = $xml;
 
 				return $directory;
@@ -236,7 +236,7 @@ class Client {
 	 * Get the status of the specified transaction ID.
 	 *
 	 * @param StatusRequest $request Status request object.
-	 * @return Transaction|false
+	 * @return Transaction|Error|false
 	 */
 	public function get_status( StatusRequest $request ) {
 		$status = false;
