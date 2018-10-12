@@ -110,7 +110,7 @@ class Client {
 			200,
 			array(
 				'method' => 'POST',
-				'body'   => ( null == $request ) ? null : $request->get_parameters(),
+				'body'   => ( null === $request ) ? null : $request->get_parameters(),
 			)
 		);
 
