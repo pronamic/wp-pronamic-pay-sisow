@@ -96,12 +96,12 @@ class Client {
 	 *
 	 * @param string $method     Method.
 	 * @param array  $parameters Parameters.
-	 * @return array|bool|string|WP_Error
+	 * @return false|SimpleXMLElement
 	 */
 	private function send_request( $method, array $parameters = array() ) {
 		$url = self::API_URL . '/' . $method;
 
-		return Core_Util::remote_get_body(
+		$result = Core_Util::remote_get_body(
 			$url,
 			200,
 			array(
@@ -109,6 +109,27 @@ class Client {
 				'body'   => $parameters,
 			)
 		);
+
+		if ( $result instanceof WP_Error ) {
+			$this->error = $result;
+
+			return false;
+		}
+
+		if ( ! is_string( $result ) ) {
+			return false;
+		}
+
+		// XML.
+		$xml = Core_Util::simplexml_load_string( $result );
+
+		if ( $xml instanceof WP_Error ) {
+			$this->error = $xml;
+
+			return false;
+		}
+
+		return $xml;
 	}
 
 	/**
@@ -152,40 +173,27 @@ class Client {
 	 * @return array<int|string, string>|false
 	 */
 	public function get_directory() {
-		$directory = false;
-
 		if ( $this->test_mode ) {
-			$directory = array( '99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ) );
-		} else {
-			// Request.
-			$result = $this->send_request( RequestMethods::DIRECTORY_REQUEST );
+			$return = array(
+				'99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ),
+			);
+		}
 
-			if ( $result instanceof WP_Error ) {
-				$this->error = $result;
+		// Request.
+		$result = $this->send_request( RequestMethods::DIRECTORY_REQUEST );
 
-				return $directory;
-			}
+		if ( false === $result ) {
+			return false;
+		}
 
-			// XML.
-			$xml = Core_Util::simplexml_load_string( $result );
+		// Parse.
+		$directory = array();
 
-			if ( $xml instanceof WP_Error ) {
-				$this->error = $xml;
+		foreach ( $result->directory->issuer as $issuer ) {
+			$id   = (string) $issuer->issuerid;
+			$name = (string) $issuer->issuername;
 
-				return $directory;
-			}
-
-			// Parse.
-			if ( $xml instanceof SimpleXMLElement ) {
-				$directory = array();
-
-				foreach ( $xml->directory->issuer as $issuer ) {
-					$id   = (string) $issuer->issuerid;
-					$name = (string) $issuer->issuername;
-
-					$directory[ $id ] = $name;
-				}
-			}
+			$directory[ $id ] = $name;
 		}
 
 		return $directory;
@@ -205,31 +213,18 @@ class Client {
 
 		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters() );
 
-		if ( $response instanceof WP_Error ) {
-			$this->error = $response;
-
-			return $result;
-		}
-
-		// XML.
-		$xml = Core_Util::simplexml_load_string( $response );
-
-		if ( $xml instanceof WP_Error ) {
-			$this->error = $xml;
-
-			return $result;
+		if ( false === $response ) {
+			return false;
 		}
 
 		// Parse.
-		if ( $xml instanceof SimpleXMLElement ) {
-			$message = $this->parse_document( $xml );
+		$message = $this->parse_document( $response );
 
-			if ( $message instanceof Transaction ) {
-				$result = $message;
-			}
+		if ( $message instanceof Transaction ) {
+			return $message;
 		}
 
-		return $result;
+		return false;
 	}
 
 	/**
@@ -244,30 +239,19 @@ class Client {
 		// Request.
 		$request->sign( $this->merchant_key );
 
-		$result = $this->send_request( RequestMethods::STATUS_REQUEST, $request->get_parameters() );
+		$response = $this->send_request( RequestMethods::STATUS_REQUEST, $request->get_parameters() );
 
-		if ( $result instanceof WP_Error ) {
-			$this->error = $result;
-
-			return $status;
-		}
-
-		// XML.
-		$xml = Core_Util::simplexml_load_string( $result );
-
-		if ( $xml instanceof WP_Error ) {
-			$this->error = $xml;
-
-			return $status;
+		if ( false === $response ) {
+			return false;
 		}
 
 		// Parse.
-		if ( $xml instanceof SimpleXMLElement ) {
-			$status = $this->parse_document( $xml );
+		$message = $this->parse_document( $response );
 
-			return $status;
+		if ( $message instanceof Transaction ) {
+			return $message;
 		}
 
-		return $status;
+		return false;
 	}
 }

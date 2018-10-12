@@ -317,12 +317,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-pay/core.git",
-                "reference": "95ddcba68ebf03ecb2ba43934317a0f94d15cb14"
+                "reference": "33515a041f54799a1459266566954b8404f0f65a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-pay/core/zipball/95ddcba68ebf03ecb2ba43934317a0f94d15cb14",
-                "reference": "95ddcba68ebf03ecb2ba43934317a0f94d15cb14",
+                "url": "https://api.github.com/repos/wp-pay/core/zipball/33515a041f54799a1459266566954b8404f0f65a",
+                "reference": "33515a041f54799a1459266566954b8404f0f65a",
                 "shasum": ""
             },
             "require": {
@@ -380,7 +380,7 @@
                 "wordpress",
                 "wp"
             ],
-            "time": "2018-10-12T08:33:00+00:00"
+            "time": "2018-10-12T09:33:10+00:00"
         }
     ],
     "packages-dev": [
