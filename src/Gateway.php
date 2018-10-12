@@ -13,6 +13,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 
 /**
  * Title: Sisow gateway
@@ -242,9 +243,17 @@ class Gateway extends Core_Gateway {
 				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents();
 				$net_total = ( $total - $tax );
 
+				$product_id = $line->get_id();
+
+				if ( PaymentLineType::SHIPPING === $line->get_type() ) {
+					$product_id = 'shipping';
+				} elseif ( PaymentLineType::FEE === $line->get_type() ) {
+					$product_id = 'paymentfee';
+				}
+
 				$request->merge_parameters(
 					array(
-						'product_id_' . $x          => $line->get_id(),
+						'product_id_' . $x          => $product_id,
 						'product_description_' . $x => $line->get_description(),
 						'product_quantity_' . $x    => $line->get_quantity(),
 						'product_netprice_' . $x    => $net_price,
