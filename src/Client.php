@@ -115,7 +115,7 @@ class Client {
 	 * Parse the specified document and return parsed result.
 	 *
 	 * @param SimpleXMLElement $document Document.
-	 * @return WP_Error|Transaction
+	 * @return WP_Error|Transaction|Error
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
