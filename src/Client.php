@@ -94,19 +94,23 @@ class Client {
 	/**
 	 * Send request with the specified action and parameters.
 	 *
-	 * @param string $method     Method.
-	 * @param array  $parameters Parameters.
+	 * @param string       $method  Method.
+	 * @param Request|null $request Request.
 	 * @return false|SimpleXMLElement
 	 */
-	private function send_request( $method, array $parameters = array() ) {
+	private function send_request( $method, Request $request = null ) {
 		$url = self::API_URL . '/' . $method;
+
+		if ( null !== $request ) {
+			$request->sign( $this->merchant_key );
+		}
 
 		$result = Core_Util::remote_get_body(
 			$url,
 			200,
 			array(
 				'method' => 'POST',
-				'body'   => $parameters,
+				'body'   => ( null == $request ) ? null : $request->get_parameters(),
 			)
 		);
 
@@ -170,11 +174,11 @@ class Client {
 	/**
 	 * Get directory.
 	 *
-	 * @return array<int|string, string>|false
+	 * @return array|false
 	 */
 	public function get_directory() {
 		if ( $this->test_mode ) {
-			$return = array(
+			return array(
 				'99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ),
 			);
 		}
@@ -206,12 +210,8 @@ class Client {
 	 * @return Transaction|false
 	 */
 	public function create_transaction( TransactionRequest $request ) {
-		$result = false;
-
 		// Request.
-		$request->sign( $this->merchant_key );
-
-		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters() );
+		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request );
 
 		if ( false === $response ) {
 			return false;
@@ -234,12 +234,8 @@ class Client {
 	 * @return Transaction|Error|WP_Error|false
 	 */
 	public function get_status( StatusRequest $request ) {
-		$status = false;
-
 		// Request.
-		$request->sign( $this->merchant_key );
-
-		$response = $this->send_request( RequestMethods::STATUS_REQUEST, $request->get_parameters() );
+		$response = $this->send_request( RequestMethods::STATUS_REQUEST, $request );
 
 		if ( false === $response ) {
 			return false;

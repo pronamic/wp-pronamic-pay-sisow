@@ -284,12 +284,6 @@ class Gateway extends Core_Gateway {
 
 		$result = $this->client->get_status( $request );
 
-		if ( $result instanceof Error ) {
-			$this->error = $this->client->get_error();
-
-			return;
-		}
-
 		if ( false === $result ) {
 			$this->error = $this->client->get_error();
 
