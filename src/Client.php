@@ -231,7 +231,7 @@ class Client {
 	 * Get the status of the specified transaction ID.
 	 *
 	 * @param StatusRequest $request Status request object.
-	 * @return Transaction|Error|WP_Error|false
+	 * @return Transaction|false
 	 */
 	public function get_status( StatusRequest $request ) {
 		// Request.
