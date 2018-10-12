@@ -121,12 +121,13 @@ class Gateway extends Core_Gateway {
 		$purchase_id = substr( $purchase_id, 0, 16 );
 
 		// New transaction request.
-		$request = new TransactionRequest();
+		$request = new TransactionRequest(
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
 
 		$request->merge_parameters(
 			array(
-				'merchantid'   => $this->config->merchant_id,
-				'shopid'       => $this->config->shop_id,
 				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
 				'entrancecode' => $payment->get_entrance_code(),
@@ -149,6 +150,23 @@ class Gateway extends Core_Gateway {
 		// Additional parameters for payment method.
 		if ( PaymentMethods::IDEALQR === $payment->get_method() ) {
 			$request->set_parameter( 'qrcode', 'true' );
+		}
+
+		// Customer.
+		if ( null !== $payment->get_customer() ) {
+			$customer = $payment->get_customer();
+
+			$request->merge_parameters(
+				array(
+					'ipaddress' => $customer->get_ip_address(),
+					'gender'    => $customer->get_gender(),
+					'locale'    => $customer->get_locale(),
+				)
+			);
+
+			if ( null !== $customer->get_birth_date() ) {
+				$request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'ddmmYYYY' ) );
+			}
 		}
 
 		// Billing address.
@@ -212,22 +230,6 @@ class Gateway extends Core_Gateway {
 			);
 		}
 
-		// Customer.
-		if ( null !== $payment->get_customer() ) {
-			$customer = $payment->get_customer();
-
-			$request->merge_parameters(
-				array(
-					'ipaddress' => $customer->get_ip_address(),
-					'gender'    => $customer->get_gender(),
-				)
-			);
-
-			if ( null !== $customer->get_birth_date() ) {
-				$request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'ddmmYYYY' ) );
-			}
-		}
-
 		// Lines.
 		if ( null !== $payment->get_lines() ) {
 			$lines = $payment->get_lines();
@@ -274,7 +276,13 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$result = $this->client->get_status( $payment->get_transaction_id() );
+		$request = new StatusRequest(
+			$payment->get_transaction_id(),
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
+
+		$result = $this->client->get_status( $request );
 
 		if ( $result instanceof Error ) {
 			$this->error = $this->client->get_error();

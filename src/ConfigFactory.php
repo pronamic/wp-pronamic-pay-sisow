@@ -32,10 +32,10 @@ class ConfigFactory extends GatewayConfigFactory {
 	public function get_config( $post_id ) {
 		$config = new Config();
 
-		$config->merchant_id  = $this->get_meta( $post_id, '_pronamic_gateway_sisow_merchant_id' );
-		$config->merchant_key = $this->get_meta( $post_id, '_pronamic_gateway_sisow_merchant_key' );
-		$config->shop_id      = $this->get_meta( $post_id, '_pronamic_gateway_sisow_shop_id' );
-		$config->mode         = $this->get_meta( $post_id, '_pronamic_gateway_mode' );
+		$config->merchant_id  = $this->get_meta( $post_id, 'sisow_merchant_id' );
+		$config->merchant_key = $this->get_meta( $post_id, 'sisow_merchant_key' );
+		$config->shop_id      = $this->get_meta( $post_id, 'sisow_shop_id' );
+		$config->mode         = $this->get_meta( $post_id, 'mode' );
 
 		return $config;
 	}

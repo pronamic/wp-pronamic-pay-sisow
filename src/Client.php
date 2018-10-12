@@ -233,44 +233,18 @@ class Client {
 	}
 
 	/**
-	 * Create an SHA1 for an status request.
-	 *
-	 * @param string $transaction_id Transaction ID.
-	 * @param string $shop_id        Shop ID.
-	 * @param string $merchant_id    Merchant ID.
-	 * @param string $merchant_key   Merchant key.
-	 */
-	public static function create_status_sha1( $transaction_id, $shop_id, $merchant_id, $merchant_key ) {
-		return sha1(
-			$transaction_id .
-			$shop_id .
-			$merchant_id .
-			$merchant_key
-		);
-	}
-
-	/**
 	 * Get the status of the specified transaction ID.
 	 *
-	 * @param string $transaction_id Transaction ID.
+	 * @param StatusRequest $request Status request object.
 	 * @return Transaction|false
 	 */
-	public function get_status( $transaction_id ) {
+	public function get_status( StatusRequest $request ) {
 		$status = false;
 
-		if ( '' === $transaction_id ) {
-			return $status;
-		}
-
-		// Parameters.
-		$parameters = array(
-			'merchantid' => $this->merchant_id,
-			'trxid'      => $transaction_id,
-			'sha1'       => self::create_status_sha1( $transaction_id, '', $this->merchant_id, $this->merchant_key ),
-		);
-
 		// Request.
-		$result = $this->send_request( RequestMethods::STATUS_REQUEST, $parameters );
+		$request->sign( $this->merchant_key );
+
+		$result = $this->send_request( RequestMethods::STATUS_REQUEST, $request->get_parameters() );
 
 		if ( $result instanceof WP_Error ) {
 			$this->error = $result;

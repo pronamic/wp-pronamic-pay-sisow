@@ -32,6 +32,17 @@ class Request {
 	private $parameters = array();
 
 	/**
+	 * Construct request.
+	 *
+	 * @param string      $merchant_id    Merchant ID.
+	 * @param string|null $shop_id        Shop ID.
+	 */
+	public function __construct( $merchant_id, $shop_id = null ) {
+		$this->set_parameter( 'merchantid', $merchant_id );
+		$this->set_parameter( 'shopid', $shop_id );
+	}
+
+	/**
 	 * Get parameter.
 	 *
 	 * @param string $parameter Parameter.

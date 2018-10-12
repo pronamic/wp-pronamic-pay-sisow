@@ -1,6 +1,6 @@
 <?php
 /**
- * Transaction request
+ * Status request
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2018 Pronamic
@@ -14,16 +14,26 @@ use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
 use Pronamic\WordPress\Pay\Payments\Items;
 
 /**
- * Title: iDEAL Sisow transaction request
- * Description:
- * Copyright: Copyright (c) 2015
- * Company: Pronamic
+ * Status request
  *
  * @author  Remco Tolsma
  * @version 2.0.0
  * @since   1.0.0
  */
-class TransactionRequest extends Request {
+class StatusRequest extends Request {
+	/**
+	 * Constructs status request object.
+	 *
+	 * @param string      $transaction_id Transaction ID.
+	 * @param string      $merchant_id    Merchant ID.
+	 * @param string|null $shop_id        Shop ID.
+	 */
+	public function __construct( $transaction_id, $merhant_id, $shop_id = null ) {
+		parent::__construct( $merhant_id, $shop_id = null );
+
+		$this->set_parameter( 'trxid', $transaction_id );
+	}
+
 	/**
 	 * Get signature data.
 	 *
@@ -31,15 +41,7 @@ class TransactionRequest extends Request {
 	 */
 	public function get_signature_data() {
 		return array(
-			$this->get_parameter( 'purchaseid' ),
-
-			/*
-			 * Wordt er geen gebruik gemaakt van de entrancecode dan dient er twee keer de purchaseid te worden opgenomen, u krijgt dan onderstaande volgorde.
-			 * purchaseid/purchaseid/amount/shopid/merchantid/merchantkey
-			 */
-			null !== $this->get_parameter( 'entrancecode' ) ? $this->get_parameter( 'entrancecode' ) : $this->get_parameter( 'purchaseid' ),
-
-			$this->get_parameter( 'amount' ),
+			$this->get_parameter( 'trxid' ),
 
 			/*
 			 * Indien er geen gebruik wordt gemaakt van de shopid dan kunt u deze weglaten uit de berekening.
