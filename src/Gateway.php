@@ -166,7 +166,7 @@ class Gateway extends Core_Gateway {
 			);
 
 			if ( null !== $customer->get_birth_date() ) {
-				$request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'ddmmYYYY' ) );
+				$request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'dmY' ) );
 			}
 		}
 
