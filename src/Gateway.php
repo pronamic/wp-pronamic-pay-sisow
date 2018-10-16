@@ -238,10 +238,10 @@ class Gateway extends Core_Gateway {
 			$x = 1;
 
 			foreach ( $lines as $line ) {
-				$net_price = ( null === $line->get_unit_price() ) ? null : $line->get_unit_price()->get_cents();
+				$net_price = ( null === $line->get_unit_price_excluding_tax() ) ? null : $line->get_unit_price_excluding_tax()->get_cents();
 				$total     = ( null === $line->get_total_amount() ) ? null : $line->get_total_amount()->get_cents();
+				$net_total = ( null === $line->get_total_amount_excluding_tax() ) ? null : $line->get_total_amount_excluding_tax()->get_cents();
 				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents();
-				$net_total = ( $total - $tax );
 
 				$product_id = $line->get_id();
 
