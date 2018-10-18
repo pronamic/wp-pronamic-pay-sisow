@@ -17,10 +17,10 @@
 
 > Hieronder vind je de waardes voor de locale parameter.
 > 
-> Locale paypal:
+> Locale paypal:  
 > `array('AU','AT','BE','BR','CA','CH','CN','DE','ES','GB','FR','IT','NL','PL','PT','RU','US');`
 > 
-> locale cc en mistercash
+> locale cc en mistercash  
 > `array('NL', 'BE', 'DE', 'IT', 'ES', 'PT', 'BR', 'SE', 'FR');`
 
 ## Parameter `product_id_x` for `shipping` and `paymentfee`
