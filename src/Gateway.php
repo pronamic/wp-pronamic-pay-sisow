@@ -161,9 +161,17 @@ class Gateway extends Core_Gateway {
 				array(
 					'ipaddress' => $customer->get_ip_address(),
 					'gender'    => $customer->get_gender(),
-					'locale'    => $customer->get_locale(),
 				)
 			);
+
+			if ( null !== $customer->get_locale() ) {
+				/*
+				 * @link https://github.com/wp-pay-gateways/sisow/tree/feature/post-pay/documentation#parameter-locale
+				 */
+				$sisow_locale = strtoupper( substr( $customer->get_locale(), -2 ) );
+
+				$request->set_parameter( 'locale', $sisow_locale );
+			}
 
 			if ( null !== $customer->get_birth_date() ) {
 				$request->set_parameter( 'birth_date', $customer->get_birth_date()->format( 'dmY' ) );
