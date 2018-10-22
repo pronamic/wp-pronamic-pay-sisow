@@ -47,3 +47,15 @@ product_description_3=Betalingskosten
 **Answer Sisow** on **18 okt. 2018 12:47**:
 
 > Het bovenstaande klopt inderdaad, regels shipping en payment fee mogen meerdere keren voorkomen, en bedragen mogen negatief zijn.
+
+## Achteraf betalen testen
+
+**Question Pronamic** on **18 okt. 2018 14:59**:
+
+> Hoe kunnen we jullie achteraf betalen methodes nu gaan testen?
+
+**Answer Sisow** on **19 okt. 2018 16:15**:
+
+> Ik heb intern het een en ander moeten navragen of het testen wel mogelijk is.
+> Alleen een Afterpay hebben wij voor u kunnen implementeren.
+> Een Focum test omgeving is bij ons (nog) niet geïmplementeerd, en bij Klarna wordt er nog gebruik gemaakt van een oude API waarbij geen nieuwe klanten op toegelaten.
