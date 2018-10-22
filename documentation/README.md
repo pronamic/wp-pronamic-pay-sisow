@@ -59,3 +59,27 @@ product_description_3=Betalingskosten
 > Ik heb intern het een en ander moeten navragen of het testen wel mogelijk is.
 > Alleen een Afterpay hebben wij voor u kunnen implementeren.
 > Een Focum test omgeving is bij ons (nog) niet geïmplementeerd, en bij Klarna wordt er nog gebruik gemaakt van een oude API waarbij geen nieuwe klanten op toegelaten.
+
+## Error `TA3450` `Reservation not possible (Failed;General)`
+
+**Question Pronamic** on **22 okt. 2018 09:48**:
+
+> Bedankt voor je reactie, we zijn inmiddels verder gegaan met het testen van AfterPay. We krijgen momenteel echter het volgende antwoord van Sisow:
+
+```
+<?xml version="1.0" encoding="UTF-8"?><errorresponse xmlns="https://www.sisow.nl/Sisow/REST" version="1.0.0"><error><errorcode>TA3450</errorcode><errormessage>Reservation not possible (Failed;General)</errormessage></error></errorresponse>
+```
+
+> De foutmelding is helaas niet heel duidelijk en wij kunnen daarom helaas niet achterhalen wat er precies fout gaat. Ook is jullie documentatie hier niet heel duidelijk over:
+
+```
+TA3450 » Reservation not possible » TransactionRequest » De reservering van het opgegeven bedrag is niet gelukt
+```
+
+> Hoe kunnen we achterhalen wat er fout gaat? Misschien sowieso goed om de foutcode en documentatie uit te breiden met de reden waarom het niet gelukt is?
+
+**Answer Sisow** on **22 okt. 2018 10:23**:
+
+> Onderstaande foutmelding krijg je te zien als de transactie niet voorbij de credietcheck van AfterPay gaat.
+> Heeft u tijdens het afrekenen legitieme gegevens gebruik?
+> Wanneer u gegevens invult die niet kloppen, wijst AfterPay deze transactie af.
