@@ -33,7 +33,7 @@ class Util {
 	 *
 	 * Karakterset
 	 *
-	 * @see http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf
+	 * @link http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf
 	 *
 	 * Hieronder de tabel toegestane karakters.
 	 *
@@ -88,7 +88,7 @@ class Util {
 
 			/*
 			 * We use a # as a regex delimiter instead of a / so we don't have to escape the slash.
-			 * @see http://stackoverflow.com/q/12239424
+			 * @link http://stackoverflow.com/q/12239424
 			 */
 			self::$pattern = '#[^' . implode( $characters ) . ']#';
 		}
