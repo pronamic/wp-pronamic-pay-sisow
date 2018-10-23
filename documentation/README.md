@@ -80,6 +80,6 @@ TA3450 » Reservation not possible » TransactionRequest » De reservering van h
 
 **Answer Sisow** on **22 okt. 2018 10:23**:
 
-> Onderstaande foutmelding krijg je te zien als de transactie niet voorbij de credietcheck van AfterPay gaat.
-> Heeft u tijdens het afrekenen legitieme gegevens gebruik?
-> Wanneer u gegevens invult die niet kloppen, wijst AfterPay deze transactie af.
+> Onderstaande foutmelding krijg je te zien als de transactie niet voorbij de credietcheck van AfterPay gaat.  
+> Heeft u tijdens het afrekenen legitieme gegevens gebruik?  
+> Wanneer u gegevens invult die niet kloppen, wijst AfterPay deze transactie af.  
