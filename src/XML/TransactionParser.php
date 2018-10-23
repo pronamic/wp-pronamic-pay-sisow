@@ -11,9 +11,9 @@
 namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
 
 use Pronamic\WordPress\DateTime\DateTime;
+use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Core\XML\Security;
 use Pronamic\WordPress\Pay\Gateways\Sisow\Transaction;
-use Pronamic\WordPress\Pay\Util as Pay_Util;
 use SimpleXMLElement;
 
 /**
@@ -51,7 +51,7 @@ class TransactionParser implements Parser {
 		}
 
 		if ( isset( $xml->amount ) ) {
-			$transaction->amount = Pay_Util::cents_to_amount( Security::filter( $xml->amount ) );
+			$transaction->amount = Util::cents_to_amount( Security::filter( $xml->amount ) );
 		}
 
 		if ( isset( $xml->purchaseid ) ) {
