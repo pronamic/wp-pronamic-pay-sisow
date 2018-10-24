@@ -132,7 +132,7 @@ class Gateway extends Core_Gateway {
 				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
 				'entrancecode' => $payment->get_entrance_code(),
-				'amount'       => $payment->get_amount()->get_cents(),
+				'amount'       => $payment->get_total_amount()->get_cents(),
 				'description'  => substr( $payment->get_description(), 0, 32 ),
 				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
 				'returnurl'    => $payment->get_return_url(),
