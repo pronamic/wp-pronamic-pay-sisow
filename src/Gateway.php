@@ -188,7 +188,7 @@ class Gateway extends Core_Gateway {
 				$request->merge_parameters(
 					array(
 						'billing_firstname' => $name->get_first_name(),
-						'billing_lastname'  => $name->get_first_name(),
+						'billing_lastname'  => $name->get_last_name(),
 					)
 				);
 			}
@@ -219,7 +219,7 @@ class Gateway extends Core_Gateway {
 				$request->merge_parameters(
 					array(
 						'shipping_firstname' => $name->get_first_name(),
-						'shipping_lastname'  => $name->get_first_name(),
+						'shipping_lastname'  => $name->get_last_name(),
 					)
 				);
 			}
@@ -262,7 +262,7 @@ class Gateway extends Core_Gateway {
 				$request->merge_parameters(
 					array(
 						'product_id_' . $x          => $product_id,
-						'product_description_' . $x => $line->get_description(),
+						'product_description_' . $x => $line->get_name(),
 						'product_quantity_' . $x    => $line->get_quantity(),
 						'product_netprice_' . $x    => $net_price,
 						'product_total_' . $x       => $total,
