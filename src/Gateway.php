@@ -324,7 +324,7 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @param Payment $payment Payment.
 	 *
-	 * @return bool|Transaction
+	 * @return bool|Invoice
 	 */
 	public function create_invoice( $payment ) {
 		$transaction_id = $payment->get_transaction_id();
