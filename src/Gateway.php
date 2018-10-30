@@ -309,7 +309,7 @@ class Gateway extends Core_Gateway {
 
 		$transaction = $result;
 
-		$payment->set_status( $transaction->status );
+		$payment->set_status( Statuses::transform( $transaction->status ) );
 		$payment->set_consumer_name( $transaction->consumer_name );
 		$payment->set_consumer_account_number( $transaction->consumer_account );
 		$payment->set_consumer_city( $transaction->consumer_city );
