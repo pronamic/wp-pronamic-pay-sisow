@@ -83,3 +83,19 @@ TA3450 » Reservation not possible » TransactionRequest » De reservering van h
 > Onderstaande foutmelding krijg je te zien als de transactie niet voorbij de credietcheck van AfterPay gaat.  
 > Heeft u tijdens het afrekenen legitieme gegevens gebruik?  
 > Wanneer u gegevens invult die niet kloppen, wijst AfterPay deze transactie af.  
+
+**Question Pronamic** on **23 okt. 2018 14:52**:
+
+> Waarschijnlijk werd `billing_phone` en `shipping_phone` nog niet meegegeven, dit zullen we nog gaan testen. Los daarvan is de betreffende foutmelding wel vrij mager, hoe kunnen we gebruikers op deze manier goed informeren over waar het fout gaat? Als we naar de AfterPay documentatie zelf kijken geven zij wel uitgebreide informatie terug? 
+> 
+> https://developer.afterpay.io/guidelines/prepare-check-out#consumer-info
+> 
+> We zijn wel benieuwd naar hoe we hier mee om moeten gaan, we horen het graag!
+
+**Answer Sisow** on **24 okt. 2018 08:59**:
+
+> Wij krijgen vanuit Afterpay alleen de algemene melding mee dat een reservering niet is gelukt.  
+> De specifieke reden krijgen wij niet mee, anders hadden wij dit ook kunnen vermelden.  
+> De melding TA3450 houdt dus in dat deze transactie niet door de credietcheck van AfterPay is gekomen.  
+> Vaak ontvangen consumenten/merchants deze melding op het moment wanneer geen legitieme gegevens worden gebruikt.  
+> Vandaar is het aan te raden om te controleren of er daadwerkelijk kloppende, echte gegevens worden ingevuld op de betaalpagina.
