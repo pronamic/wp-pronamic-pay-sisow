@@ -12,6 +12,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 
@@ -43,6 +44,7 @@ class Gateway extends Core_Gateway {
 
 		$this->supports = array(
 			'payment_status_request',
+			'reservation_payments',
 		);
 
 		$this->set_method( self::METHOD_HTTP_REDIRECT );
@@ -284,6 +286,8 @@ class Gateway extends Core_Gateway {
 			$payment->set_action_url( $result->issuer_url );
 		} else {
 			$this->error = $this->client->get_error();
+
+			return false;
 		}
 	}
 
@@ -313,5 +317,85 @@ class Gateway extends Core_Gateway {
 		$payment->set_consumer_name( $transaction->consumer_name );
 		$payment->set_consumer_account_number( $transaction->consumer_account );
 		$payment->set_consumer_city( $transaction->consumer_city );
+	}
+
+	/**
+	 * Create invoice.
+	 *
+	 * @param Payment $payment Payment.
+	 *
+	 * @return bool|Transaction
+	 */
+	public function create_invoice( $payment ) {
+		$transaction_id = $payment->get_transaction_id();
+
+		if ( empty( $transaction_id ) ) {
+			return false;
+		}
+
+		// Invoice request.
+		$request = new InvoiceRequest(
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
+
+		$request->set_parameter( 'trxid', $transaction_id );
+
+		// Create invoice.
+		$result = $this->client->create_invoice( $request );
+
+		// Handle errors.
+		if ( false === $result ) {
+			$this->error = $this->client->get_error();
+
+			return false;
+		}
+
+		$payment->set_status( Core_Statuses::SUCCESS );
+
+		$payment->save();
+
+		return $result;
+	}
+
+	/**
+	 * Cancel reservation.
+	 *
+	 * @param Payment $payment Payment.
+	 *
+	 * @return bool|Reservation
+	 */
+	public function cancel_reservation( $payment ) {
+		$transaction_id = $payment->get_transaction_id();
+
+		if ( empty( $transaction_id ) ) {
+			return false;
+		}
+
+		// Cancel reservation request.
+		$request = new CancelReservationRequest(
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
+
+		$request->set_parameter( 'trxid', $transaction_id );
+
+		// Cancel reservation.
+		$result = $this->client->cancel_reservation( $request );
+
+		// Handle errors.
+		if ( false === $result ) {
+			$this->error = $this->client->get_error();
+
+			return false;
+		}
+
+		if ( isset( $result->status ) ) {
+			$payment->set_status( Statuses::transform( $result->status ) );
+
+			$payment->save();
+		}
+
+		return $result;
 	}
 }

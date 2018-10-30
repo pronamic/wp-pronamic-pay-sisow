@@ -22,23 +22,37 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
  */
 class RequestMethods {
 	/**
-	 * Indicator for an directory request
+	 * Indicator for a cancel reservation request
+	 *
+	 * @var string
+	 */
+	const CANCEL_RESERVATION_REQUEST = 'CancelReservationRequest';
+
+	/**
+	 * Indicator for a directory request
 	 *
 	 * @var string
 	 */
 	const DIRECTORY_REQUEST = 'DirectoryRequest';
 
 	/**
-	 * Indicator for an transaction request
+	 * Indicator for a invoice request
 	 *
 	 * @var string
 	 */
-	const TRANSACTION_REQUEST = 'TransactionRequest';
+	const INVOICE_REQUEST = 'InvoiceRequest';
 
 	/**
-	 * Indicator for an status request
+	 * Indicator for a status request
 	 *
 	 * @var string
 	 */
 	const STATUS_REQUEST = 'StatusRequest';
+
+	/**
+	 * Indicator for a transaction request
+	 *
+	 * @var string
+	 */
+	const TRANSACTION_REQUEST = 'TransactionRequest';
 }

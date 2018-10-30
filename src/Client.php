@@ -12,6 +12,8 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ErrorParser;
+use Pronamic\WordPress\Pay\Gateways\Sisow\XML\InvoiceParser;
+use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ReservationParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\TransactionParser;
 use SimpleXMLElement;
 use WP_Error;
@@ -96,6 +98,7 @@ class Client {
 	 *
 	 * @param string       $method  Method.
 	 * @param Request|null $request Request.
+	 *
 	 * @return false|SimpleXMLElement
 	 */
 	private function send_request( $method, Request $request = null ) {
@@ -140,7 +143,8 @@ class Client {
 	 * Parse the specified document and return parsed result.
 	 *
 	 * @param SimpleXMLElement $document Document.
-	 * @return WP_Error|Transaction|Error
+	 *
+	 * @return WP_Error|Invoice|Reservation|Transaction|Error
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
@@ -148,12 +152,20 @@ class Client {
 		$name = $document->getName();
 
 		switch ( $name ) {
+			case 'cancelreservationresponse':
+				$reservation = ReservationParser::parse( $document->reservation );
+
+				return $reservation;
 			case 'errorresponse':
 				$sisow_error = ErrorParser::parse( $document->error );
 
 				$this->error = new WP_Error( 'ideal_sisow_error', $sisow_error->message, $sisow_error );
 
 				return $sisow_error;
+			case 'invoiceresponse':
+				$invoice = InvoiceParser::parse( $document->invoice );
+
+				return $invoice;
 			case 'transactionrequest':
 				$transaction = TransactionParser::parse( $document->transaction );
 
@@ -207,6 +219,7 @@ class Client {
 	 * Create an transaction with the specified parameters.
 	 *
 	 * @param TransactionRequest $request Transaction request.
+	 *
 	 * @return Transaction|false
 	 */
 	public function create_transaction( TransactionRequest $request ) {
@@ -228,9 +241,62 @@ class Client {
 	}
 
 	/**
+	 * Create invoice for reservation payment.
+	 *
+	 * @param InvoiceRequest $request Invoice request.
+	 *
+	 * @return Invoice|false
+	 */
+	public function create_invoice( InvoiceRequest $request ) {
+		// Request.
+		$response = $this->send_request( RequestMethods::INVOICE_REQUEST, $request );
+
+		if ( false === $response ) {
+			return false;
+		}
+
+		// Parse.
+		$message = $this->parse_document( $response );
+
+		if ( $message instanceof Invoice ) {
+			return $message;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Cancel reservation payment.
+	 *
+	 * @param CancelReservationRequest $request Reservation cancellation request.
+	 *
+	 * @return Reservation|false
+	 */
+	public function cancel_reservation( CancelReservationRequest $request ) {
+		$request->set_parameter( 'shopid', null );
+
+		// Request.
+		$response = $this->send_request( RequestMethods::CANCEL_RESERVATION_REQUEST, $request );
+
+		if ( false === $response ) {
+			return false;
+		}
+
+		// Parse.
+		$message = $this->parse_document( $response );
+
+		if ( $message instanceof Reservation ) {
+			return $message;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get the status of the specified transaction ID.
 	 *
 	 * @param StatusRequest $request Status request object.
+	 *
 	 * @return Transaction|false
 	 */
 	public function get_status( StatusRequest $request ) {
