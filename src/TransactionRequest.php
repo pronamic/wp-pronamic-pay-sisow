@@ -10,9 +10,6 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
-use Pronamic\WordPress\Pay\Payments\Items;
-
 /**
  * Title: iDEAL Sisow transaction request
  * Description:
@@ -47,8 +44,6 @@ class TransactionRequest extends Request {
 			$this->get_parameter( 'shopid' ),
 
 			$this->get_parameter( 'merchantid' ),
-
-			$this->get_parameter( 'merchantkey' ),
 		);
 	}
 }
