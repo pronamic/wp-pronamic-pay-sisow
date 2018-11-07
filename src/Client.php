@@ -1,9 +1,19 @@
 <?php
+/**
+ * Client
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ErrorParser;
+use Pronamic\WordPress\Pay\Gateways\Sisow\XML\InvoiceParser;
+use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ReservationParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\TransactionParser;
 use SimpleXMLElement;
 use WP_Error;
@@ -20,45 +30,45 @@ use WP_Error;
  */
 class Client {
 	/**
-	 * Sisow REST API endpoint URL
+	 * Sisow REST API endpoint URL.
 	 *
 	 * @var string
 	 */
 	const API_URL = 'https://www.sisow.nl/Sisow/iDeal/RestHandler.ashx';
 
 	/**
-	 * Sisow merchant ID
+	 * Sisow merchant ID.
 	 *
 	 * @var string
 	 */
 	private $merchant_id;
 
 	/**
-	 * Sisow merchant key
+	 * Sisow merchant key.
 	 *
 	 * @var string
 	 */
 	private $merchant_key;
 
 	/**
-	 * Indicator to use test mode or not
+	 * Indicator to use test mode or not.
 	 *
 	 * @var boolean
 	 */
 	private $test_mode;
 
 	/**
-	 * Error
+	 * Error.
 	 *
-	 * @var WP_Error
+	 * @var WP_Error|null
 	 */
 	private $error;
 
 	/**
-	 * Constructs and initializes an Sisow client object
+	 * Constructs and initializes a Sisow client object.
 	 *
-	 * @param string $merchant_id
-	 * @param string $merchant_key
+	 * @param string $merchant_id  Merchant ID.
+	 * @param string $merchant_key Merchant key.
 	 */
 	public function __construct( $merchant_id, $merchant_key ) {
 		$this->merchant_id  = $merchant_id;
@@ -66,42 +76,75 @@ class Client {
 	}
 
 	/**
-	 * Error
+	 * Error.
 	 *
-	 * @return WP_Error
+	 * @return WP_Error|null
 	 */
 	public function get_error() {
 		return $this->error;
 	}
 
 	/**
-	 * Set test mode
+	 * Set test mode.
 	 *
-	 * @param boolean $test_mode
+	 * @param boolean $test_mode True if test mode, false otherwise.
 	 */
 	public function set_test_mode( $test_mode ) {
 		$this->test_mode = $test_mode;
 	}
 
 	/**
-	 * Send request with the specified action and parameters
+	 * Send request with the specified action and parameters.
 	 *
-	 * @param string $action
-	 * @param array  $parameters
+	 * @param string       $method  Method.
+	 * @param Request|null $request Request.
+	 *
+	 * @return false|SimpleXMLElement
 	 */
-	private function send_request( $method, array $parameters = array() ) {
+	private function send_request( $method, Request $request = null ) {
 		$url = self::API_URL . '/' . $method;
 
-		return Core_Util::remote_get_body( $url, 200, array(
-			'method' => 'POST',
-			'body'   => $parameters,
-		) );
+		if ( null !== $request ) {
+			$request->sign( $this->merchant_key );
+		}
+
+		$result = Core_Util::remote_get_body(
+			$url,
+			200,
+			array(
+				'method' => 'POST',
+				'body'   => ( null === $request ) ? null : $request->get_parameters(),
+			)
+		);
+
+		if ( $result instanceof WP_Error ) {
+			$this->error = $result;
+
+			return false;
+		}
+
+		if ( ! is_string( $result ) ) {
+			return false;
+		}
+
+		// XML.
+		$xml = Core_Util::simplexml_load_string( $result );
+
+		if ( $xml instanceof WP_Error ) {
+			$this->error = $xml;
+
+			return false;
+		}
+
+		return $xml;
 	}
 
 	/**
-	 * Parse the specified document and return parsed result
+	 * Parse the specified document and return parsed result.
 	 *
-	 * @param SimpleXMLElement $document
+	 * @param SimpleXMLElement $document Document.
+	 *
+	 * @return WP_Error|Invoice|Reservation|Transaction|Error
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
@@ -109,12 +152,20 @@ class Client {
 		$name = $document->getName();
 
 		switch ( $name ) {
+			case 'cancelreservationresponse':
+				$reservation = ReservationParser::parse( $document->reservation );
+
+				return $reservation;
 			case 'errorresponse':
 				$sisow_error = ErrorParser::parse( $document->error );
 
 				$this->error = new WP_Error( 'ideal_sisow_error', $sisow_error->message, $sisow_error );
 
 				return $sisow_error;
+			case 'invoiceresponse':
+				$invoice = InvoiceParser::parse( $document->invoice );
+
+				return $invoice;
 			case 'transactionrequest':
 				$transaction = TransactionParser::parse( $document->transaction );
 
@@ -133,158 +184,136 @@ class Client {
 	}
 
 	/**
-	 * Get directory
+	 * Get directory.
 	 *
-	 * @return array an array with issuers
+	 * @return array|false
 	 */
 	public function get_directory() {
-		$directory = false;
-
 		if ( $this->test_mode ) {
-			$directory = array( '99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ) );
-		} else {
-			// Request
-			$result = $this->send_request( RequestMethods::DIRECTORY_REQUEST );
+			return array(
+				'99' => __( 'Sisow Bank (test)', 'pronamic_ideal' ),
+			);
+		}
 
-			if ( is_wp_error( $result ) ) {
-				$this->error = $result;
+		// Request.
+		$result = $this->send_request( RequestMethods::DIRECTORY_REQUEST );
 
-				return $directory;
-			}
+		if ( false === $result ) {
+			return false;
+		}
 
-			// XML
-			$xml = Core_Util::simplexml_load_string( $result );
+		// Parse.
+		$directory = array();
 
-			if ( is_wp_error( $xml ) ) {
-				$this->error = $xml;
+		foreach ( $result->directory->issuer as $issuer ) {
+			$id   = (string) $issuer->issuerid;
+			$name = (string) $issuer->issuername;
 
-				return $directory;
-			}
-
-			// Parse
-			if ( $xml instanceof SimpleXMLElement ) {
-				$directory = array();
-
-				foreach ( $xml->directory->issuer as $issuer ) {
-					$id   = (string) $issuer->issuerid;
-					$name = (string) $issuer->issuername;
-
-					$directory[ $id ] = $name;
-				}
-			}
+			$directory[ $id ] = $name;
 		}
 
 		return $directory;
 	}
 
 	/**
-	 * Create an transaction with the specified parameters
+	 * Create an transaction with the specified parameters.
 	 *
-	 * @param string $issuer_id
-	 * @param string $purchase_id
-	 * @param float  $amount
-	 * @param string $description
-	 * @param string $entrance_code
-	 * @param string $return_url
+	 * @param TransactionRequest $request Transaction request.
 	 *
-	 * @return Transaction
+	 * @return Transaction|false
 	 */
 	public function create_transaction( TransactionRequest $request ) {
-		$result = false;
+		// Request.
+		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request );
 
-		// Request
-		$response = $this->send_request( RequestMethods::TRANSACTION_REQUEST, $request->get_parameters( $this->merchant_key ) );
-
-		if ( is_wp_error( $response ) ) {
-			$this->error = $response;
-
-			return $result;
+		if ( false === $response ) {
+			return false;
 		}
 
-		// XML
-		$xml = Core_Util::simplexml_load_string( $response );
+		// Parse.
+		$message = $this->parse_document( $response );
 
-		if ( is_wp_error( $xml ) ) {
-			$this->error = $xml;
-
-			return $result;
+		if ( $message instanceof Transaction ) {
+			return $message;
 		}
 
-		// Parse
-		if ( $xml instanceof SimpleXMLElement ) {
-			$message = $this->parse_document( $xml );
-
-			if ( $message instanceof Transaction ) {
-				$result = $message;
-			}
-		}
-
-		return $result;
+		return false;
 	}
 
 	/**
-	 * Create an SHA1 for an status request
+	 * Create invoice for reservation payment.
 	 *
-	 * @param string $transaction_id
-	 * @param string $shop_id
-	 * @param string $merchant_id
-	 * @param string $merchant_key
+	 * @param InvoiceRequest $request Invoice request.
+	 *
+	 * @return Invoice|false
 	 */
-	public static function create_status_sha1( $transaction_id, $shop_id, $merchant_id, $merchant_key ) {
-		return sha1(
-			$transaction_id .
-			$shop_id .
-			$merchant_id .
-			$merchant_key
-		);
+	public function create_invoice( InvoiceRequest $request ) {
+		// Request.
+		$response = $this->send_request( RequestMethods::INVOICE_REQUEST, $request );
+
+		if ( false === $response ) {
+			return false;
+		}
+
+		// Parse.
+		$message = $this->parse_document( $response );
+
+		if ( $message instanceof Invoice ) {
+			return $message;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Get the status of the specified transaction ID
+	 * Cancel reservation payment.
 	 *
-	 * @param string $transaction_id
+	 * @param CancelReservationRequest $request Reservation cancellation request.
 	 *
-	 * @return boolean|Transaction
+	 * @return Reservation|false
 	 */
-	public function get_status( $transaction_id ) {
-		$status = false;
+	public function cancel_reservation( CancelReservationRequest $request ) {
+		$request->set_parameter( 'shopid', null );
 
-		if ( '' === $transaction_id ) {
-			return $status;
+		// Request.
+		$response = $this->send_request( RequestMethods::CANCEL_RESERVATION_REQUEST, $request );
+
+		if ( false === $response ) {
+			return false;
 		}
 
-		// Parameters
-		$parameters = array(
-			'merchantid' => $this->merchant_id,
-			'trxid'      => $transaction_id,
-			'sha1'       => self::create_status_sha1( $transaction_id, '', $this->merchant_id, $this->merchant_key ),
-		);
+		// Parse.
+		$message = $this->parse_document( $response );
 
-		// Request
-		$result = $this->send_request( RequestMethods::STATUS_REQUEST, $parameters );
-
-		if ( is_wp_error( $result ) ) {
-			$this->error = $result;
-
-			return $status;
+		if ( $message instanceof Reservation ) {
+			return $message;
 		}
 
-		// XML
-		$xml = Core_Util::simplexml_load_string( $result );
+		return false;
+	}
 
-		if ( is_wp_error( $xml ) ) {
-			$this->error = $xml;
+	/**
+	 * Get the status of the specified transaction ID.
+	 *
+	 * @param StatusRequest $request Status request object.
+	 *
+	 * @return Transaction|false
+	 */
+	public function get_status( StatusRequest $request ) {
+		// Request.
+		$response = $this->send_request( RequestMethods::STATUS_REQUEST, $request );
 
-			return $status;
+		if ( false === $response ) {
+			return false;
 		}
 
-		// Parse
-		if ( $xml instanceof SimpleXMLElement ) {
-			$status = $this->parse_document( $xml );
+		// Parse.
+		$message = $this->parse_document( $response );
 
-			return $status;
+		if ( $message instanceof Transaction ) {
+			return $message;
 		}
 
-		return $status;
+		return false;
 	}
 }

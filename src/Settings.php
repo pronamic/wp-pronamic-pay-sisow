@@ -1,4 +1,12 @@
 <?php
+/**
+ * Settings
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -15,13 +23,22 @@ use Pronamic\WordPress\Pay\Core\GatewaySettings;
  * @since   1.0.0
  */
 class Settings extends GatewaySettings {
+	/**
+	 * Construct settings.
+	 */
 	public function __construct() {
 		add_filter( 'pronamic_pay_gateway_sections', array( $this, 'sections' ) );
 		add_filter( 'pronamic_pay_gateway_fields', array( $this, 'fields' ) );
 	}
 
+	/**
+	 * Sections.
+	 *
+	 * @param array $sections Sections.
+	 * @return array
+	 */
 	public function sections( array $sections ) {
-		// Sisow
+		// Sisow.
 		$sections['sisow'] = array(
 			'title'       => __( 'Sisow', 'pronamic_ideal' ),
 			'methods'     => array( 'sisow' ),
@@ -35,8 +52,14 @@ class Settings extends GatewaySettings {
 		return $sections;
 	}
 
+	/**
+	 * Fields.
+	 *
+	 * @param array $fields Fields.
+	 * @return array
+	 */
 	public function fields( array $fields ) {
-		// Merchant ID
+		// Merchant ID.
 		$fields[] = array(
 			'filter'   => FILTER_SANITIZE_STRING,
 			'section'  => 'sisow',
@@ -48,7 +71,7 @@ class Settings extends GatewaySettings {
 			'tooltip'  => __( 'Merchant ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
 		);
 
-		// Merchant Key
+		// Merchant Key.
 		$fields[] = array(
 			'filter'   => FILTER_SANITIZE_STRING,
 			'section'  => 'sisow',
@@ -60,7 +83,7 @@ class Settings extends GatewaySettings {
 			'tooltip'  => __( 'Merchant Key as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
 		);
 
-		// Shop ID
+		// Shop ID.
 		$fields[] = array(
 			'filter'      => FILTER_SANITIZE_STRING,
 			'section'     => 'sisow',
@@ -75,7 +98,7 @@ class Settings extends GatewaySettings {
 			'default'     => 0,
 		);
 
-		// Transaction feedback
+		// Transaction feedback.
 		$fields[] = array(
 			'section' => 'sisow',
 			'methods' => array( 'sisow' ),

@@ -1,6 +1,6 @@
 <?php
 /**
- * Error parser
+ * Reservation parser
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2018 Pronamic
@@ -11,31 +11,34 @@
 namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
 
 use Pronamic\WordPress\Pay\Core\XML\Security;
-use Pronamic\WordPress\Pay\Gateways\Sisow\Error as Sisow_Error;
+use Pronamic\WordPress\Pay\Gateways\Sisow\Reservation;
 use SimpleXMLElement;
 
 /**
- * Title: Error XML parser
+ * Reservation parser
  * Description:
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author  Remco Tolsma
- * @version 2.0.0
- * @since   1.0.0
+ * @author  Reüel van der Steege
+ * @version 2.0.1
+ * @since   2.0.1
  */
-class ErrorParser implements Parser {
+class ReservationParser implements Parser {
 	/**
-	 * Parse the specified XML element.
+	 * Parse XML element.
 	 *
 	 * @param SimpleXMLElement $xml XML element to parse.
+	 *
+	 * @return Reservation
 	 */
 	public static function parse( SimpleXMLElement $xml ) {
-		$error = new Sisow_Error(
-			Security::filter( $xml->errorcode ),
-			Security::filter( $xml->errormessage )
-		);
+		$reservation = new Reservation();
 
-		return $error;
+		if ( isset( $xml->status ) ) {
+			$reservation->status = Security::filter( $xml->status );
+		}
+
+		return $reservation;
 	}
 }

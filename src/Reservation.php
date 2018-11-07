@@ -1,6 +1,6 @@
 <?php
 /**
- * Config
+ * Reservation
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2018 Pronamic
@@ -10,37 +10,30 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use Pronamic\WordPress\Pay\Core\GatewayConfig;
-
 /**
- * Title: Sisow config
+ * Title: Sisow reservation
  * Description:
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author  Remco Tolsma
- * @version 2.0.0
- * @since   1.0.0
+ * @author  Reüel van der Steege
+ * @version 2.0.1
+ * @since   2.0.1
  */
-class Config extends GatewayConfig {
+class Reservation {
 	/**
-	 * Merchant ID.
+	 * The status of the transaction
 	 *
 	 * @var string
 	 */
-	public $merchant_id;
+	public $status;
 
 	/**
-	 * Merchant key.
+	 * Create an string representation of this object
 	 *
-	 * @var string
+	 * @return string
 	 */
-	public $merchant_key;
-
-	/**
-	 * Shop ID.
-	 *
-	 * @var string
-	 */
-	public $shop_id;
+	public function __toString() {
+		return $this->status;
+	}
 }

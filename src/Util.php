@@ -1,4 +1,12 @@
 <?php
+/**
+ * Util
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -14,18 +22,18 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
  */
 class Util {
 	/**
-	 * Holds the unallowed character pattern
+	 * Holds the unallowed character pattern.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	private static $pattern;
 
 	/**
-	 * Get unallowed character pattern
+	 * Get unallowed character pattern.
 	 *
 	 * Karakterset
 	 *
-	 * @see http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf
+	 * @link http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf
 	 *
 	 * Hieronder de tabel toegestane karakters.
 	 *
@@ -78,8 +86,10 @@ class Util {
 				'$',
 			);
 
-			// We use a # as a regex delimiter instead of a / so we don't have to escape the slash
-			// @see http://stackoverflow.com/q/12239424
+			/*
+			 * We use a # as a regex delimiter instead of a / so we don't have to escape the slash.
+			 * @link http://stackoverflow.com/q/12239424
+			 */
 			self::$pattern = '#[^' . implode( $characters ) . ']#';
 		}
 
@@ -87,10 +97,9 @@ class Util {
 	}
 
 	/**
-	 * Filter all Sisow unallowed charachters
+	 * Filter all Sisow unallowed charachters.
 	 *
-	 * @param string $string
-	 *
+	 * @param string $string String to filter.
 	 * @return mixed
 	 */
 	public static function filter( $string ) {

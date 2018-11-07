@@ -36,7 +36,8 @@
 	"require": {
 		"php": "^5.3",
 		"pronamic/wp-datetime": "^1.0",
-		"wp-pay/core": "^2.0",
+		"pronamic/wp-money": "dev-develop as 1.1",
+		"wp-pay/core": "dev-feature/post-pay as 2.0.20",
 		"wp-pay-gateways/common": "^2.0"
 	},
 	"require-dev": {
@@ -44,7 +45,10 @@
 		"phpmd/phpmd": "^2.2.3",
 		"phpunit/phpunit": "^4.5",
 		"squizlabs/php_codesniffer": "^2.7",
-		"wp-coding-standards/wpcs": "^0.14.0",
-		"wimg/php-compatibility": "^8.0"
+		"wp-coding-standards/wpcs": "^1.1",
+		"wimg/php-compatibility": "^9.0",
+		"wp-phpunit/wp-phpunit": "^4.9",
+		"johnpbloch/wordpress": "^4.9",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.4.4"
 	}
 }
