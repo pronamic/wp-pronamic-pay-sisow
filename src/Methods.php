@@ -39,6 +39,13 @@ class Methods {
 	const BELFIUS = 'belfius';
 
 	/**
+	 * Indicator for 'Billink' payment
+	 *
+	 * @var string
+	 */
+	const BILLINK = 'billink';
+
+	/**
 	 * Indicator for 'iDEAL' payment
 	 *
 	 * @var string
@@ -172,6 +179,7 @@ class Methods {
 		PaymentMethods::BANCONTACT       => self::MISTER_CASH,
 		PaymentMethods::BANK_TRANSFER    => self::OVERBOEKING,
 		PaymentMethods::BELFIUS          => self::BELFIUS,
+		PaymentMethods::BILLINK          => self::BILLINK,
 		PaymentMethods::BUNQ             => self::BUNQ,
 		PaymentMethods::IN3              => self::CAPAYABLE,
 		PaymentMethods::CREDIT_CARD      => self::CREDIT_CARD,

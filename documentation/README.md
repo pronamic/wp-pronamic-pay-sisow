@@ -99,3 +99,16 @@ TA3450 » Reservation not possible » TransactionRequest » De reservering van h
 > De melding TA3450 houdt dus in dat deze transactie niet door de credietcheck van AfterPay is gekomen.  
 > Vaak ontvangen consumenten/merchants deze melding op het moment wanneer geen legitieme gegevens worden gebruikt.  
 > Vandaar is het aan te raden om te controleren of er daadwerkelijk kloppende, echte gegevens worden ingevuld op de betaalpagina.
+
+## Integreer onze nieuwe betaalmethoden Billink
+
+**Question Pronamic** on **7 nov. 2018 10:59**:
+
+> We kregen jullie "Integreer onze nieuwe betaalmethoden Billink" nieuwsbrief binnen. Kan het kloppen dat de API documentatie nog niet helemaal up-to-date is? In "Bijlage 1: payment values" zien we namelijk "Billink" niet staan:
+> 
+> Verder vroegen we ons ook af of we Billink betalingen ook kunnen testen/simuleren. We horen het graag, alvast bedankt.
+
+**Answer Sisow** on **8 nov. 2018 08:29**:
+
+> Bedankt voor de constatering, we zijn deze inderdaad vergeten.
+> De code die je kunt gebruiken is “billink”.
