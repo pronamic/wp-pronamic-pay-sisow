@@ -250,29 +250,31 @@ class Gateway extends Core_Gateway {
 			$x = 1;
 
 			foreach ( $lines as $line ) {
-				$net_price = ( null === $line->get_unit_price_excluding_tax() ) ? null : $line->get_unit_price_excluding_tax()->get_cents();
-				$total     = ( null === $line->get_total_amount() ) ? null : $line->get_total_amount()->get_cents();
-				$net_total = ( null === $line->get_total_amount_excluding_tax() ) ? null : $line->get_total_amount_excluding_tax()->get_cents();
-				$tax       = ( null === $line->get_tax_amount() ) ? null : $line->get_tax_amount()->get_cents();
-
+				// Product ID.
 				$product_id = $line->get_id();
 
-				if ( PaymentLineType::SHIPPING === $line->get_type() ) {
-					$product_id = 'shipping';
-				} elseif ( PaymentLineType::FEE === $line->get_type() ) {
-					$product_id = 'paymentfee';
+				switch( $line->get_type() ) {
+					case PaymentLineType::SHIPPING:
+						$product_id = 'shipping';
+
+						break;
+					case PaymentLineType::FEE:
+						$product_id = 'paymentfee';
+
+						break;
 				}
 
+				// Request parameters.
 				$request->merge_parameters(
 					array(
 						'product_id_' . $x          => $product_id,
 						'product_description_' . $x => $line->get_name(),
 						'product_quantity_' . $x    => $line->get_quantity(),
-						'product_netprice_' . $x    => $net_price,
-						'product_total_' . $x       => $total,
-						'product_nettotal_' . $x    => $net_total,
-						'product_tax_' . $x         => $tax,
-						'product_taxrate_' . $x     => $line->get_tax_percentage() * 100,
+						'product_netprice_' . $x    => $line->get_unit_price()->get_excluding_tax()->get_cents(),
+						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_cents(),
+						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_cents(),
+						'product_tax_' . $x         => $line->get_tax_amount()->get_cents(),
+						'product_taxrate_' . $x     => $line->get_total_amount()->get_tax_percentage() * 100,
 					)
 				);
 
