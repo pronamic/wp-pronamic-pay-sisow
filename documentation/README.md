@@ -112,3 +112,28 @@ TA3450 » Reservation not possible » TransactionRequest » De reservering van h
 
 > Bedankt voor de constatering, we zijn deze inderdaad vergeten.
 > De code die je kunt gebruiken is “billink”.
+
+## Error `TA9990` `Gothia`
+
+**Question Pronamic** on **7 nov. 2018 11:06**:
+
+> We zijn momenteel bezig met de implementatie van AfterPay via Sisow. We hebben hier eerder ook contact over gehad. Inmiddels lukt het om een AfterPay test betaling op te starten. We zijn nu bezig met de implementatie van `InvoiceRequest`, `CancelReservationRequest`, etc. We lopen echter tegen problemen aan. Als we `CancelReservationRequest` uitvoeren met de volgende parameters:
+
+```
+[merchantid] => 2537541595
+[trxid] => TEST080531390587
+[sha1] => 0f1b601f4fb1936463ea216376f1fda9041a778c
+```
+
+> Krijgen we de volgende foutmelding terug:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?><errorresponse xmlns="https://www.sisow.nl/Sisow/REST" version="1.0.0"><error><errorcode>TA9990</errorcode><errormessage>Gothia</errormessage></error></errorresponse>
+```
+
+> Kunnen jullie achterhalen wat we fout doen en wat foutcode `TA9990` en foutmelding `Gothia` precies betekenen?
+
+**Answer Sisow** on **14 nov. 2018 08:23**:
+
+> Het was even zoeken maar onderstaande is opgelost.  
+> De gegeven foutmelding zou ook niet meer voor mogen komen.
