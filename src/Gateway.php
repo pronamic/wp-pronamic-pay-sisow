@@ -264,13 +264,20 @@ class Gateway extends Core_Gateway {
 						break;
 				}
 
+				// Price.
+				$unit_price = null;
+
+				if ( null !== $line->get_unit_price() ) {
+					$unit_price = $line->get_unit_price()->get_excluding_tax()->get_cents();
+				}
+
 				// Request parameters.
 				$request->merge_parameters(
 					array(
 						'product_id_' . $x          => $product_id,
 						'product_description_' . $x => $line->get_name(),
 						'product_quantity_' . $x    => $line->get_quantity(),
-						'product_netprice_' . $x    => $line->get_unit_price()->get_excluding_tax()->get_cents(),
+						'product_netprice_' . $x    => $unit_price,
 						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_cents(),
 						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_cents(),
 						'product_tax_' . $x         => $line->get_tax_amount()->get_cents(),
