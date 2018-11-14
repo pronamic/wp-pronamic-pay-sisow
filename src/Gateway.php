@@ -253,7 +253,7 @@ class Gateway extends Core_Gateway {
 				// Product ID.
 				$product_id = $line->get_id();
 
-				switch( $line->get_type() ) {
+				switch ( $line->get_type() ) {
 					case PaymentLineType::SHIPPING:
 						$product_id = 'shipping';
 
