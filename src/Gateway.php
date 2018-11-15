@@ -201,7 +201,7 @@ class Gateway extends Core_Gateway {
 				array(
 					'billing_mail'        => $address->get_email(),
 					'billing_company'     => $address->get_company_name(),
-					'billing_coc'         => $address->get_kvk_number(),
+					'billing_coc'         => $address->get_coc_number(),
 					'billing_address1'    => $address->get_line_1(),
 					'billing_address2'    => $address->get_line_2(),
 					'billing_zip'         => $address->get_postal_code(),
