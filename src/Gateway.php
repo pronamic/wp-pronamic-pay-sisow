@@ -195,6 +195,11 @@ class Gateway extends Core_Gateway {
 						'billing_lastname'  => $name->get_last_name(),
 					)
 				);
+
+				// Remove accents from first name for AfterPay.
+				if ( PaymentMethods::AFTERPAY === $payment->get_method() ) {
+					$request->set_parameter( 'billing_firstname', remove_accents( $name->get_first_name() ) );
+				}
 			}
 
 			$request->merge_parameters(
