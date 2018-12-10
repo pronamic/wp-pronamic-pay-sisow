@@ -7,6 +7,14 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.1] - 2018-12-10
+- Added support for payment lines, shipping, billing and customer data.
+- Added support for Billink.
+- Added support for Capayable.
+
+## [2.0.0] - 2018-05-11
+- WordPress Coding Standards improvements.
+
 ## [1.2.4] - 2017-12-12
 - WordPress Coding Standards improvements.
 
@@ -60,7 +68,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 - Added support for Shop ID.
 
 ## [1.0.3] - 2015-03-03
-- Changed WordPress pay core library requirment from ~1.0.0 to >=1.0.0.
+- Changed WordPress pay core library requirment from `~1.0.0` to `>=1.0.0`.
 
 ## [1.0.2] - 2015-01-20
 - Require WordPress pay core library version 1.0.0.
@@ -71,7 +79,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/1.2.4...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/2.0.1...HEAD
+[2.0.1]: https://github.com/wp-pay-gateways/sisow/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/wp-pay-gateways/sisow/compare/1.2.4...2.0.0
 [1.2.4]: https://github.com/wp-pay-gateways/sisow/compare/1.2.3...1.2.4
 [1.2.3]: https://github.com/wp-pay-gateways/sisow/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/wp-pay-gateways/sisow/compare/1.2.1...1.2.2
