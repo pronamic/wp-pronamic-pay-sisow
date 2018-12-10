@@ -1,10 +1,20 @@
 <?php
+/**
+ * Gateway
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 
 /**
  * Title: Sisow gateway
@@ -18,23 +28,29 @@ use Pronamic\WordPress\Pay\Payments\Payment;
  */
 class Gateway extends Core_Gateway {
 	/**
+	 * Client.
+	 *
+	 * @var Client
+	 */
+	protected $client;
+
+	/**
 	 * Constructs and initialize an Sisow gateway
 	 *
-	 * @param Config $config
+	 * @param Config $config Config.
 	 */
 	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
 		$this->supports = array(
 			'payment_status_request',
+			'reservation_payments',
 		);
 
-		$this->set_method( Gateway::METHOD_HTTP_REDIRECT );
-		$this->set_has_feedback( true );
-		$this->set_amount_minimum( 0.01 );
+		$this->set_method( self::METHOD_HTTP_REDIRECT );
 
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
-		$this->client->set_test_mode( Gateway::MODE_TEST === $config->mode );
+		$this->client->set_test_mode( self::MODE_TEST === $config->mode );
 	}
 
 	/**
@@ -58,21 +74,6 @@ class Gateway extends Core_Gateway {
 		return $groups;
 	}
 
-	public function get_issuer_field() {
-		$payment_method = $this->get_payment_method();
-
-		if ( null === $payment_method || PaymentMethods::IDEAL === $payment_method ) {
-			return array(
-				'id'       => 'pronamic_ideal_issuer_id',
-				'name'     => 'pronamic_ideal_issuer_id',
-				'label'    => __( 'Choose your bank', 'pronamic_ideal' ),
-				'required' => true,
-				'type'     => 'select',
-				'choices'  => $this->get_transient_issuers(),
-			);
-		}
-	}
-
 	/**
 	 * Get supported payment methods
 	 *
@@ -80,14 +81,20 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
+			PaymentMethods::AFTERPAY,
 			PaymentMethods::BANK_TRANSFER,
 			PaymentMethods::BANCONTACT,
 			PaymentMethods::BELFIUS,
+			PaymentMethods::BILLINK,
 			PaymentMethods::BUNQ,
+			PaymentMethods::CAPAYABLE,
+			PaymentMethods::IN3,
 			PaymentMethods::CREDIT_CARD,
+			PaymentMethods::FOCUM,
 			PaymentMethods::GIROPAY,
 			PaymentMethods::IDEAL,
 			PaymentMethods::IDEALQR,
+			PaymentMethods::KLARNA_PAY_LATER,
 			PaymentMethods::PAYPAL,
 			PaymentMethods::SOFORT,
 		);
@@ -96,7 +103,7 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Is payment method required to start transaction?
 	 *
-	 * @see Core_Gateway_Gateway::payment_method_is_required()
+	 * @see Core_Gateway::payment_method_is_required()
 	 */
 	public function payment_method_is_required() {
 		return true;
@@ -107,75 +114,212 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @see Core_Gateway::start()
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 */
 	public function start( Payment $payment ) {
+		// Order and purchase ID.
 		$order_id    = $payment->get_order_id();
-		$purchase_id = empty( $order_id ) ? $payment->get_id() : $order_id;
+		$purchase_id = strval( empty( $order_id ) ? $payment->get_id() : $order_id );
 
 		// Maximum length for purchase ID is 16 characters, otherwise an error will occur:
-		// ideal_sisow_error - purchaseid too long (16)
+		// ideal_sisow_error - purchaseid too long (16).
 		$purchase_id = substr( $purchase_id, 0, 16 );
 
-		$transaction_request              = new TransactionRequest();
-		$transaction_request->merchant_id = $this->config->merchant_id;
-		$transaction_request->shop_id     = $this->config->shop_id;
+		// New transaction request.
+		$request = new TransactionRequest(
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
 
-		$payment_method = $payment->get_method();
+		$request->merge_parameters(
+			array(
+				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
+				'purchaseid'   => substr( $purchase_id, 0, 16 ),
+				'entrancecode' => $payment->get_entrance_code(),
+				'amount'       => $payment->get_total_amount()->get_cents(),
+				'description'  => substr( $payment->get_description(), 0, 32 ),
+				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
+				'returnurl'    => $payment->get_return_url(),
+				'cancelurl'    => $payment->get_return_url(),
+				'notifyurl'    => $payment->get_return_url(),
+				'callbackurl'  => $payment->get_return_url(),
+				// Other parameters.
+				'issuerid'     => $payment->get_issuer(),
+				'billing_mail' => $payment->get_email(),
+			)
+		);
 
-		if ( is_null( $payment_method ) ) {
-			$payment_method = PaymentMethods::IDEAL;
+		// Payment method.
+		$this->set_payment_method( null === $payment->get_method() ? PaymentMethods::IDEAL : $payment->get_method() );
+
+		// Additional parameters for payment method.
+		if ( PaymentMethods::IDEALQR === $payment->get_method() ) {
+			$request->set_parameter( 'qrcode', 'true' );
 		}
 
-		$this->set_payment_method( $payment_method );
+		// Customer.
+		if ( null !== $payment->get_customer() ) {
+			$customer = $payment->get_customer();
 
-		$transaction_request->payment = Methods::transform( $payment_method );
+			$request->merge_parameters(
+				array(
+					'ipaddress' => $customer->get_ip_address(),
+					'gender'    => $customer->get_gender(),
+				)
+			);
 
-		if ( empty( $transaction_request->payment ) && ! empty( $payment_method ) ) {
-			// Leap of faith if the WordPress payment method could not transform to a Sisow method?
-			$transaction_request->payment = $payment_method;
+			if ( null !== $customer->get_locale() ) {
+				/*
+				 * @link https://github.com/wp-pay-gateways/sisow/tree/feature/post-pay/documentation#parameter-locale
+				 */
+				$sisow_locale = strtoupper( substr( $customer->get_locale(), -2 ) );
+
+				$request->set_parameter( 'locale', $sisow_locale );
+			}
+
+			if ( null !== $customer->get_birth_date() ) {
+				$request->set_parameter( 'birthdate', $customer->get_birth_date()->format( 'dmY' ) );
+			}
 		}
 
-		$transaction_request->set_purchase_id( $purchase_id );
-		$transaction_request->set_entrance_code( $payment->get_entrance_code() );
+		// Billing address.
+		if ( null !== $payment->get_billing_address() ) {
+			$address = $payment->get_billing_address();
 
-		$transaction_request->amount       = $payment->get_amount()->get_amount();
-		$transaction_request->issuer_id    = $payment->get_issuer();
-		$transaction_request->test_mode    = Gateway::MODE_TEST === $this->config->mode;
-		$transaction_request->description  = $payment->get_description();
-		$transaction_request->billing_mail = $payment->get_email();
-		$transaction_request->return_url   = $payment->get_return_url();
-		$transaction_request->cancel_url   = $payment->get_return_url();
-		$transaction_request->callback_url = $payment->get_return_url();
-		$transaction_request->notify_url   = $payment->get_return_url();
+			if ( null !== $address->get_name() ) {
+				$name = $address->get_name();
 
-		if ( Methods::IDEALQR === $transaction_request->payment ) {
-			$transaction_request->qrcode = true;
+				$request->merge_parameters(
+					array(
+						'billing_firstname' => $name->get_first_name(),
+						'billing_lastname'  => $name->get_last_name(),
+					)
+				);
+
+				// Remove accents from first name for AfterPay.
+				if ( PaymentMethods::AFTERPAY === $payment->get_method() ) {
+					$request->set_parameter( 'billing_firstname', remove_accents( $name->get_first_name() ) );
+				}
+			}
+
+			$request->merge_parameters(
+				array(
+					'billing_mail'        => $address->get_email(),
+					'billing_company'     => $address->get_company_name(),
+					'billing_coc'         => $address->get_coc_number(),
+					'billing_address1'    => $address->get_line_1(),
+					'billing_address2'    => $address->get_line_2(),
+					'billing_zip'         => $address->get_postal_code(),
+					'billing_city'        => $address->get_city(),
+					'billing_country'     => $address->get_country_name(),
+					'billing_countrycode' => $address->get_country_code(),
+					'billing_phone'       => $address->get_phone(),
+				)
+			);
 		}
 
-		$result = $this->client->create_transaction( $transaction_request );
+		// Shipping address.
+		if ( null !== $payment->get_shipping_address() ) {
+			$address = $payment->get_shipping_address();
+
+			if ( null !== $address->get_name() ) {
+				$name = $address->get_name();
+
+				$request->merge_parameters(
+					array(
+						'shipping_firstname' => $name->get_first_name(),
+						'shipping_lastname'  => $name->get_last_name(),
+					)
+				);
+			}
+
+			$request->merge_parameters(
+				array(
+					'shipping_mail'        => $address->get_email(),
+					'shipping_company'     => $address->get_company_name(),
+					'shipping_address1'    => $address->get_line_1(),
+					'shipping_address2'    => $address->get_line_2(),
+					'shipping_zip'         => $address->get_postal_code(),
+					'shipping_city'        => $address->get_city(),
+					'shipping_country'     => $address->get_country_name(),
+					'shipping_countrycode' => $address->get_country_code(),
+					'shipping_phone'       => $address->get_phone(),
+				)
+			);
+		}
+
+		// Lines.
+		if ( null !== $payment->get_lines() ) {
+			$lines = $payment->get_lines();
+
+			$x = 1;
+
+			foreach ( $lines as $line ) {
+				// Product ID.
+				$product_id = $line->get_id();
+
+				switch ( $line->get_type() ) {
+					case PaymentLineType::SHIPPING:
+						$product_id = 'shipping';
+
+						break;
+					case PaymentLineType::FEE:
+						$product_id = 'paymentfee';
+
+						break;
+				}
+
+				// Price.
+				$unit_price = null;
+
+				if ( null !== $line->get_unit_price() ) {
+					$unit_price = $line->get_unit_price()->get_excluding_tax()->get_cents();
+				}
+
+				// Request parameters.
+				$request->merge_parameters(
+					array(
+						'product_id_' . $x          => $product_id,
+						'product_description_' . $x => $line->get_name(),
+						'product_quantity_' . $x    => $line->get_quantity(),
+						'product_netprice_' . $x    => $unit_price,
+						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_cents(),
+						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_cents(),
+						'product_tax_' . $x         => $line->get_tax_amount()->get_cents(),
+						'product_taxrate_' . $x     => $line->get_total_amount()->get_tax_percentage() * 100,
+					)
+				);
+
+				$x++;
+			}
+		}
+
+		// Create transaction.
+		$result = $this->client->create_transaction( $request );
 
 		if ( false !== $result ) {
 			$payment->set_transaction_id( $result->id );
 			$payment->set_action_url( $result->issuer_url );
 		} else {
 			$this->error = $this->client->get_error();
+
+			return false;
 		}
 	}
 
 	/**
 	 * Update status of the specified payment
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$result = $this->client->get_status( $payment->get_transaction_id() );
+		$request = new StatusRequest(
+			$payment->get_transaction_id(),
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
 
-		if ( $result instanceof Error ) {
-			$this->error = $this->client->get_error();
-
-			return;
-		}
+		$result = $this->client->get_status( $request );
 
 		if ( false === $result ) {
 			$this->error = $this->client->get_error();
@@ -183,13 +327,91 @@ class Gateway extends Core_Gateway {
 			return;
 		}
 
-		if ( $result instanceof Transaction ) {
-			$transaction = $result;
+		$transaction = $result;
 
-			$payment->set_status( $transaction->status );
-			$payment->set_consumer_name( $transaction->consumer_name );
-			$payment->set_consumer_account_number( $transaction->consumer_account );
-			$payment->set_consumer_city( $transaction->consumer_city );
+		$payment->set_status( Statuses::transform( $transaction->status ) );
+		$payment->set_consumer_name( $transaction->consumer_name );
+		$payment->set_consumer_account_number( $transaction->consumer_account );
+		$payment->set_consumer_city( $transaction->consumer_city );
+	}
+
+	/**
+	 * Create invoice.
+	 *
+	 * @param Payment $payment Payment.
+	 *
+	 * @return bool|Invoice
+	 */
+	public function create_invoice( $payment ) {
+		$transaction_id = $payment->get_transaction_id();
+
+		if ( empty( $transaction_id ) ) {
+			return false;
 		}
+
+		// Invoice request.
+		$request = new InvoiceRequest(
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
+
+		$request->set_parameter( 'trxid', $transaction_id );
+
+		// Create invoice.
+		$result = $this->client->create_invoice( $request );
+
+		// Handle errors.
+		if ( false === $result ) {
+			$this->error = $this->client->get_error();
+
+			return false;
+		}
+
+		$payment->set_status( Core_Statuses::SUCCESS );
+
+		$payment->save();
+
+		return $result;
+	}
+
+	/**
+	 * Cancel reservation.
+	 *
+	 * @param Payment $payment Payment.
+	 *
+	 * @return bool|Reservation
+	 */
+	public function cancel_reservation( $payment ) {
+		$transaction_id = $payment->get_transaction_id();
+
+		if ( empty( $transaction_id ) ) {
+			return false;
+		}
+
+		// Cancel reservation request.
+		$request = new CancelReservationRequest(
+			$this->config->merchant_id,
+			$this->config->shop_id
+		);
+
+		$request->set_parameter( 'trxid', $transaction_id );
+
+		// Cancel reservation.
+		$result = $this->client->cancel_reservation( $request );
+
+		// Handle errors.
+		if ( false === $result ) {
+			$this->error = $this->client->get_error();
+
+			return false;
+		}
+
+		if ( isset( $result->status ) ) {
+			$payment->set_status( Statuses::transform( $result->status ) );
+
+			$payment->save();
+		}
+
+		return $result;
 	}
 }

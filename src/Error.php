@@ -1,4 +1,12 @@
 <?php
+/**
+ * Error
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -14,34 +22,32 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
  */
 class Error {
 	/**
-	 * Sisow error code
+	 * Sisow error code.
 	 *
 	 * @var string
 	 */
 	public $code;
 
 	/**
-	 * Sisow error message
+	 * Sisow error message.
 	 *
 	 * @var string
 	 */
 	public $message;
 
 	/**
-	 * Constructs and initializes an Sisow error object
+	 * Constructs and initializes an Sisow error object.
 	 *
-	 * @param string $code
-	 * @param string $message
+	 * @param string $code    Code.
+	 * @param string $message Message.
 	 */
 	public function __construct( $code, $message ) {
 		$this->code    = $code;
 		$this->message = $message;
 	}
 
-	// @todo getters and setters
-
 	/**
-	 * Create an string representation of this object
+	 * Create an string representation of this object.
 	 *
 	 * @return string
 	 */

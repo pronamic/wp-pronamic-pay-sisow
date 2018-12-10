@@ -20,6 +20,7 @@ module.exports = function( grunt ) {
 					'!node_modules/**',
 					'!tests/**',
 					'!vendor/**',
+					'!wordpress/**'
 				],
 			},
 			options: {

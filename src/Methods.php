@@ -1,4 +1,12 @@
 <?php
+/**
+ * Methods
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -11,16 +19,31 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.1.0
  * @since   1.0.0
  */
 class Methods {
+	/**
+	 * Indicator for 'AfterPay' payment.
+	 *
+	 * @var string
+	 * @since 2.1.0
+	 */
+	const AFTERPAY = 'afterpay';
+
 	/**
 	 * Indicator for 'Belfius' payment
 	 *
 	 * @var string
 	 */
 	const BELFIUS = 'belfius';
+
+	/**
+	 * Indicator for 'Billink' payment
+	 *
+	 * @var string
+	 */
+	const BILLINK = 'billink';
 
 	/**
 	 * Indicator for 'iDEAL' payment
@@ -45,6 +68,14 @@ class Methods {
 	const BUNQ = 'bunq';
 
 	/**
+	 * Indicator for 'Capayable' payment.
+	 *
+	 * @var string
+	 * @since 2.1.0
+	 */
+	const CAPAYABLE = 'capayable';
+
+	/**
 	 * Indicator for 'Creditcard' payment
 	 *
 	 * @var string
@@ -67,11 +98,27 @@ class Methods {
 	const EBILL = 'ebill';
 
 	/**
+	 * Indicator for 'Focum' payment.
+	 *
+	 * @var string
+	 * @since 2.1.0
+	 */
+	const FOCUM = 'focum';
+
+	/**
 	 * Indicator for 'Giropay' payment
 	 *
 	 * @var string
 	 */
 	const GIROPAY = 'giropay';
+
+	/**
+	 * Indicator for 'Klarna Factuur' payment.
+	 *
+	 * @var string
+	 * @since 2.1.0
+	 */
+	const KLARNA = 'klarna';
 
 	/**
 	 * Indicator for 'Bank/giro betaling' payment
@@ -128,29 +175,32 @@ class Methods {
 	 * @var array
 	 */
 	private static $map = array(
-		PaymentMethods::BANCONTACT    => Methods::MISTER_CASH,
-		PaymentMethods::BANK_TRANSFER => Methods::OVERBOEKING,
-		PaymentMethods::BELFIUS       => Methods::BELFIUS,
-		PaymentMethods::BUNQ          => Methods::BUNQ,
-		PaymentMethods::CREDIT_CARD   => Methods::CREDIT_CARD,
-		PaymentMethods::GIROPAY       => Methods::GIROPAY,
-		PaymentMethods::IDEAL         => Methods::IDEAL,
-		PaymentMethods::IDEALQR       => Methods::IDEALQR,
-		PaymentMethods::MISTER_CASH   => Methods::MISTER_CASH,
-		PaymentMethods::PAYPAL        => Methods::PAYPAL_EXPRESS_CHECKOUT,
-		PaymentMethods::SOFORT        => Methods::SOFORT,
+		PaymentMethods::AFTERPAY         => self::AFTERPAY,
+		PaymentMethods::BANCONTACT       => self::MISTER_CASH,
+		PaymentMethods::BANK_TRANSFER    => self::OVERBOEKING,
+		PaymentMethods::BELFIUS          => self::BELFIUS,
+		PaymentMethods::BILLINK          => self::BILLINK,
+		PaymentMethods::BUNQ             => self::BUNQ,
+		PaymentMethods::IN3              => self::CAPAYABLE,
+		PaymentMethods::CREDIT_CARD      => self::CREDIT_CARD,
+		PaymentMethods::FOCUM            => self::FOCUM,
+		PaymentMethods::GIROPAY          => self::GIROPAY,
+		PaymentMethods::IDEAL            => self::IDEAL,
+		PaymentMethods::IDEALQR          => self::IDEALQR,
+		PaymentMethods::KLARNA_PAY_LATER => self::KLARNA,
+		PaymentMethods::MISTER_CASH      => self::MISTER_CASH,
+		PaymentMethods::PAYPAL           => self::PAYPAL_EXPRESS_CHECKOUT,
+		PaymentMethods::SOFORT           => self::SOFORT,
 	);
 
 	/**
 	 * Transform WordPress payment method to Sisow method.
 	 *
-	 * @since unreleased
-	 *
-	 * @param $payment_method
-	 *
-	 * @return string
+	 * @param mixed       $payment_method Payment method.
+	 * @param string|null $default        Value to return if method could not be transformed.
+	 * @return string|null
 	 */
-	public static function transform( $payment_method ) {
+	public static function transform( $payment_method, $default = null ) {
 		if ( ! is_scalar( $payment_method ) ) {
 			return null;
 		}
@@ -159,6 +209,6 @@ class Methods {
 			return self::$map[ $payment_method ];
 		}
 
-		return null;
+		return $default;
 	}
 }

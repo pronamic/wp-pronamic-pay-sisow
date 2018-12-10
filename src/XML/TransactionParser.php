@@ -1,15 +1,23 @@
 <?php
+/**
+ * Transaction parser
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
 
 use Pronamic\WordPress\DateTime\DateTime;
+use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Core\XML\Security;
 use Pronamic\WordPress\Pay\Gateways\Sisow\Transaction;
-use Pronamic\WordPress\Pay\Util as Pay_Util;
 use SimpleXMLElement;
 
 /**
- * Title: Error XML parser
+ * Transaction parser
  * Description:
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
@@ -19,10 +27,16 @@ use SimpleXMLElement;
  * @since   1.0.0
  */
 class TransactionParser implements Parser {
+	/**
+	 * Parse XML element.
+	 *
+	 * @param SimpleXMLElement $xml XML element to parse.
+	 * @return Transaction
+	 */
 	public static function parse( SimpleXMLElement $xml ) {
 		$transaction = new Transaction();
 
-		// Transaction request
+		// Transaction request.
 		if ( isset( $xml->trxid ) ) {
 			$transaction->id = Security::filter( $xml->trxid );
 		}
@@ -31,13 +45,13 @@ class TransactionParser implements Parser {
 			$transaction->issuer_url = urldecode( Security::filter( $xml->issuerurl ) );
 		}
 
-		// Status response
+		// Status response.
 		if ( isset( $xml->status ) ) {
 			$transaction->status = Security::filter( $xml->status );
 		}
 
 		if ( isset( $xml->amount ) ) {
-			$transaction->amount = Pay_Util::cents_to_amount( Security::filter( $xml->amount ) );
+			$transaction->amount = Util::cents_to_amount( Security::filter( $xml->amount ) );
 		}
 
 		if ( isset( $xml->purchaseid ) ) {

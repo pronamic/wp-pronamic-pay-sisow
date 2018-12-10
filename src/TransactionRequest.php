@@ -1,9 +1,14 @@
 <?php
+/**
+ * Transaction request
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Payments
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
-
-use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
-use Pronamic\WordPress\Pay\Gateways\Sisow\Util;
 
 /**
  * Title: iDEAL Sisow transaction request
@@ -15,167 +20,30 @@ use Pronamic\WordPress\Pay\Gateways\Sisow\Util;
  * @version 2.0.0
  * @since   1.0.0
  */
-class TransactionRequest {
+class TransactionRequest extends Request {
 	/**
-	 * Shop ID
-	 *
-	 * @var string
-	 */
-	public $shop_id;
-
-	/**
-	 * Merchant ID
-	 *
-	 * @var string
-	 */
-	public $merchant_id;
-
-	/**
-	 * Payment
-	 *
-	 * @var string
-	 */
-	public $payment;
-
-	/**
-	 * Purchase ID
-	 *
-	 * @var string
-	 */
-	private $purchase_id;
-
-	/**
-	 * Amount
-	 *
-	 * @var float
-	 */
-	public $amount;
-
-	/**
-	 * Issuer ID
-	 *
-	 * @var string
-	 */
-	public $issuer_id;
-
-	/**
-	 * QR Code
-	 *
-	 * @var string
-	 */
-	public $qrcode;
-
-	/**
-	 * Test mode
-	 *
-	 * @var boolean
-	 */
-	public $test_mode;
-
-	/**
-	 * Entrance code
-	 *
-	 * @var string
-	 */
-	private $entrance_code;
-
-	/**
-	 * Description
-	 *
-	 * @var string
-	 */
-	public $description;
-
-	/**
-	 * Billing email address
-	 *
-	 * @var string
-	 * @since 1.2.0
-	 */
-	public $billing_mail;
-
-	/**
-	 * Return URL
-	 *
-	 * @var string
-	 */
-	public $return_url;
-
-	/**
-	 * Cancel URL
-	 *
-	 * @var string
-	 */
-	public $cancel_url;
-
-	/**
-	 * Callback URL
-	 *
-	 * @var string
-	 */
-	public $callback_url;
-
-	/**
-	 * Notify URL
-	 *
-	 * @var string
-	 */
-	public $notify_url;
-
-	/**
-	 * Constructs and initializes an Sisow trannsaction request object
-	 */
-	public function __construct() {
-
-	}
-
-	public function set_purchase_id( $purchase_id ) {
-		$this->purchase_id = Util::filter( $purchase_id );
-	}
-
-	public function set_entrance_code( $entrance_code ) {
-		$this->entrance_code = Util::filter( $entrance_code );
-	}
-
-	/**
-	 * Get SHA1
-	 *
-	 * @return string
-	 */
-	public function get_sha1( $merchant_key ) {
-		return sha1(
-			$this->purchase_id .
-			$this->entrance_code .
-			Pay_Util::amount_to_cents( $this->amount ) .
-			$this->shop_id .
-			$this->merchant_id .
-			$merchant_key
-		);
-	}
-
-	/**
-	 * Get parameters
+	 * Get signature data.
 	 *
 	 * @return array
 	 */
-	public function get_parameters( $merchant_key ) {
+	public function get_signature_data() {
 		return array(
-			'shopid'       => $this->shop_id,
-			'merchantid'   => $this->merchant_id,
-			'payment'      => $this->payment,
-			'purchaseid'   => $this->purchase_id,
-			'amount'       => Pay_Util::amount_to_cents( $this->amount ),
-			'issuerid'     => $this->issuer_id,
-			'qrcode'       => Pay_Util::boolean_to_string( $this->qrcode ),
-			'testmode'     => Pay_Util::boolean_to_string( $this->test_mode ),
-			'entrancecode' => $this->entrance_code,
-			'description'  => $this->description,
-			'billing_mail' => $this->billing_mail,
-			'returnurl'    => $this->return_url,
-			'cancelurl'    => $this->cancel_url,
-			'callbackurl'  => $this->callback_url,
-			'notifyurl'    => $this->notify_url,
-			'sha1'         => $this->get_sha1( $merchant_key ),
+			$this->get_parameter( 'purchaseid' ),
+
+			/*
+			 * Wordt er geen gebruik gemaakt van de entrancecode dan dient er twee keer de purchaseid te worden opgenomen, u krijgt dan onderstaande volgorde.
+			 * purchaseid/purchaseid/amount/shopid/merchantid/merchantkey
+			 */
+			null !== $this->get_parameter( 'entrancecode' ) ? $this->get_parameter( 'entrancecode' ) : $this->get_parameter( 'purchaseid' ),
+
+			$this->get_parameter( 'amount' ),
+
+			/*
+			 * Indien er geen gebruik wordt gemaakt van de shopid dan kunt u deze weglaten uit de berekening.
+			 */
+			$this->get_parameter( 'shopid' ),
+
+			$this->get_parameter( 'merchantid' ),
 		);
 	}
 }
