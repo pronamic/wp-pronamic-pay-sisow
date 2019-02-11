@@ -1,4 +1,12 @@
 <?php
+/**
+ * Error test.
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2019 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Gateways\Sisow
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -15,6 +23,9 @@ use PHPUnit_Framework_TestCase;
  * @since   1.0.0
  */
 class ErrorTest extends PHPUnit_Framework_TestCase {
+	/**
+	 * Test error to string.
+	 */
 	public function test_to_string() {
 		$error = new Error( '1', 'Error' );
 

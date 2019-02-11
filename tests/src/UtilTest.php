@@ -1,4 +1,12 @@
 <?php
+/**
+ * Util test.
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2019 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Gateways\Sisow
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -15,6 +23,9 @@ use WP_UnitTestCase;
  * @since   1.0.0
  */
 class UtilTest extends WP_UnitTestCase {
+	/**
+	 * Test filtering forbidden charachters.
+	 */
 	public function test_charachters() {
 		$allowed_chars   = 'ABCabc123= %*+-./&@"\':;?()$';
 		$forbidden_chars = '#!€^_{}';
