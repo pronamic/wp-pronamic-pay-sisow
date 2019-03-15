@@ -50,7 +50,7 @@ class Methods {
 	 *
 	 * @var string
 	 */
-	const IDEAL = '';
+	const IDEAL = 'ideal';
 
 	/**
 	 * Indicator for 'iDEAL QR' payment
