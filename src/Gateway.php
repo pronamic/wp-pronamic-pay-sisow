@@ -75,6 +75,43 @@ class Gateway extends Core_Gateway {
 	}
 
 	/**
+	 * Get available payment methods.
+	 *
+	 * @see Core_Gateway::get_available_payment_methods()
+	 */
+	public function get_available_payment_methods() {
+		if ( self::MODE_TEST === $this->config->mode ) {
+			return $this->get_supported_payment_methods();
+		}
+
+		$payment_methods = array();
+
+		// Merchant request.
+		$request = new MerchantRequest( $this->config->merchant_id );
+
+		// Get merchant.
+		$result = $this->client->get_merchant( $request );
+
+		// Handle errors.
+		if ( false === $result ) {
+			$this->error = $this->client->get_error();
+
+			return $payment_methods;
+		}
+
+		foreach ( $result->payments as $method ) {
+			// Transform to WordPress payment methods.
+			$payment_method = Methods::transform_gateway_method( $method );
+
+			if ( $payment_method ) {
+				$payment_methods[] = $payment_method;
+			}
+		}
+
+		return $payment_methods;
+	}
+
+	/**
 	 * Get supported payment methods
 	 *
 	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()

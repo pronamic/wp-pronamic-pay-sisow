@@ -211,4 +211,27 @@ class Methods {
 
 		return $default;
 	}
+
+	/**
+	 * Transform Sisow method to WordPress payment method.
+	 *
+	 * @since unreleased
+	 *
+	 * @param string $method Sisow method.
+	 *
+	 * @return string
+	 */
+	public static function transform_gateway_method( $method ) {
+		if ( ! is_scalar( $method ) ) {
+			return null;
+		}
+
+		$payment_method = array_search( $method, self::$map, true );
+
+		if ( ! $payment_method ) {
+			return null;
+		}
+
+		return $payment_method;
+	}
 }

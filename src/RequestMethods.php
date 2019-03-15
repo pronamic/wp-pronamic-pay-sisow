@@ -29,6 +29,13 @@ class RequestMethods {
 	const CANCEL_RESERVATION_REQUEST = 'CancelReservationRequest';
 
 	/**
+	 * Indicator for a merchant check request
+	 *
+	 * @var string
+	 */
+	const CHECK_MERCHANT_REQUEST = 'CheckMerchantRequest';
+
+	/**
 	 * Indicator for a directory request
 	 *
 	 * @var string
