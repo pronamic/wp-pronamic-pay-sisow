@@ -116,6 +116,8 @@ class Statuses {
 				return Core_Statuses::FAILURE;
 
 			case self::REVERSED:
+				return Core_Statuses::REFUNDED;
+
 			default:
 				return null;
 		}
