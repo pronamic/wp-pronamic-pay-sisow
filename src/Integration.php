@@ -45,26 +45,63 @@ class Integration extends AbstractIntegration {
 	}
 
 	/**
-	 * Get settings class.
+	 * Get settings fields.
 	 *
-	 * @return string
-	 */
-	public function get_settings_class() {
-		return __NAMESPACE__ . '\Settings';
-	}
-
-	/**
-	 * Get required settings for this integration.
-	 *
-	 * @see   https://github.com/wp-premium/gravityforms/blob/1.9.16/includes/fields/class-gf-field-multiselect.php#L21-L42
-	 * @since 1.1.6
 	 * @return array
 	 */
-	public function get_settings() {
-		$settings = parent::get_settings();
+	public function get_settings_fields() {
+		$fields = array();
 
-		$settings[] = 'sisow';
+		// Intro.
+		$fields[] = array(
+			'section' => 'general',
+			'type'    => 'html',
+			'html'    => sprintf(
+				/* translators: %s: Sisow */
+				__( 'Account details are provided by %1$s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
+				__( 'Sisow', 'pronamic_ideal' )
+			),
+		);
 
-		return $settings;
+		// Merchant ID.
+		$fields[] = array(
+			'section'  => 'general',
+			'filter'   => FILTER_SANITIZE_STRING,
+			'methods'  => array( 'sisow' ),
+			'meta_key' => '_pronamic_gateway_sisow_merchant_id',
+			'title'    => _x( 'Merchant ID', 'sisow', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'code' ),
+			'tooltip'  => __( 'Merchant ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
+		);
+
+		// Merchant Key.
+		$fields[] = array(
+			'section'  => 'general',
+			'filter'   => FILTER_SANITIZE_STRING,
+			'methods'  => array( 'sisow' ),
+			'meta_key' => '_pronamic_gateway_sisow_merchant_key',
+			'title'    => _x( 'Merchant Key', 'sisow', 'pronamic_ideal' ),
+			'type'     => 'text',
+			'classes'  => array( 'regular-text', 'code' ),
+			'tooltip'  => __( 'Merchant Key as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
+		);
+
+		// Shop ID.
+		$fields[] = array(
+			'section'     => 'general',
+			'filter'      => FILTER_SANITIZE_STRING,
+			'methods'     => array( 'sisow' ),
+			'meta_key'    => '_pronamic_gateway_sisow_shop_id',
+			'title'       => _x( 'Shop ID', 'sisow', 'pronamic_ideal' ),
+			'type'        => 'text',
+			'classes'     => array( 'regular-text', 'code' ),
+			'tooltip'     => __( 'Shop ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
+			/* translators: %s: 0 */
+			'description' => sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), 0 ),
+			'default'     => 0,
+		);
+
+		return $fields;
 	}
 }
