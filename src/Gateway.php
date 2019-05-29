@@ -42,15 +42,26 @@ class Gateway extends Core_Gateway {
 	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
-		$this->supports = array(
+		$this->set_method( self::METHOD_HTTP_REDIRECT );
+
+		// Supported features.
+		$this->supports = self::get_supported_features();
+
+		// Client.
+		$this->client = new Client( $config->merchant_id, $config->merchant_key );
+		$this->client->set_test_mode( self::MODE_TEST === $config->mode );
+	}
+
+	/**
+	 * Get supported features.
+	 *
+	 * @return array
+	 */
+	public static function get_supported_features() {
+		return array(
 			'payment_status_request',
 			'reservation_payments',
 		);
-
-		$this->set_method( self::METHOD_HTTP_REDIRECT );
-
-		$this->client = new Client( $config->merchant_id, $config->merchant_key );
-		$this->client->set_test_mode( self::MODE_TEST === $config->mode );
 	}
 
 	/**
