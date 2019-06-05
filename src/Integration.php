@@ -32,16 +32,8 @@ class Integration extends AbstractIntegration {
 		$this->url           = 'https://www.sisow.nl/';
 		$this->product_url   = 'https://www.sisow.nl/epay-online-betaalmogelijkheden/epay-informatie';
 		$this->dashboard_url = 'https://www.sisow.nl/Sisow/iDeal/Login.aspx';
+		$this->register_url  = 'https://www.sisow.nl/Sisow/iDeal/Aanmelden.aspx?r=120872';
 		$this->provider      = 'sisow';
-	}
-
-	/**
-	 * Get config factory class.
-	 *
-	 * @return string
-	 */
-	public function get_config_factory_class() {
-		return __NAMESPACE__ . '\ConfigFactory';
 	}
 
 	/**
@@ -103,5 +95,22 @@ class Integration extends AbstractIntegration {
 		);
 
 		return $fields;
+	}
+
+	/**
+	 * Get configuration.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return Config
+	 */
+	public function get_config( $post_id ) {
+		$config = new Config();
+
+		$config->merchant_id  = $this->get_meta( $post_id, 'sisow_merchant_id' );
+		$config->merchant_key = $this->get_meta( $post_id, 'sisow_merchant_key' );
+		$config->shop_id      = $this->get_meta( $post_id, 'sisow_shop_id' );
+		$config->mode         = $this->get_meta( $post_id, 'mode' );
+
+		return $config;
 	}
 }
