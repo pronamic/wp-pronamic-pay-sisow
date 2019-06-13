@@ -27,6 +27,6 @@
 
 	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_key">
 		<!-- The 'meta_key' is not related to an slow database query. -->
-		<exclude-pattern>/src/Settings.php</exclude-pattern>
+		<exclude-pattern>/src/Integration.php</exclude-pattern>
 	</rule>
 </ruleset>
