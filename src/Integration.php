@@ -34,6 +34,11 @@ class Integration extends AbstractIntegration {
 		$this->dashboard_url = 'https://www.sisow.nl/Sisow/iDeal/Login.aspx';
 		$this->register_url  = 'https://www.sisow.nl/Sisow/iDeal/Aanmelden.aspx?r=120872';
 		$this->provider      = 'sisow';
+		$this->supports      = array(
+			'webhook',
+			'webhook_log',
+			'webhook_no_config',
+		);
 	}
 
 	/**
