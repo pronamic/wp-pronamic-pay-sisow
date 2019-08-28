@@ -1,6 +1,6 @@
 <?php
 /**
- * Reservation parser
+ * Merchant parser
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2019 Pronamic
@@ -11,34 +11,38 @@
 namespace Pronamic\WordPress\Pay\Gateways\Sisow\XML;
 
 use Pronamic\WordPress\Pay\Core\XML\Security;
-use Pronamic\WordPress\Pay\Gateways\Sisow\Reservation;
+use Pronamic\WordPress\Pay\Gateways\Sisow\Merchant;
 use SimpleXMLElement;
 
 /**
- * Reservation parser
+ * Merchant parser
  * Description:
  * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Reüel van der Steege
- * @version 2.0.1
- * @since   2.0.1
+ * @version 2.0.2
+ * @since   2.0.2
  */
-class ReservationParser implements Parser {
+class MerchantParser implements Parser {
 	/**
 	 * Parse XML element.
 	 *
 	 * @param SimpleXMLElement $xml XML element to parse.
 	 *
-	 * @return Reservation
+	 * @return Merchant
 	 */
 	public static function parse( SimpleXMLElement $xml ) {
-		$reservation = new Reservation();
+		$merchant = new Merchant();
 
-		if ( isset( $xml->status ) ) {
-			$reservation->status = Security::filter( $xml->status );
+		if ( isset( $xml->merchantid ) ) {
+			$merchant->merchant_id = Security::filter( $xml->merchantid );
 		}
 
-		return $reservation;
+		if ( isset( $xml->payments->payment ) ) {
+			$merchant->payments = (array) $xml->payments->payment;
+		}
+
+		return $merchant;
 	}
 }

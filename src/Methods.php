@@ -3,7 +3,7 @@
  * Methods
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2018 Pronamic
+ * @copyright 2005-2019 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -15,7 +15,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 /**
  * Title: iDEAL Sisow payment methods
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -50,7 +50,7 @@ class Methods {
 	 *
 	 * @var string
 	 */
-	const IDEAL = '';
+	const IDEAL = 'ideal';
 
 	/**
 	 * Indicator for 'iDEAL QR' payment
@@ -210,5 +210,28 @@ class Methods {
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Transform Sisow method to WordPress payment method.
+	 *
+	 * @since unreleased
+	 *
+	 * @param string $method Sisow method.
+	 *
+	 * @return string
+	 */
+	public static function transform_gateway_method( $method ) {
+		if ( ! is_scalar( $method ) ) {
+			return null;
+		}
+
+		$payment_method = array_search( $method, self::$map, true );
+
+		if ( ! $payment_method ) {
+			return null;
+		}
+
+		return $payment_method;
 	}
 }

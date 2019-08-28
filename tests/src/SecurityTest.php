@@ -1,4 +1,12 @@
 <?php
+/**
+ * Security test.
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2019 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Gateways\Sisow
+ */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
@@ -7,7 +15,7 @@ use WP_UnitTestCase;
 /**
  * Title: Sisow security test
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -15,12 +23,15 @@ use WP_UnitTestCase;
  * @since   1.0.0
  */
 class SecurityTest extends WP_UnitTestCase {
+	/**
+	 * Test transaction request signing.
+	 */
 	public function test_transaction_request_sha1() {
 		$merchant_id  = '0123456';
 		$shop_id      = null;
 		$merchant_key = 'b36d8259346eaddb3c03236b37ad3a1d7a67cec6';
 
-		// http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf #page 10
+		// @link http://pronamic.nl/wp-content/uploads/2013/02/sisow-rest-api-v3.2.1.pdf #page 10
 		$request = new TransactionRequest( $merchant_id, $shop_id );
 
 		$request->set_parameter( 'purchaseid', '123456789' );
@@ -32,6 +43,9 @@ class SecurityTest extends WP_UnitTestCase {
 		$this->assertEquals( 'cb2461bd40ed1a77a6d837a560bfcbc3e03d6c3c', $sha1 );
 	}
 
+	/**
+	 * Test status request signature.
+	 */
 	public function test_status_request_sha1() {
 		$transaction_id = '0050000513407955';
 		$merchant_id    = '0123456';

@@ -16,11 +16,10 @@ module.exports = function( grunt ) {
 			application: {
 				src: [
 					'**/*.php',
-					'!build/**',
 					'!node_modules/**',
-					'!tests/**',
 					'!vendor/**',
-					'!wordpress/**'
+					'!wordpress/**',
+					'!wp-content/**'
 				],
 			},
 			options: {

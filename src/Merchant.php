@@ -1,6 +1,6 @@
 <?php
 /**
- * Invoice
+ * Merchant
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2019 Pronamic
@@ -11,29 +11,29 @@
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 /**
- * Title: Sisow invoice
+ * Title: Sisow merchant
  * Description:
  * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Reüel van der Steege
- * @version 2.0.1
- * @since   2.0.1
+ * @version 2.0.2
+ * @since   2.0.2
  */
-class Invoice {
+class Merchant {
 	/**
-	 * Invoice number.
+	 * Merchant ID.
 	 *
 	 * @var string
 	 */
-	public $invoiceno;
+	public $merchant_id;
 
 	/**
-	 * Document ID.
+	 * Payment methods.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $documentid;
+	public $payments;
 
 	/**
 	 * Create an string representation of this object
@@ -41,12 +41,17 @@ class Invoice {
 	 * @return string
 	 */
 	public function __toString() {
-		return implode(
-			' ',
-			array(
-				$this->invoiceno,
-				$this->documentid,
-			)
+		$pieces = array(
+			$this->merchant_id,
+			implode( ', ', $this->payments ),
 		);
+
+		$pieces = array_map( 'trim', $pieces );
+
+		$pieces = array_filter( $pieces );
+
+		$string = implode( PHP_EOL, $pieces );
+
+		return $string;
 	}
 }

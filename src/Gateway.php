@@ -3,7 +3,7 @@
  * Gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2018 Pronamic
+ * @copyright 2005-2019 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -19,7 +19,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 /**
  * Title: Sisow gateway
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -42,13 +42,15 @@ class Gateway extends Core_Gateway {
 	public function __construct( Config $config ) {
 		parent::__construct( $config );
 
+		$this->set_method( self::METHOD_HTTP_REDIRECT );
+
+		// Supported features.
 		$this->supports = array(
 			'payment_status_request',
 			'reservation_payments',
 		);
 
-		$this->set_method( self::METHOD_HTTP_REDIRECT );
-
+		// Client.
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
 		$this->client->set_test_mode( self::MODE_TEST === $config->mode );
 	}
@@ -72,6 +74,43 @@ class Gateway extends Core_Gateway {
 		}
 
 		return $groups;
+	}
+
+	/**
+	 * Get available payment methods.
+	 *
+	 * @see Core_Gateway::get_available_payment_methods()
+	 */
+	public function get_available_payment_methods() {
+		if ( self::MODE_TEST === $this->config->mode ) {
+			return $this->get_supported_payment_methods();
+		}
+
+		$payment_methods = array();
+
+		// Merchant request.
+		$request = new MerchantRequest( $this->config->merchant_id );
+
+		// Get merchant.
+		$result = $this->client->get_merchant( $request );
+
+		// Handle errors.
+		if ( false === $result ) {
+			$this->error = $this->client->get_error();
+
+			return $payment_methods;
+		}
+
+		foreach ( $result->payments as $method ) {
+			// Transform to WordPress payment methods.
+			$payment_method = Methods::transform_gateway_method( $method );
+
+			if ( $payment_method ) {
+				$payment_methods[] = $payment_method;
+			}
+		}
+
+		return $payment_methods;
 	}
 
 	/**

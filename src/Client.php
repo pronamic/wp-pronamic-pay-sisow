@@ -3,7 +3,7 @@
  * Client
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2018 Pronamic
+ * @copyright 2005-2019 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -13,6 +13,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ErrorParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\InvoiceParser;
+use Pronamic\WordPress\Pay\Gateways\Sisow\XML\MerchantParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ReservationParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\TransactionParser;
 use SimpleXMLElement;
@@ -21,7 +22,7 @@ use WP_Error;
 /**
  * Title: Sisow
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -144,7 +145,7 @@ class Client {
 	 *
 	 * @param SimpleXMLElement $document Document.
 	 *
-	 * @return WP_Error|Invoice|Reservation|Transaction|Error
+	 * @return WP_Error|Invoice|Merchant|Reservation|Transaction|Error
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
@@ -156,6 +157,10 @@ class Client {
 				$reservation = ReservationParser::parse( $document->reservation );
 
 				return $reservation;
+			case 'checkmerchantresponse':
+				$merchant = MerchantParser::parse( $document->merchant );
+
+				return $merchant;
 			case 'errorresponse':
 				$sisow_error = ErrorParser::parse( $document->error );
 
@@ -213,6 +218,31 @@ class Client {
 		}
 
 		return $directory;
+	}
+
+	/**
+	 * Get merchant.
+	 *
+	 * @param MerchantRequest $merchant_request Merchant request.
+	 *
+	 * @return Merchant|bool
+	 */
+	public function get_merchant( MerchantRequest $merchant_request ) {
+		// Request.
+		$response = $this->send_request( RequestMethods::CHECK_MERCHANT_REQUEST, $merchant_request );
+
+		if ( false === $response ) {
+			return false;
+		}
+
+		// Parse.
+		$message = $this->parse_document( $response );
+
+		if ( $message instanceof Merchant ) {
+			return $message;
+		}
+
+		return false;
 	}
 
 	/**
