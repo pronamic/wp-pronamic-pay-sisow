@@ -324,10 +324,17 @@ class Gateway extends Core_Gateway {
 						'product_netprice_' . $x    => $unit_price,
 						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_cents(),
 						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_cents(),
-						'product_tax_' . $x         => $line->get_tax_amount()->get_cents(),
-						'product_taxrate_' . $x     => $line->get_total_amount()->get_tax_percentage() * 100,
 					)
 				);
+
+				if ( null !== $line->get_tax_amount() ) {
+					$request->merge_parameters(
+						array(
+							'product_tax_' . $x     => $line->get_tax_amount()->get_cents(),
+							'product_taxrate_' . $x => $line->get_total_amount()->get_tax_percentage() * 100,
+						)
+					);
+				}
 
 				$x++;
 			}
