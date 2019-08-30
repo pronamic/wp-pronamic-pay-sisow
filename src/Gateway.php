@@ -23,7 +23,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.3
  * @since   1.0.0
  */
 class Gateway extends Core_Gateway {
@@ -288,9 +288,9 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Lines.
-		if ( null !== $payment->get_lines() ) {
-			$lines = $payment->get_lines();
+		$lines = $payment->get_lines();
 
+		if ( null !== $lines ) {
 			$x = 1;
 
 			foreach ( $lines as $line ) {
@@ -327,13 +327,17 @@ class Gateway extends Core_Gateway {
 					)
 				);
 
-				if ( null !== $line->get_tax_amount() ) {
-					$request->merge_parameters(
-						array(
-							'product_tax_' . $x     => $line->get_tax_amount()->get_cents(),
-							'product_taxrate_' . $x => $line->get_total_amount()->get_tax_percentage() * 100,
-						)
-					);
+				// Tax request parameters.
+				$tax_amount = $line->get_tax_amount();
+
+				if ( null !== $tax_amount ) {
+					$request->set_parameter( 'product_tax_' . $x, $tax_amount->get_cents() );
+				}
+
+				$tax_percentage = $line->get_total_amount()->get_tax_percentage();
+
+				if ( null !== $tax_percentage ) {
+					$request->set_parameter( 'product_taxrate_' . $x, $tax_percentage * 100 );
 				}
 
 				$x++;
