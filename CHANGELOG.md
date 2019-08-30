@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
+-
+
+## [2.0.3] - 2019-08-30
 - Fix fatal error "Uncaught Error: Call to a member function get_cents() on null".
 
 ## [2.0.2] - 2019-08-28
@@ -82,7 +85,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/2.0.2...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/2.0.3...HEAD
+[2.0.3]: https://github.com/wp-pay-gateways/sisow/compare/2.0.2...2.0.3
 [2.0.2]: https://github.com/wp-pay-gateways/sisow/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/wp-pay-gateways/sisow/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/wp-pay-gateways/sisow/compare/1.2.4...2.0.0
