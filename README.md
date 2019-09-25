@@ -1,6 +1,6 @@
 <p align="center">
 	<a href="https://www.wp-pay.org/gateways/sisow/">
-		<img src="https://raw.githubusercontent.com/wp-pay/core/develop/images/dist/pronamic-pay.svgo-min.svg" alt="WordPress Pay Gateway: Sisow" width="72" height="72">
+		<img src="https://www.wp-pay.org/assets/pronamic-pay.svgo-min.svg" alt="WordPress Pay Gateway: Sisow" width="72" height="72">
 	</a>
 </p>
 
@@ -12,6 +12,7 @@
 
 - [Status](#status)
 - [Documentation](#documentation)
+- [Issues](#issues)
 
 ## Status
 
@@ -22,11 +23,6 @@
 [![Latest Unstable Version](https://poser.pugx.org/wp-pay-gateways/sisow/v/unstable.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
 [![License](https://poser.pugx.org/wp-pay-gateways/sisow/license.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
 [![Built with Grunt](http://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
-
-## Strange Behavior Sisow API
-
-Please note that if you send a Sisow `TransactionRequest` with a empty `issuerid` Sisow will not return a `trxid` in the `transactionrequest` XML response message.
-So if the Sisow transaction IDs are empty you probably left the `issuerid` empty in the `TransactionRequest` message.
 
 ## Documentation
 
@@ -49,3 +45,10 @@ Documentation files can be found in the [documentation](documentation/) folder o
 [sisow-rest-api-v5.0.0]: https://www.pronamic.nl/wp-content/uploads/2018/01/Sisow-REST-API-Versie-5.0.0.pdf
 [sisow-rest-api-v3.2.1]: https://www.pronamic.nl/wp-content/uploads/2014/11/sisow-rest-api-v3.2.1.pdf
 [sisow-webservice-api-v2.0]: documentation/WEbservice.pdf
+
+## Issues
+
+### Strange Behavior Sisow API
+
+Please note that if you send a Sisow `TransactionRequest` with a empty `issuerid` Sisow will not return a `trxid` in the `transactionrequest` XML response message.
+So if the Sisow transaction IDs are empty you probably left the `issuerid` empty in the `TransactionRequest` message.
