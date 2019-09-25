@@ -8,7 +8,7 @@
 [![Total Downloads](https://poser.pugx.org/wp-pay-gateways/sisow/downloads.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
 [![Latest Unstable Version](https://poser.pugx.org/wp-pay-gateways/sisow/v/unstable.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
 [![License](https://poser.pugx.org/wp-pay-gateways/sisow/license.svg)](https://packagist.org/packages/wp-pay-gateways/sisow)
-[![Built with Grunt](https://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
+[![Built with Grunt](http://cdn.gruntjs.com/builtwith.svg)](http://gruntjs.com/)
 
 ## Strange Behavior Sisow API
 
@@ -17,14 +17,14 @@ So if the Sisow transaction IDs are empty you probably left the `issuerid` empty
 
 ## Documentation
 
-| Title                | Version | Date       | Link                              |
-+ -------------------- + ------- + ---------- + --------------------------------- +
-| Sisow REST API       | 5.3.0   | 05-09-2019 | [Download][sisow-rest-api-v5.3.0] |
-| Sisow REST API       | 5.2.0   |            | [Download][sisow-rest-api-v5.2.0] |
-| Sisow REST API       | 5.1.0   |            | [Download][sisow-rest-api-v5.1.0] |
-| Sisow REST API       | 5.0.0   |            | [Download][sisow-rest-api-v5.0.1] |
-| Sisow REST API       | 5.0.0   |            | [Download][sisow-rest-api-v5.0.0] |
-| Sisow REST API       | 3.2.1   |            | [Download][sisow-rest-api-v3.2.1] |
+| Title                | Version | Date       | Link                                  |
+| -------------------- | ------- | ---------- | ------------------------------------- |
+| Sisow REST API       | 5.3.0   | 05-09-2019 | [Download][sisow-rest-api-v5.3.0]     |
+| Sisow REST API       | 5.2.0   |            | [Download][sisow-rest-api-v5.2.0]     |
+| Sisow REST API       | 5.1.0   |            | [Download][sisow-rest-api-v5.1.0]     |
+| Sisow REST API       | 5.0.0   |            | [Download][sisow-rest-api-v5.0.1]     |
+| Sisow REST API       | 5.0.0   |            | [Download][sisow-rest-api-v5.0.0]     |
+| Sisow REST API       | 3.2.1   |            | [Download][sisow-rest-api-v3.2.1]     |
 | Sisow WebService API | 2.0     |            | [Download][sisow-webservice-api-v2.0] |
 
 [sisow-rest-api-v5.3.0]: documentation/rest530.pdf
