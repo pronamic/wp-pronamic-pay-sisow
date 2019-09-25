@@ -4,9 +4,11 @@
 	</a>
 </p>
 
-# WordPress Pay Gateway: Sisow
+<h1 align="center">WordPress Pay » Gateway » Sisow</h3>
 
-**Sisow driver for the WordPress payment processing library.**
+<p align="center">
+	Sisow driver for the WordPress payment processing library.
+</p>
 
 ## Table of contents
 
