@@ -17,7 +17,6 @@ use Pronamic\WordPress\Pay\Gateways\Sisow\XML\MerchantParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ReservationParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\TransactionParser;
 use SimpleXMLElement;
-use WP_Error;
 
 /**
  * Title: Sisow
@@ -59,13 +58,6 @@ class Client {
 	private $test_mode;
 
 	/**
-	 * Error.
-	 *
-	 * @var WP_Error|null
-	 */
-	private $error;
-
-	/**
 	 * Constructs and initializes a Sisow client object.
 	 *
 	 * @param string $merchant_id  Merchant ID.
@@ -74,15 +66,6 @@ class Client {
 	public function __construct( $merchant_id, $merchant_key ) {
 		$this->merchant_id  = $merchant_id;
 		$this->merchant_key = $merchant_key;
-	}
-
-	/**
-	 * Error.
-	 *
-	 * @return WP_Error|null
-	 */
-	public function get_error() {
-		return $this->error;
 	}
 
 	/**
@@ -118,24 +101,12 @@ class Client {
 			)
 		);
 
-		if ( $result instanceof WP_Error ) {
-			$this->error = $result;
-
-			return false;
-		}
-
 		if ( ! is_string( $result ) ) {
 			return false;
 		}
 
 		// XML.
 		$xml = Core_Util::simplexml_load_string( $result );
-
-		if ( $xml instanceof WP_Error ) {
-			$this->error = $xml;
-
-			return false;
-		}
 
 		return $xml;
 	}
@@ -145,7 +116,7 @@ class Client {
 	 *
 	 * @param SimpleXMLElement $document Document.
 	 *
-	 * @return WP_Error|Invoice|Merchant|Reservation|Transaction|Error
+	 * @return Invoice|Merchant|Reservation|Transaction|Error
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
@@ -164,7 +135,7 @@ class Client {
 			case 'errorresponse':
 				$sisow_error = ErrorParser::parse( $document->error );
 
-				$this->error = new WP_Error( 'ideal_sisow_error', $sisow_error->message, $sisow_error );
+				throw new \Pronamic\WordPress\Pay\GatewayException( 'sisow', $sisow_error->message, $sisow_error );
 
 				return $sisow_error;
 			case 'invoiceresponse':
@@ -180,8 +151,8 @@ class Client {
 
 				return $transaction;
 			default:
-				return new WP_Error(
-					'ideal_sisow_error',
+				throw new \Pronamic\WordPress\Pay\GatewayException(
+					'sisow',
 					/* translators: %s: XML document element name */
 					sprintf( __( 'Unknwon Sisow message (%s)', 'pronamic_ideal' ), $name )
 				);
