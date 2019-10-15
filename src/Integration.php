@@ -31,6 +31,7 @@ class Integration extends AbstractIntegration {
 		$this->name          = 'Sisow';
 		$this->url           = 'https://www.sisow.nl/';
 		$this->product_url   = 'https://www.sisow.nl/epay-online-betaalmogelijkheden/epay-informatie';
+		$this->manual_url    = __( 'https://www.pronamic.eu/support/how-to-connect-sisow-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' );
 		$this->dashboard_url = 'https://www.sisow.nl/Sisow/iDeal/Login.aspx';
 		$this->register_url  = 'https://www.sisow.nl/Sisow/iDeal/Aanmelden.aspx?r=120872';
 		$this->provider      = 'sisow';
