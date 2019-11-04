@@ -83,7 +83,7 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_available_payment_methods() {
 		if ( self::MODE_TEST === $this->config->mode ) {
-			return $this->get_supported_payment_methods();
+			return null;
 		}
 
 		$payment_methods = array();
