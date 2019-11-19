@@ -135,24 +135,18 @@ class Client {
 			case 'errorresponse':
 				$sisow_error = ErrorParser::parse( $document->error );
 
-				throw new \Pronamic\WordPress\Pay\GatewayException( 'sisow', $sisow_error->message, $sisow_error );
-
-				return $sisow_error;
+				throw new \Exception( $sisow_error->message );
 			case 'invoiceresponse':
 				$invoice = InvoiceParser::parse( $document->invoice );
 
 				return $invoice;
+			case 'statusresponse':
 			case 'transactionrequest':
 				$transaction = TransactionParser::parse( $document->transaction );
 
 				return $transaction;
-			case 'statusresponse':
-				$transaction = TransactionParser::parse( $document->transaction );
-
-				return $transaction;
 			default:
-				throw new \Pronamic\WordPress\Pay\GatewayException(
-					'sisow',
+				throw new \Exception(
 					/* translators: %s: XML document element name */
 					sprintf( __( 'Unknwon Sisow message (%s)', 'pronamic_ideal' ), $name )
 				);
@@ -207,7 +201,11 @@ class Client {
 		}
 
 		// Parse.
-		$message = $this->parse_document( $response );
+		try {
+			$message = $this->parse_document( $response );
+		} catch ( \Exception $e ) {
+			return false;
+		}
 
 		if ( $message instanceof Merchant ) {
 			return $message;
@@ -222,6 +220,8 @@ class Client {
 	 * @param TransactionRequest $request Transaction request.
 	 *
 	 * @return Transaction|false
+	 *
+	 * @throws \Exception Throws exception on transaction error.
 	 */
 	public function create_transaction( TransactionRequest $request ) {
 		// Request.

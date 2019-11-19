@@ -92,11 +92,10 @@ class Gateway extends Core_Gateway {
 		$request = new MerchantRequest( $this->config->merchant_id );
 
 		// Get merchant.
-		$result = $this->client->get_merchant( $request );
-
-		// Handle errors.
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+		try {
+			$result = $this->client->get_merchant( $request );
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
 			return $payment_methods;
 		}
@@ -151,9 +150,10 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Start
 	 *
-	 * @see Core_Gateway::start()
-	 *
 	 * @param Payment $payment Payment.
+	 *
+	 * @throws \Exception Throws exception on transaction error.
+	 * @see Core_Gateway::start()
 	 */
 	public function start( Payment $payment ) {
 		// Order and purchase ID.
@@ -350,10 +350,6 @@ class Gateway extends Core_Gateway {
 		if ( false !== $result ) {
 			$payment->set_transaction_id( $result->id );
 			$payment->set_action_url( $result->issuer_url );
-		} else {
-			$this->error = $this->client->get_error();
-
-			return false;
 		}
 	}
 
