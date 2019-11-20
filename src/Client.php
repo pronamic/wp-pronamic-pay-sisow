@@ -117,6 +117,7 @@ class Client {
 	 * @param SimpleXMLElement $document Document.
 	 *
 	 * @return Invoice|Merchant|Reservation|Transaction|Error
+	 * @throws \Exception Throws exception on unknown Sisow message.
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
 		$this->error = null;
