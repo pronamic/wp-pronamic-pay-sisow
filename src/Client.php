@@ -120,8 +120,6 @@ class Client {
 	 * @throws \Exception Throws exception on unknown Sisow message.
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
-		$this->error = null;
-
 		$name = $document->getName();
 
 		switch ( $name ) {
@@ -136,7 +134,9 @@ class Client {
 			case 'errorresponse':
 				$sisow_error = ErrorParser::parse( $document->error );
 
-				throw new \Exception( $sisow_error->message );
+				$message = sprintf( '%s: %s', $sisow_error->code, $sisow_error->message );
+
+				throw new \Exception( $message );
 			case 'invoiceresponse':
 				$invoice = InvoiceParser::parse( $document->invoice );
 
@@ -300,8 +300,16 @@ class Client {
 	 * @param StatusRequest $request Status request object.
 	 *
 	 * @return Transaction|false
+	 *
+	 * @throws \InvalidArgumentException Throws exception on invalid transaction ID.
 	 */
 	public function get_status( StatusRequest $request ) {
+		$transaction_id = $request->get_parameter( 'trxid' );
+
+		if ( empty( $transaction_id ) ) {
+			throw new \InvalidArgumentException( 'Invalid transction ID.' );
+		}
+
 		// Request.
 		$response = $this->send_request( RequestMethods::STATUS_REQUEST, $request );
 

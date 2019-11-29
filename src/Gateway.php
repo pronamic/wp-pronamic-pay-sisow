@@ -365,10 +365,14 @@ class Gateway extends Core_Gateway {
 			$this->config->shop_id
 		);
 
-		$result = $this->client->get_status( $request );
+		try {
+			$result = $this->client->get_status( $request );
 
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+			if ( false === $result ) {
+				return;
+			}
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
 			return;
 		}
