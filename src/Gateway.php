@@ -361,9 +361,30 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
+		$transaction_id = $payment->get_transaction_id();
+		$merchant_id    = $this->config->merchant_id;
+
+		// Process notify and callback requests for payments without transaction ID.
+		if ( empty( $transaction_id ) && Core_Util::input_has_vars( \INPUT_GET, array( 'trxid', 'ec', 'status', 'sha1' ) ) ) {
+			$transaction_id = \filter_input( \INPUT_GET, 'trxid' );
+			$entrance_code  = \filter_input( \INPUT_GET, 'ec' );
+			$status         = \filter_input( \INPUT_GET, 'status' );
+			$signature      = \filter_input( \INPUT_GET, 'sha1' );
+
+			$notify = new NotifyRequest( $transaction_id, $entrance_code, $status, $merchant_id );
+
+			// Set status if signature validates.
+			if ( $notify->get_signature( $this->config->merchant_key ) === $signature ) {
+				$payment->set_status( Statuses::transform( $status ) );
+			}
+
+			return;
+		}
+
+		// Status request.
 		$request = new StatusRequest(
-			$payment->get_transaction_id(),
-			$this->config->merchant_id,
+			$transaction_id,
+			$merchant_id,
 			$this->config->shop_id
 		);
 
