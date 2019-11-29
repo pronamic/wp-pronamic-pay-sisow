@@ -101,6 +101,20 @@ class Transaction {
 	public $consumer_city;
 
 	/**
+	 * Consumer IBAN
+	 *
+	 * @var string
+	 */
+	public $consumer_iban;
+
+	/**
+	 * Consumer BIC
+	 *
+	 * @var string
+	 */
+	public $consumer_bic;
+
+	/**
 	 * Issuer URL
 	 *
 	 * @var string

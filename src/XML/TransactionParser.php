@@ -86,6 +86,14 @@ class TransactionParser implements Parser {
 			$transaction->consumer_city = Security::filter( $xml->consumercity );
 		}
 
+		if ( isset( $xml->consumeriban ) ) {
+			$transaction->consumer_iban = Security::filter( $xml->consumeriban );
+		}
+
+		if ( isset( $xml->consumerbic ) ) {
+			$transaction->consumer_bic = Security::filter( $xml->consumerbic );
+		}
+
 		return $transaction;
 	}
 }

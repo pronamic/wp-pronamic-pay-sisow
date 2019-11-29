@@ -12,6 +12,8 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Core\Util as Core_Util;
+use Pronamic\WordPress\Pay\Payments\BankAccountDetails;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLineType;
@@ -377,12 +379,23 @@ class Gateway extends Core_Gateway {
 			return;
 		}
 
-		$transaction = $result;
+		// Set status.
+		$payment->set_status( Statuses::transform( $result->status ) );
 
-		$payment->set_status( Statuses::transform( $transaction->status ) );
-		$payment->set_consumer_name( $transaction->consumer_name );
-		$payment->set_consumer_account_number( $transaction->consumer_account );
-		$payment->set_consumer_city( $transaction->consumer_city );
+		// Set consumer details.
+		$consumer_details = $payment->get_consumer_bank_details();
+
+		if ( null === $consumer_details ) {
+			$consumer_details = new BankAccountDetails();
+
+			$payment->set_consumer_bank_details( $consumer_details );
+		}
+
+		$consumer_details->set_name( $result->consumer_name );
+		$consumer_details->set_account_number( $result->consumer_account );
+		$consumer_details->set_city( $result->consumer_city );
+		$consumer_details->set_iban( $result->consumer_iban );
+		$consumer_details->set_bic( $result->consumer_bic );
 	}
 
 	/**
