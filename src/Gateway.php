@@ -111,6 +111,28 @@ class Gateway extends Core_Gateway {
 			}
 		}
 
+		/**
+		 * Add active payment methods which are not returned by Sisow in merchant response.
+		 *
+		 * @link https://github.com/wp-pay-gateways/sisow/issues/1
+		 */
+		if ( false !== \array_search( PaymentMethods::IDEAL, $payment_methods, true ) ) {
+			$payment_methods[] = PaymentMethods::BANCONTACT;
+			$payment_methods[] = PaymentMethods::BANK_TRANSFER;
+			$payment_methods[] = PaymentMethods::BELFIUS;
+			$payment_methods[] = PaymentMethods::BUNQ;
+			$payment_methods[] = PaymentMethods::EPS;
+			$payment_methods[] = PaymentMethods::GIROPAY;
+			$payment_methods[] = PaymentMethods::IDEALQR;
+			$payment_methods[] = PaymentMethods::KBC;
+			$payment_methods[] = PaymentMethods::SOFORT;
+
+			$payment_methods = \array_unique( $payment_methods );
+
+			// Renumber keys.
+			$payment_methods = \array_values( $payment_methods );
+		}
+
 		return $payment_methods;
 	}
 
