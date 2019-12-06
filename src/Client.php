@@ -248,6 +248,8 @@ class Client {
 	 * @param InvoiceRequest $request Invoice request.
 	 *
 	 * @return Invoice|false
+	 *
+	 * @throws \Exception Throws exception on error.
 	 */
 	public function create_invoice( InvoiceRequest $request ) {
 		// Request.
@@ -273,6 +275,8 @@ class Client {
 	 * @param CancelReservationRequest $request Reservation cancellation request.
 	 *
 	 * @return Reservation|false
+	 *
+	 * @throws \Exception Throws exception on error.
 	 */
 	public function cancel_reservation( CancelReservationRequest $request ) {
 		$request->set_parameter( 'shopid', null );
@@ -302,6 +306,7 @@ class Client {
 	 * @return Transaction|false
 	 *
 	 * @throws \InvalidArgumentException Throws exception on invalid transaction ID.
+	 * @throws \Exception Throws exception on error.
 	 */
 	public function get_status( StatusRequest $request ) {
 		$transaction_id = $request->get_parameter( 'trxid' );

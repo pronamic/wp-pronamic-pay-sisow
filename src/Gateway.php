@@ -71,8 +71,6 @@ class Gateway extends Core_Gateway {
 			$groups[] = array(
 				'options' => $result,
 			);
-		} else {
-			$this->error = $this->client->get_error();
 		}
 
 		return $groups;
@@ -464,11 +462,10 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Create invoice.
-		$result = $this->client->create_invoice( $request );
-
-		// Handle errors.
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+		try {
+			$result = $this->client->create_invoice( $request );
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
 			return false;
 		}
@@ -503,11 +500,10 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Cancel reservation.
-		$result = $this->client->cancel_reservation( $request );
-
-		// Handle errors.
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+		try {
+			$result = $this->client->cancel_reservation( $request );
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
 			return false;
 		}
