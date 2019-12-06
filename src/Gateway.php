@@ -121,7 +121,6 @@ class Gateway extends Core_Gateway {
 			$payment_methods[] = PaymentMethods::BUNQ;
 			$payment_methods[] = PaymentMethods::EPS;
 			$payment_methods[] = PaymentMethods::GIROPAY;
-			$payment_methods[] = PaymentMethods::IDEALQR;
 			$payment_methods[] = PaymentMethods::KBC;
 			$payment_methods[] = PaymentMethods::SOFORT;
 
