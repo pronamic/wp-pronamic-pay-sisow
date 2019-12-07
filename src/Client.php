@@ -306,7 +306,6 @@ class Client {
 	 * @return Transaction|false
 	 *
 	 * @throws \InvalidArgumentException Throws exception on invalid transaction ID.
-	 * @throws \Exception Throws exception on error.
 	 */
 	public function get_status( StatusRequest $request ) {
 		$transaction_id = $request->get_parameter( 'trxid' );
