@@ -443,7 +443,7 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @param Payment $payment Payment.
 	 *
-	 * @return bool|Invoice
+	 * @return bool
 	 */
 	public function create_invoice( $payment ) {
 		$transaction_id = $payment->get_transaction_id();
@@ -469,11 +469,15 @@ class Gateway extends Core_Gateway {
 			return false;
 		}
 
-		$payment->set_status( Core_Statuses::SUCCESS );
+		if ( $result instanceof \Pronamic\WordPress\Pay\Gateways\Sisow\Reservation ) {
+			$payment->set_status( Core_Statuses::SUCCESS );
 
-		$payment->save();
+			$payment->save();
 
-		return $result;
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -481,7 +485,7 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @param Payment $payment Payment.
 	 *
-	 * @return bool|Reservation
+	 * @return bool
 	 */
 	public function cancel_reservation( $payment ) {
 		$transaction_id = $payment->get_transaction_id();
@@ -511,8 +515,10 @@ class Gateway extends Core_Gateway {
 			$payment->set_status( Statuses::transform( $result->status ) );
 
 			$payment->save();
+
+			return true;
 		}
 
-		return $result;
+		return false;
 	}
 }
