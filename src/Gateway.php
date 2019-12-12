@@ -469,7 +469,7 @@ class Gateway extends Core_Gateway {
 			return false;
 		}
 
-		if ( $result instanceof \Pronamic\WordPress\Pay\Gateways\Sisow\Reservation ) {
+		if ( $result instanceof \Pronamic\WordPress\Pay\Gateways\Sisow\Invoice ) {
 			$payment->set_status( Core_Statuses::SUCCESS );
 
 			$payment->save();
