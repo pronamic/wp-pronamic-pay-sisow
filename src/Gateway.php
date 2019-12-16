@@ -13,7 +13,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
-use Pronamic\WordPress\Pay\Payments\BankAccountDetails;
+use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLineType;
