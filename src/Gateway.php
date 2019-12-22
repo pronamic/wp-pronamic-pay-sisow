@@ -25,7 +25,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.3
+ * @version 2.0.4
  * @since   1.0.0
  */
 class Gateway extends Core_Gateway {
