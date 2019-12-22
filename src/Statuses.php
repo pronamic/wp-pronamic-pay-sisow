@@ -10,7 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
 
 /**
  * Title: Sisow statuses constants
@@ -19,7 +19,7 @@ use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
  * Company: Pronamic
  *
  * @author  Reüel van der Steege
- * @version 2.0.1
+ * @version 2.0.4
  * @since   2.0.1
  */
 class Statuses {

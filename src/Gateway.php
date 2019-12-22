@@ -12,7 +12,9 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
+use Pronamic\WordPress\Pay\Core\Util as Core_Util;
+use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 
@@ -23,7 +25,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.4
  * @since   1.0.0
  */
 class Gateway extends Core_Gateway {
@@ -69,8 +71,6 @@ class Gateway extends Core_Gateway {
 			$groups[] = array(
 				'options' => $result,
 			);
-		} else {
-			$this->error = $this->client->get_error();
 		}
 
 		return $groups;
@@ -83,7 +83,7 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_available_payment_methods() {
 		if ( self::MODE_TEST === $this->config->mode ) {
-			return $this->get_supported_payment_methods();
+			return null;
 		}
 
 		$payment_methods = array();
@@ -92,11 +92,10 @@ class Gateway extends Core_Gateway {
 		$request = new MerchantRequest( $this->config->merchant_id );
 
 		// Get merchant.
-		$result = $this->client->get_merchant( $request );
-
-		// Handle errors.
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+		try {
+			$result = $this->client->get_merchant( $request );
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
 			return $payment_methods;
 		}
@@ -108,6 +107,27 @@ class Gateway extends Core_Gateway {
 			if ( $payment_method ) {
 				$payment_methods[] = $payment_method;
 			}
+		}
+
+		/**
+		 * Add active payment methods which are not returned by Sisow in merchant response.
+		 *
+		 * @link https://github.com/wp-pay-gateways/sisow/issues/1
+		 */
+		if ( false !== \array_search( PaymentMethods::IDEAL, $payment_methods, true ) ) {
+			$payment_methods[] = PaymentMethods::BANCONTACT;
+			$payment_methods[] = PaymentMethods::BANK_TRANSFER;
+			$payment_methods[] = PaymentMethods::BELFIUS;
+			$payment_methods[] = PaymentMethods::BUNQ;
+			$payment_methods[] = PaymentMethods::EPS;
+			$payment_methods[] = PaymentMethods::GIROPAY;
+			$payment_methods[] = PaymentMethods::KBC;
+			$payment_methods[] = PaymentMethods::SOFORT;
+
+			$payment_methods = \array_unique( $payment_methods );
+
+			// Renumber keys.
+			$payment_methods = \array_values( $payment_methods );
 		}
 
 		return $payment_methods;
@@ -151,9 +171,10 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Start
 	 *
-	 * @see Core_Gateway::start()
-	 *
 	 * @param Payment $payment Payment.
+	 *
+	 * @throws \Exception Throws exception on transaction error.
+	 * @see Core_Gateway::start()
 	 */
 	public function start( Payment $payment ) {
 		// Order and purchase ID.
@@ -288,9 +309,9 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Lines.
-		if ( null !== $payment->get_lines() ) {
-			$lines = $payment->get_lines();
+		$lines = $payment->get_lines();
 
+		if ( null !== $lines ) {
 			$x = 1;
 
 			foreach ( $lines as $line ) {
@@ -324,10 +345,21 @@ class Gateway extends Core_Gateway {
 						'product_netprice_' . $x    => $unit_price,
 						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_cents(),
 						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_cents(),
-						'product_tax_' . $x         => $line->get_tax_amount()->get_cents(),
-						'product_taxrate_' . $x     => $line->get_total_amount()->get_tax_percentage() * 100,
 					)
 				);
+
+				// Tax request parameters.
+				$tax_amount = $line->get_tax_amount();
+
+				if ( null !== $tax_amount ) {
+					$request->set_parameter( 'product_tax_' . $x, $tax_amount->get_minor_units() );
+				}
+
+				$tax_percentage = $line->get_total_amount()->get_tax_percentage();
+
+				if ( null !== $tax_percentage ) {
+					$request->set_parameter( 'product_taxrate_' . $x, $tax_percentage * 100 );
+				}
 
 				$x++;
 			}
@@ -339,10 +371,6 @@ class Gateway extends Core_Gateway {
 		if ( false !== $result ) {
 			$payment->set_transaction_id( $result->id );
 			$payment->set_action_url( $result->issuer_url );
-		} else {
-			$this->error = $this->client->get_error();
-
-			return false;
 		}
 	}
 
@@ -352,26 +380,62 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$request = new StatusRequest(
-			$payment->get_transaction_id(),
-			$this->config->merchant_id,
-			$this->config->shop_id
-		);
+		$transaction_id = $payment->get_transaction_id();
+		$merchant_id    = $this->config->merchant_id;
 
-		$result = $this->client->get_status( $request );
+		// Process notify and callback requests for payments without transaction ID.
+		if ( empty( $transaction_id ) && Core_Util::input_has_vars( \INPUT_GET, array( 'trxid', 'ec', 'status', 'sha1' ) ) ) {
+			$transaction_id = \filter_input( \INPUT_GET, 'trxid' );
+			$entrance_code  = \filter_input( \INPUT_GET, 'ec' );
+			$status         = \filter_input( \INPUT_GET, 'status' );
+			$signature      = \filter_input( \INPUT_GET, 'sha1' );
 
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+			$notify = new NotifyRequest( $transaction_id, $entrance_code, $status, $merchant_id );
+
+			// Set status if signature validates.
+			if ( $notify->get_signature( $this->config->merchant_key ) === $signature ) {
+				$payment->set_status( Statuses::transform( $status ) );
+			}
 
 			return;
 		}
 
-		$transaction = $result;
+		// Status request.
+		$request = new StatusRequest(
+			$transaction_id,
+			$merchant_id,
+			$this->config->shop_id
+		);
 
-		$payment->set_status( Statuses::transform( $transaction->status ) );
-		$payment->set_consumer_name( $transaction->consumer_name );
-		$payment->set_consumer_account_number( $transaction->consumer_account );
-		$payment->set_consumer_city( $transaction->consumer_city );
+		try {
+			$result = $this->client->get_status( $request );
+
+			if ( false === $result ) {
+				return;
+			}
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
+
+			return;
+		}
+
+		// Set status.
+		$payment->set_status( Statuses::transform( $result->status ) );
+
+		// Set consumer details.
+		$consumer_details = $payment->get_consumer_bank_details();
+
+		if ( null === $consumer_details ) {
+			$consumer_details = new BankAccountDetails();
+
+			$payment->set_consumer_bank_details( $consumer_details );
+		}
+
+		$consumer_details->set_name( $result->consumer_name );
+		$consumer_details->set_account_number( $result->consumer_account );
+		$consumer_details->set_city( $result->consumer_city );
+		$consumer_details->set_iban( $result->consumer_iban );
+		$consumer_details->set_bic( $result->consumer_bic );
 	}
 
 	/**
@@ -379,7 +443,7 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @param Payment $payment Payment.
 	 *
-	 * @return bool|Invoice
+	 * @return bool
 	 */
 	public function create_invoice( $payment ) {
 		$transaction_id = $payment->get_transaction_id();
@@ -397,20 +461,23 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Create invoice.
-		$result = $this->client->create_invoice( $request );
-
-		// Handle errors.
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+		try {
+			$result = $this->client->create_invoice( $request );
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
 			return false;
 		}
 
-		$payment->set_status( Core_Statuses::SUCCESS );
+		if ( $result instanceof \Pronamic\WordPress\Pay\Gateways\Sisow\Invoice ) {
+			$payment->set_status( Core_Statuses::SUCCESS );
 
-		$payment->save();
+			$payment->save();
 
-		return $result;
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -418,7 +485,7 @@ class Gateway extends Core_Gateway {
 	 *
 	 * @param Payment $payment Payment.
 	 *
-	 * @return bool|Reservation
+	 * @return bool
 	 */
 	public function cancel_reservation( $payment ) {
 		$transaction_id = $payment->get_transaction_id();
@@ -436,11 +503,10 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Cancel reservation.
-		$result = $this->client->cancel_reservation( $request );
-
-		// Handle errors.
-		if ( false === $result ) {
-			$this->error = $this->client->get_error();
+		try {
+			$result = $this->client->cancel_reservation( $request );
+		} catch ( \Exception $e ) {
+			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
 			return false;
 		}
@@ -449,8 +515,10 @@ class Gateway extends Core_Gateway {
 			$payment->set_status( Statuses::transform( $result->status ) );
 
 			$payment->save();
+
+			return true;
 		}
 
-		return $result;
+		return false;
 	}
 }

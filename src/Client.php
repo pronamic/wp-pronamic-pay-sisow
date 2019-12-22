@@ -17,7 +17,6 @@ use Pronamic\WordPress\Pay\Gateways\Sisow\XML\MerchantParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\ReservationParser;
 use Pronamic\WordPress\Pay\Gateways\Sisow\XML\TransactionParser;
 use SimpleXMLElement;
-use WP_Error;
 
 /**
  * Title: Sisow
@@ -26,7 +25,7 @@ use WP_Error;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.4
  * @since   1.0.0
  */
 class Client {
@@ -59,13 +58,6 @@ class Client {
 	private $test_mode;
 
 	/**
-	 * Error.
-	 *
-	 * @var WP_Error|null
-	 */
-	private $error;
-
-	/**
 	 * Constructs and initializes a Sisow client object.
 	 *
 	 * @param string $merchant_id  Merchant ID.
@@ -74,15 +66,6 @@ class Client {
 	public function __construct( $merchant_id, $merchant_key ) {
 		$this->merchant_id  = $merchant_id;
 		$this->merchant_key = $merchant_key;
-	}
-
-	/**
-	 * Error.
-	 *
-	 * @return WP_Error|null
-	 */
-	public function get_error() {
-		return $this->error;
 	}
 
 	/**
@@ -118,24 +101,12 @@ class Client {
 			)
 		);
 
-		if ( $result instanceof WP_Error ) {
-			$this->error = $result;
-
-			return false;
-		}
-
 		if ( ! is_string( $result ) ) {
 			return false;
 		}
 
 		// XML.
 		$xml = Core_Util::simplexml_load_string( $result );
-
-		if ( $xml instanceof WP_Error ) {
-			$this->error = $xml;
-
-			return false;
-		}
 
 		return $xml;
 	}
@@ -145,11 +116,10 @@ class Client {
 	 *
 	 * @param SimpleXMLElement $document Document.
 	 *
-	 * @return WP_Error|Invoice|Merchant|Reservation|Transaction|Error
+	 * @return Invoice|Merchant|Reservation|Transaction|Error
+	 * @throws \Exception Throws exception on unknown Sisow message.
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
-		$this->error = null;
-
 		$name = $document->getName();
 
 		switch ( $name ) {
@@ -164,24 +134,20 @@ class Client {
 			case 'errorresponse':
 				$sisow_error = ErrorParser::parse( $document->error );
 
-				$this->error = new WP_Error( 'ideal_sisow_error', $sisow_error->message, $sisow_error );
+				$message = sprintf( '%s: %s', $sisow_error->code, $sisow_error->message );
 
-				return $sisow_error;
+				throw new \Exception( $message );
 			case 'invoiceresponse':
 				$invoice = InvoiceParser::parse( $document->invoice );
 
 				return $invoice;
+			case 'statusresponse':
 			case 'transactionrequest':
 				$transaction = TransactionParser::parse( $document->transaction );
 
 				return $transaction;
-			case 'statusresponse':
-				$transaction = TransactionParser::parse( $document->transaction );
-
-				return $transaction;
 			default:
-				return new WP_Error(
-					'ideal_sisow_error',
+				throw new \Exception(
 					/* translators: %s: XML document element name */
 					sprintf( __( 'Unknwon Sisow message (%s)', 'pronamic_ideal' ), $name )
 				);
@@ -236,7 +202,11 @@ class Client {
 		}
 
 		// Parse.
-		$message = $this->parse_document( $response );
+		try {
+			$message = $this->parse_document( $response );
+		} catch ( \Exception $e ) {
+			return false;
+		}
 
 		if ( $message instanceof Merchant ) {
 			return $message;
@@ -251,6 +221,8 @@ class Client {
 	 * @param TransactionRequest $request Transaction request.
 	 *
 	 * @return Transaction|false
+	 *
+	 * @throws \Exception Throws exception on transaction error.
 	 */
 	public function create_transaction( TransactionRequest $request ) {
 		// Request.
@@ -276,6 +248,8 @@ class Client {
 	 * @param InvoiceRequest $request Invoice request.
 	 *
 	 * @return Invoice|false
+	 *
+	 * @throws \Exception Throws exception on error.
 	 */
 	public function create_invoice( InvoiceRequest $request ) {
 		// Request.
@@ -301,6 +275,8 @@ class Client {
 	 * @param CancelReservationRequest $request Reservation cancellation request.
 	 *
 	 * @return Reservation|false
+	 *
+	 * @throws \Exception Throws exception on error.
 	 */
 	public function cancel_reservation( CancelReservationRequest $request ) {
 		$request->set_parameter( 'shopid', null );
@@ -328,8 +304,16 @@ class Client {
 	 * @param StatusRequest $request Status request object.
 	 *
 	 * @return Transaction|false
+	 *
+	 * @throws \InvalidArgumentException Throws exception on invalid transaction ID.
 	 */
 	public function get_status( StatusRequest $request ) {
+		$transaction_id = $request->get_parameter( 'trxid' );
+
+		if ( empty( $transaction_id ) ) {
+			throw new \InvalidArgumentException( 'Invalid transction ID.' );
+		}
+
 		// Request.
 		$response = $this->send_request( RequestMethods::STATUS_REQUEST, $request );
 

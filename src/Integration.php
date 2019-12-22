@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
+use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
  * Title: Sisow integration
@@ -19,7 +20,7 @@ use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.4
  * @since   1.0.0
  */
 class Integration extends AbstractIntegration {
@@ -39,6 +40,35 @@ class Integration extends AbstractIntegration {
 			'webhook_log',
 			'webhook_no_config',
 		);
+
+		$this->set_manual_url( __( 'https://www.pronamic.eu/support/how-to-connect-sisow-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ) );
+
+		\add_filter( 'pronamic_pay_return_should_redirect', array( $this, 'return_should_redirect' ), 10, 2 );
+	}
+
+	/**
+	 * Filter whether or not to redirect when handling return.
+	 *
+	 * @param bool    $should_redirect Whether or not to redirect.
+	 * @param Payment $payment         Payment.
+	 *
+	 * @return bool
+	 */
+	public function return_should_redirect( $should_redirect, Payment $payment ) {
+		// Check if the request is a callback request.
+		if ( filter_has_var( \INPUT_GET, 'callback' ) && filter_input( \INPUT_GET, 'callback', \FILTER_VALIDATE_BOOLEAN ) ) {
+			$should_redirect = false;
+		}
+
+		// Check if the request is a notify request.
+		if ( filter_has_var( \INPUT_GET, 'notify' ) && filter_input( \INPUT_GET, 'notify', \FILTER_VALIDATE_BOOLEAN ) ) {
+			// Log webhook request.
+			do_action( 'pronamic_pay_webhook_log_payment', $payment );
+
+			$should_redirect = false;
+		}
+
+		return $should_redirect;
 	}
 
 	/**

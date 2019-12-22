@@ -19,7 +19,7 @@ use Pronamic\WordPress\DateTime\DateTime;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.4
  * @since   1.0.0
  */
 class Transaction {
@@ -99,6 +99,20 @@ class Transaction {
 	 * @var string
 	 */
 	public $consumer_city;
+
+	/**
+	 * Consumer IBAN
+	 *
+	 * @var string
+	 */
+	public $consumer_iban;
+
+	/**
+	 * Consumer BIC
+	 *
+	 * @var string
+	 */
+	public $consumer_bic;
 
 	/**
 	 * Issuer URL

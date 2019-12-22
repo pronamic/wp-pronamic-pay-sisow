@@ -23,7 +23,7 @@ use SimpleXMLElement;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.4
  * @since   1.0.0
  */
 class TransactionParser implements Parser {
@@ -84,6 +84,14 @@ class TransactionParser implements Parser {
 
 		if ( isset( $xml->consumercity ) ) {
 			$transaction->consumer_city = Security::filter( $xml->consumercity );
+		}
+
+		if ( isset( $xml->consumeriban ) ) {
+			$transaction->consumer_iban = Security::filter( $xml->consumeriban );
+		}
+
+		if ( isset( $xml->consumerbic ) ) {
+			$transaction->consumer_bic = Security::filter( $xml->consumerbic );
 		}
 
 		return $transaction;
