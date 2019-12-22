@@ -7,6 +7,15 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.4] - 2019-12-22
+- Added support for new `pronamic_pay_return_should_redirect` filter for notify and callback processing.
+- Added URL to manual in gateway settings.
+- Improved status updates for payments without transaction ID (i.e. iDEAL QR and iDEAL without issuer).
+- Improved getting active payment methods for account.
+- Improved error handling with exceptions.
+- Updated usage of deprecated `get_cents()` method.
+- Updated payment status class name.
+
 ## [2.0.3] - 2019-08-30
 - Fix fatal error "Uncaught Error: Call to a member function get_cents() on null".
 
@@ -85,7 +94,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/2.0.3...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/2.0.4...HEAD
+[2.0.4]: https://github.com/wp-pay-gateways/sisow/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/wp-pay-gateways/sisow/compare/2.0.2...2.0.3
 [2.0.2]: https://github.com/wp-pay-gateways/sisow/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/wp-pay-gateways/sisow/compare/2.0.0...2.0.1
