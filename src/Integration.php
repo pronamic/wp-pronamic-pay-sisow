@@ -28,6 +28,8 @@ class Integration extends AbstractIntegration {
 	 * Construct integration.
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		$this->id            = 'sisow-ideal';
 		$this->name          = 'Sisow';
 		$this->url           = 'https://www.sisow.nl/';
