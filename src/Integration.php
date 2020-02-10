@@ -10,7 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
+use Pronamic\WordPress\Pay\AbstractGatewayIntegration;
 use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
@@ -23,7 +23,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
  * @version 2.0.4
  * @since   1.0.0
  */
-class Integration extends AbstractIntegration {
+class Integration extends AbstractGatewayIntegration {
 	/**
 	 * Construct Sisow integration.
 	 *
