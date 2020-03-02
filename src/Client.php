@@ -202,11 +202,7 @@ class Client {
 		}
 
 		// Parse.
-		try {
-			$message = $this->parse_document( $response );
-		} catch ( \Exception $e ) {
-			return false;
-		}
+		$message = $this->parse_document( $response );
 
 		if ( $message instanceof Merchant ) {
 			return $message;
