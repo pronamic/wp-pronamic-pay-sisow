@@ -3,7 +3,7 @@
  * Client
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2019 Pronamic
+ * @copyright 2005-2020 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -21,7 +21,7 @@ use SimpleXMLElement;
 /**
  * Title: Sisow
  * Description:
- * Copyright: 2005-2019 Pronamic
+ * Copyright: 2005-2020 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -202,11 +202,7 @@ class Client {
 		}
 
 		// Parse.
-		try {
-			$message = $this->parse_document( $response );
-		} catch ( \Exception $e ) {
-			return false;
-		}
+		$message = $this->parse_document( $response );
 
 		if ( $message instanceof Merchant ) {
 			return $message;

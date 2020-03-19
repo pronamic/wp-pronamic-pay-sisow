@@ -3,46 +3,59 @@
  * Integration
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2019 Pronamic
+ * @copyright 2005-2020 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use Pronamic\WordPress\Pay\Gateways\Common\AbstractIntegration;
+use Pronamic\WordPress\Pay\AbstractGatewayIntegration;
 use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
  * Title: Sisow integration
  * Description:
- * Copyright: 2005-2019 Pronamic
+ * Copyright: 2005-2020 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
  * @version 2.0.4
  * @since   1.0.0
  */
-class Integration extends AbstractIntegration {
+class Integration extends AbstractGatewayIntegration {
 	/**
-	 * Construct integration.
+	 * Construct Sisow integration.
+	 *
+	 * @param array $args Arguments.
 	 */
-	public function __construct() {
-		$this->id            = 'sisow-ideal';
-		$this->name          = 'Sisow';
-		$this->url           = 'https://www.sisow.nl/';
-		$this->product_url   = 'https://www.sisow.nl/epay-online-betaalmogelijkheden/epay-informatie';
-		$this->dashboard_url = 'https://www.sisow.nl/Sisow/iDeal/Login.aspx';
-		$this->register_url  = 'https://www.sisow.nl/Sisow/iDeal/Aanmelden.aspx?r=120872';
-		$this->provider      = 'sisow';
-		$this->supports      = array(
-			'webhook',
-			'webhook_log',
-			'webhook_no_config',
+	public function __construct( $args = array() ) {
+		$args = wp_parse_args(
+			$args,
+			array(
+				'id'            => 'sisow-ideal',
+				'name'          => 'Sisow',
+				'url'           => 'https://www.sisow.nl/',
+				'product_url'   => 'https://www.sisow.nl/epay-online-betaalmogelijkheden/epay-informatie',
+				'dashboard_url' => 'https://www.sisow.nl/Sisow/iDeal/Login.aspx',
+				'register_url'  => 'https://www.sisow.nl/Sisow/iDeal/Aanmelden.aspx?r=120872',
+				'provider'      => 'sisow',
+				'supports'      => array(
+					'webhook',
+					'webhook_log',
+					'webhook_no_config',
+				),
+				'manual_url'    => \__( 'https://www.pronamic.eu/support/how-to-connect-sisow-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ),
+			)
 		);
 
-		$this->set_manual_url( __( 'https://www.pronamic.eu/support/how-to-connect-sisow-with-wordpress-via-pronamic-pay/', 'pronamic_ideal' ) );
+		parent::__construct( $args );
 
+		/**
+		 * Filter Pronamic Pay return should redirect.
+		 *
+		 * @link https://github.com/wp-pay/core/blob/2.2.7/src/Plugin.php#L435-L436
+		 */
 		\add_filter( 'pronamic_pay_return_should_redirect', array( $this, 'return_should_redirect' ), 10, 2 );
 	}
 
