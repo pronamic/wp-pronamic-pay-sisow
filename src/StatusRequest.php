@@ -10,9 +10,6 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
-use Pronamic\WordPress\Pay\Payments\Items;
-
 /**
  * Status request
  *
@@ -37,7 +34,7 @@ class StatusRequest extends Request {
 	/**
 	 * Get signature data.
 	 *
-	 * @return array
+	 * @return array<int,int|string|null>
 	 */
 	public function get_signature_data() {
 		return array(

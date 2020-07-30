@@ -40,7 +40,7 @@ class NotifyRequest extends Request {
 	/**
 	 * Get signature data.
 	 *
-	 * @return array
+	 * @return array<int,int|string|null>
 	 */
 	public function get_signature_data() {
 		return array(

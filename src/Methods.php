@@ -172,7 +172,7 @@ class Methods {
 	/**
 	 * Payments methods map.
 	 *
-	 * @var array
+	 * @var array<string,string>
 	 */
 	private static $map = array(
 		PaymentMethods::AFTERPAY         => self::AFTERPAY,
@@ -219,7 +219,7 @@ class Methods {
 	 *
 	 * @param string $method Sisow method.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public static function transform_gateway_method( $method ) {
 		if ( ! is_scalar( $method ) ) {

@@ -59,6 +59,8 @@ class Util {
 	 * (            Haakje openen
 	 * )            Haakje sluiten
 	 * $            Dollar
+	 *
+	 * @return string
 	 */
 	public static function get_pattern() {
 		if ( null === self::$pattern ) {

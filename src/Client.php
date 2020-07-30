@@ -72,6 +72,7 @@ class Client {
 	 * Set test mode.
 	 *
 	 * @param boolean $test_mode True if test mode, false otherwise.
+	 * @return void
 	 */
 	public function set_test_mode( $test_mode ) {
 		$this->test_mode = $test_mode;
@@ -116,7 +117,7 @@ class Client {
 	 *
 	 * @param SimpleXMLElement $document Document.
 	 *
-	 * @return Invoice|Merchant|Reservation|Transaction|Error
+	 * @return Invoice|Merchant|Reservation|Transaction
 	 * @throws \Exception Throws exception on unknown Sisow message.
 	 */
 	private function parse_document( SimpleXMLElement $document ) {
@@ -157,7 +158,7 @@ class Client {
 	/**
 	 * Get directory.
 	 *
-	 * @return array|false
+	 * @return array<int|string, string>|false
 	 */
 	public function get_directory() {
 		if ( $this->test_mode ) {
@@ -191,7 +192,7 @@ class Client {
 	 *
 	 * @param MerchantRequest $merchant_request Merchant request.
 	 *
-	 * @return Merchant|bool
+	 * @return Merchant|false
 	 */
 	public function get_merchant( MerchantRequest $merchant_request ) {
 		// Request.

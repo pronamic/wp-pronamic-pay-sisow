@@ -27,6 +27,7 @@ interface Parser {
 	 * Parse the specified XML element.
 	 *
 	 * @param SimpleXMLElement $xml XML element to parse.
+	 * @return object
 	 */
 	public static function parse( SimpleXMLElement $xml );
 }

@@ -29,11 +29,12 @@ class ErrorParser implements Parser {
 	 * Parse the specified XML element.
 	 *
 	 * @param SimpleXMLElement $xml XML element to parse.
+	 * @return Sisow_Error
 	 */
 	public static function parse( SimpleXMLElement $xml ) {
 		$error = new Sisow_Error(
-			Security::filter( $xml->errorcode ),
-			Security::filter( $xml->errormessage )
+			(string) Security::filter( $xml->errorcode ),
+			(string) Security::filter( $xml->errormessage )
 		);
 
 		return $error;

@@ -31,7 +31,7 @@ class Merchant {
 	/**
 	 * Payment methods.
 	 *
-	 * @var array
+	 * @var array<int,string>
 	 */
 	public $payments;
 

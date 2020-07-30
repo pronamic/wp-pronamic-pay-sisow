@@ -27,7 +27,7 @@ class Integration extends AbstractGatewayIntegration {
 	/**
 	 * Construct Sisow integration.
 	 *
-	 * @param array $args Arguments.
+	 * @param array<string, array<string>> $args Arguments.
 	 */
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args(
@@ -87,7 +87,7 @@ class Integration extends AbstractGatewayIntegration {
 	/**
 	 * Get settings fields.
 	 *
-	 * @return array
+	 * @return array<int, array<string, callable|int|string|bool|array<int|string,int|string>>>
 	 */
 	public function get_settings_fields() {
 		$fields = array();
