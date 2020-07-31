@@ -97,7 +97,7 @@ class Integration extends AbstractGatewayIntegration {
 			'section' => 'general',
 			'type'    => 'html',
 			'html'    => sprintf(
-				/* translators: %s: Sisow */
+				/* translators: 1: payment provider name */
 				__( 'Account details are provided by %1$s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
 				__( 'Sisow', 'pronamic_ideal' )
 			),
@@ -137,7 +137,7 @@ class Integration extends AbstractGatewayIntegration {
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
 			'tooltip'     => __( 'Shop ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
-			/* translators: %s: 0 */
+			/* translators: %s: default code */
 			'description' => sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), 0 ),
 			'default'     => 0,
 		);
