@@ -184,7 +184,7 @@ class Gateway extends Core_Gateway {
 	public function start( Payment $payment ) {
 		// Order and purchase ID.
 		$order_id    = $payment->get_order_id();
-		$purchase_id = strval( empty( $order_id ) ? $payment->get_id() : $order_id );
+		$purchase_id = strval( empty( $order_id ) ? (string) $payment->get_id() : $order_id );
 
 		// Maximum length for purchase ID is 16 characters, otherwise an error will occur:
 		// ideal_sisow_error - purchaseid too long (16).
