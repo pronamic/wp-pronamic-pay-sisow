@@ -150,7 +150,7 @@ class Client {
 			default:
 				throw new \Exception(
 					/* translators: %s: XML document element name */
-					sprintf( __( 'Unknwon Sisow message (%s)', 'pronamic_ideal' ), $name )
+					sprintf( __( 'Unknown Sisow message (%s)', 'pronamic_ideal' ), $name )
 				);
 		}
 	}
@@ -308,7 +308,7 @@ class Client {
 		$transaction_id = $request->get_parameter( 'trxid' );
 
 		if ( empty( $transaction_id ) ) {
-			throw new \InvalidArgumentException( 'Invalid transction ID.' );
+			throw new \InvalidArgumentException( 'Invalid transaction ID.' );
 		}
 
 		// Request.

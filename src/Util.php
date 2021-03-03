@@ -22,14 +22,14 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
  */
 class Util {
 	/**
-	 * Holds the unallowed character pattern.
+	 * Holds the unhallowed character pattern.
 	 *
 	 * @var string|null
 	 */
 	private static $pattern;
 
 	/**
-	 * Get unallowed character pattern.
+	 * Get unhallowed character pattern.
 	 *
 	 * Karakterset
 	 *
@@ -99,7 +99,7 @@ class Util {
 	}
 
 	/**
-	 * Filter all Sisow unallowed charachters.
+	 * Filter all Sisow unhallowed characters.
 	 *
 	 * @param string $string String to filter.
 	 * @return mixed
