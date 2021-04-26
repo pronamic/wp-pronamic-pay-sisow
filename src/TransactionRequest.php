@@ -3,7 +3,7 @@
  * Transaction request
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -24,7 +24,7 @@ class TransactionRequest extends Request {
 	/**
 	 * Get signature data.
 	 *
-	 * @return array
+	 * @return array<int,int|string|null>
 	 */
 	public function get_signature_data() {
 		return array(

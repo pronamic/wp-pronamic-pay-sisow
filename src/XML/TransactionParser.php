@@ -3,7 +3,7 @@
  * Transaction parser
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -19,7 +19,7 @@ use SimpleXMLElement;
 /**
  * Transaction parser
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -42,7 +42,11 @@ class TransactionParser implements Parser {
 		}
 
 		if ( isset( $xml->issuerurl ) ) {
-			$transaction->issuer_url = urldecode( Security::filter( $xml->issuerurl ) );
+			$issuer_url = Security::filter( $xml->issuerurl );
+
+			if ( null !== $issuer_url ) {
+				$transaction->issuer_url = urldecode( $issuer_url );
+			}
 		}
 
 		// Status response.
@@ -51,7 +55,11 @@ class TransactionParser implements Parser {
 		}
 
 		if ( isset( $xml->amount ) ) {
-			$transaction->amount = Util::cents_to_amount( Security::filter( $xml->amount ) );
+			$amount = Security::filter( $xml->amount );
+
+			if ( null !== $amount ) {
+				$transaction->amount = Util::cents_to_amount( $amount );
+			}
 		}
 
 		if ( isset( $xml->purchaseid ) ) {
@@ -71,7 +79,11 @@ class TransactionParser implements Parser {
 		}
 
 		if ( isset( $xml->timestamp ) ) {
-			$transaction->timestamp = new DateTime( Security::filter( $xml->timestamp ) );
+			$timestamp = Security::filter( $xml->timestamp );
+
+			if ( null !== $timestamp ) {
+				$transaction->timestamp = new DateTime( $timestamp );
+			}
 		}
 
 		if ( isset( $xml->consumername ) ) {

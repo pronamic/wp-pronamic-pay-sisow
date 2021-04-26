@@ -3,7 +3,7 @@
  * Error parser
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -17,7 +17,7 @@ use SimpleXMLElement;
 /**
  * Title: Error XML parser
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -29,11 +29,12 @@ class ErrorParser implements Parser {
 	 * Parse the specified XML element.
 	 *
 	 * @param SimpleXMLElement $xml XML element to parse.
+	 * @return Sisow_Error
 	 */
 	public static function parse( SimpleXMLElement $xml ) {
 		$error = new Sisow_Error(
-			Security::filter( $xml->errorcode ),
-			Security::filter( $xml->errormessage )
+			(string) Security::filter( $xml->errorcode ),
+			(string) Security::filter( $xml->errormessage )
 		);
 
 		return $error;

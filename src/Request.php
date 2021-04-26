@@ -3,15 +3,12 @@
  * Request
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
-
-use Pronamic\WordPress\Pay\Core\Util as Pay_Util;
-use Pronamic\WordPress\Pay\Payments\Items;
 
 /**
  * Title: iDEAL Sisow transaction request
@@ -27,7 +24,7 @@ class Request {
 	/**
 	 * Parameters.
 	 *
-	 * @var array
+	 * @var array<string,int|string|null>
 	 */
 	private $parameters = array();
 
@@ -46,7 +43,7 @@ class Request {
 	 * Get parameter.
 	 *
 	 * @param string $parameter Parameter.
-	 * @return string|null
+	 * @return int|string|null
 	 */
 	public function get_parameter( $parameter ) {
 		if ( isset( $this->parameters[ $parameter ] ) ) {
@@ -59,8 +56,9 @@ class Request {
 	/**
 	 * Set parameter.
 	 *
-	 * @param string      $parameter Parameter.
-	 * @param string|null $value     Value.
+	 * @param string          $parameter Parameter.
+	 * @param int|string|null $value     Value.
+	 * @return void
 	 */
 	public function set_parameter( $parameter, $value ) {
 		$this->parameters[ $parameter ] = $value;
@@ -69,7 +67,7 @@ class Request {
 	/**
 	 * Get parameters.
 	 *
-	 * @return array
+	 * @return array<string,int|string|null>
 	 */
 	public function get_parameters() {
 		return $this->parameters;
@@ -78,7 +76,8 @@ class Request {
 	/**
 	 * Merge parameters.
 	 *
-	 * @param array $parameters Parameters.
+	 * @param array<string,int|string|null> $parameters Parameters.
+	 * @return void
 	 */
 	public function merge_parameters( $parameters ) {
 		$this->parameters = array_merge( $this->parameters, $parameters );
@@ -87,7 +86,7 @@ class Request {
 	/**
 	 * Get signature data.
 	 *
-	 * @return array
+	 * @return array<int,int|string|null>
 	 */
 	public function get_signature_data() {
 		return array();
@@ -115,6 +114,7 @@ class Request {
 	 * Sign this request with the specified merchant key.
 	 *
 	 * @param string $merchant_key Merchant key.
+	 * @return void
 	 */
 	public function sign( $merchant_key ) {
 		$signature = $this->get_signature( $merchant_key );

@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.1.1] - 2021-04-26
+- Happy 2021.
+
 ## [2.1.0] - 2020-03-19
 - Catch exception in gateway instead of client.
 - Extend from AbstractGatewayIntegration class.
@@ -55,7 +58,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 - Fixed "Fatal error: Uncaught Error: Call to a member function get_order_id() on null".
 
 ## [1.1.8] - 2016-06-08
-- Simplified the gateay payment start function.
+- Simplified the gateway payment start function.
 
 ## [1.1.7] - 2016-03-22
 - Updated gateway settings.
@@ -87,7 +90,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 - Added support for Shop ID.
 
 ## [1.0.3] - 2015-03-03
-- Changed WordPress pay core library requirment from `~1.0.0` to `>=1.0.0`.
+- Changed WordPress pay core library requirement from `~1.0.0` to `>=1.0.0`.
 
 ## [1.0.2] - 2015-01-20
 - Require WordPress pay core library version 1.0.0.
@@ -98,7 +101,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2014-12-12
 - First release.
 
-[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/2.1.0...HEAD
+[unreleased]: https://github.com/wp-pay-gateways/sisow/compare/2.1.1...HEAD
+[2.1.1]: https://github.com/wp-pay-gateways/sisow/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/wp-pay-gateways/sisow/compare/2.0.4...2.1.0
 [2.0.4]: https://github.com/wp-pay-gateways/sisow/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/wp-pay-gateways/sisow/compare/2.0.2...2.0.3

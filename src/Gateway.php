@@ -3,7 +3,7 @@
  * Gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -21,7 +21,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 /**
  * Title: Sisow gateway
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -61,13 +61,14 @@ class Gateway extends Core_Gateway {
 	 * Get issuers
 	 *
 	 * @see Core_Gateway::get_issuers()
+	 * @return array<int, array<string, array<int|string, string>>>
 	 */
 	public function get_issuers() {
 		$groups = array();
 
 		$result = $this->client->get_directory();
 
-		if ( $result ) {
+		if ( false !== $result ) {
 			$groups[] = array(
 				'options' => $result,
 			);
@@ -80,6 +81,7 @@ class Gateway extends Core_Gateway {
 	 * Get available payment methods.
 	 *
 	 * @see Core_Gateway::get_available_payment_methods()
+	 * @return array<int,string>|null
 	 */
 	public function get_available_payment_methods() {
 		if ( self::MODE_TEST === $this->config->mode ) {
@@ -100,12 +102,14 @@ class Gateway extends Core_Gateway {
 			return $payment_methods;
 		}
 
-		foreach ( $result->payments as $method ) {
-			// Transform to WordPress payment methods.
-			$payment_method = Methods::transform_gateway_method( $method );
+		if ( false !== $result ) {
+			foreach ( $result->payments as $method ) {
+				// Transform to WordPress payment methods.
+				$payment_method = Methods::transform_gateway_method( $method );
 
-			if ( $payment_method ) {
-				$payment_methods[] = $payment_method;
+				if ( $payment_method ) {
+					$payment_methods[] = $payment_method;
+				}
 			}
 		}
 
@@ -137,6 +141,7 @@ class Gateway extends Core_Gateway {
 	 * Get supported payment methods
 	 *
 	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()
+	 * @return array<int,string>
 	 */
 	public function get_supported_payment_methods() {
 		return array(
@@ -179,7 +184,7 @@ class Gateway extends Core_Gateway {
 	public function start( Payment $payment ) {
 		// Order and purchase ID.
 		$order_id    = $payment->get_order_id();
-		$purchase_id = strval( empty( $order_id ) ? $payment->get_id() : $order_id );
+		$purchase_id = strval( empty( $order_id ) ? (string) $payment->get_id() : $order_id );
 
 		// Maximum length for purchase ID is 16 characters, otherwise an error will occur:
 		// ideal_sisow_error - purchaseid too long (16).
@@ -196,8 +201,8 @@ class Gateway extends Core_Gateway {
 				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
 				'entrancecode' => $payment->get_entrance_code(),
-				'amount'       => $payment->get_total_amount()->get_cents(),
-				'description'  => substr( $payment->get_description(), 0, 32 ),
+				'amount'       => $payment->get_total_amount()->get_minor_units(),
+				'description'  => substr( (string) $payment->get_description(), 0, 32 ),
 				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
 				'returnurl'    => $payment->get_return_url(),
 				'cancelurl'    => $payment->get_return_url(),
@@ -218,9 +223,9 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Customer.
-		if ( null !== $payment->get_customer() ) {
-			$customer = $payment->get_customer();
+		$customer = $payment->get_customer();
 
+		if ( null !== $customer ) {
 			$request->merge_parameters(
 				array(
 					'ipaddress' => $customer->get_ip_address(),
@@ -228,27 +233,31 @@ class Gateway extends Core_Gateway {
 				)
 			);
 
-			if ( null !== $customer->get_locale() ) {
+			$locale = $customer->get_locale();
+
+			if ( null !== $locale ) {
 				/*
 				 * @link https://github.com/wp-pay-gateways/sisow/tree/feature/post-pay/documentation#parameter-locale
 				 */
-				$sisow_locale = strtoupper( substr( $customer->get_locale(), -2 ) );
+				$sisow_locale = strtoupper( substr( $locale, -2 ) );
 
 				$request->set_parameter( 'locale', $sisow_locale );
 			}
 
-			if ( null !== $customer->get_birth_date() ) {
-				$request->set_parameter( 'birthdate', $customer->get_birth_date()->format( 'dmY' ) );
+			$birth_date = $customer->get_birth_date();
+
+			if ( null !== $birth_date ) {
+				$request->set_parameter( 'birthdate', $birth_date->format( 'dmY' ) );
 			}
 		}
 
 		// Billing address.
-		if ( null !== $payment->get_billing_address() ) {
-			$address = $payment->get_billing_address();
+		$address = $payment->get_billing_address();
 
-			if ( null !== $address->get_name() ) {
-				$name = $address->get_name();
+		if ( null !== $address ) {
+			$name = $address->get_name();
 
+			if ( null !== $name ) {
 				$request->merge_parameters(
 					array(
 						'billing_firstname' => $name->get_first_name(),
@@ -258,7 +267,7 @@ class Gateway extends Core_Gateway {
 
 				// Remove accents from first name for AfterPay.
 				if ( PaymentMethods::AFTERPAY === $payment->get_method() ) {
-					$request->set_parameter( 'billing_firstname', remove_accents( $name->get_first_name() ) );
+					$request->set_parameter( 'billing_firstname', remove_accents( (string) $name->get_first_name() ) );
 				}
 			}
 
@@ -279,12 +288,12 @@ class Gateway extends Core_Gateway {
 		}
 
 		// Shipping address.
-		if ( null !== $payment->get_shipping_address() ) {
-			$address = $payment->get_shipping_address();
+		$address = $payment->get_shipping_address();
 
-			if ( null !== $address->get_name() ) {
-				$name = $address->get_name();
+		if ( null !== $address ) {
+			$name = $address->get_name();
 
+			if ( null !== $name ) {
 				$request->merge_parameters(
 					array(
 						'shipping_firstname' => $name->get_first_name(),
@@ -330,10 +339,12 @@ class Gateway extends Core_Gateway {
 				}
 
 				// Price.
-				$unit_price = null;
+				$net_price = null;
 
-				if ( null !== $line->get_unit_price() ) {
-					$unit_price = $line->get_unit_price()->get_excluding_tax()->get_cents();
+				$unit_price = $line->get_unit_price();
+
+				if ( null !== $unit_price ) {
+					$net_price = $unit_price->get_excluding_tax()->get_minor_units();
 				}
 
 				// Request parameters.
@@ -342,9 +353,9 @@ class Gateway extends Core_Gateway {
 						'product_id_' . $x          => $product_id,
 						'product_description_' . $x => $line->get_name(),
 						'product_quantity_' . $x    => $line->get_quantity(),
-						'product_netprice_' . $x    => $unit_price,
-						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_cents(),
-						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_cents(),
+						'product_netprice_' . $x    => $net_price,
+						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_minor_units(),
+						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_minor_units(),
 					)
 				);
 
@@ -358,7 +369,7 @@ class Gateway extends Core_Gateway {
 				$tax_percentage = $line->get_total_amount()->get_tax_percentage();
 
 				if ( null !== $tax_percentage ) {
-					$request->set_parameter( 'product_taxrate_' . $x, $tax_percentage * 100 );
+					$request->set_parameter( 'product_taxrate_' . $x, strval( $tax_percentage * 100 ) );
 				}
 
 				$x++;
@@ -380,7 +391,7 @@ class Gateway extends Core_Gateway {
 	 * @param Payment $payment Payment.
 	 */
 	public function update_status( Payment $payment ) {
-		$transaction_id = $payment->get_transaction_id();
+		$transaction_id = (string) $payment->get_transaction_id();
 		$merchant_id    = $this->config->merchant_id;
 
 		// Process notify and callback requests for payments without transaction ID.
@@ -508,6 +519,10 @@ class Gateway extends Core_Gateway {
 		} catch ( \Exception $e ) {
 			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
 
+			return false;
+		}
+
+		if ( false === $result ) {
 			return false;
 		}
 

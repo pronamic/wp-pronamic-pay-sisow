@@ -3,7 +3,7 @@
  * Util
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -13,7 +13,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 /**
  * Title: Sisow utility class
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -22,14 +22,14 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
  */
 class Util {
 	/**
-	 * Holds the unallowed character pattern.
+	 * Holds the unhallowed character pattern.
 	 *
 	 * @var string|null
 	 */
 	private static $pattern;
 
 	/**
-	 * Get unallowed character pattern.
+	 * Get unhallowed character pattern.
 	 *
 	 * Karakterset
 	 *
@@ -59,6 +59,8 @@ class Util {
 	 * (            Haakje openen
 	 * )            Haakje sluiten
 	 * $            Dollar
+	 *
+	 * @return string
 	 */
 	public static function get_pattern() {
 		if ( null === self::$pattern ) {
@@ -97,7 +99,7 @@ class Util {
 	}
 
 	/**
-	 * Filter all Sisow unallowed charachters.
+	 * Filter all Sisow unhallowed characters.
 	 *
 	 * @param string $string String to filter.
 	 * @return mixed

@@ -3,7 +3,7 @@
  * Integration
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 /**
  * Title: Sisow integration
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -27,7 +27,7 @@ class Integration extends AbstractGatewayIntegration {
 	/**
 	 * Construct Sisow integration.
 	 *
-	 * @param array $args Arguments.
+	 * @param array<string, array<string>> $args Arguments.
 	 */
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args(
@@ -87,7 +87,7 @@ class Integration extends AbstractGatewayIntegration {
 	/**
 	 * Get settings fields.
 	 *
-	 * @return array
+	 * @return array<int, array<string, callable|int|string|bool|array<int|string,int|string>>>
 	 */
 	public function get_settings_fields() {
 		$fields = array();
@@ -97,7 +97,7 @@ class Integration extends AbstractGatewayIntegration {
 			'section' => 'general',
 			'type'    => 'html',
 			'html'    => sprintf(
-				/* translators: %s: Sisow */
+				/* translators: 1: payment provider name */
 				__( 'Account details are provided by %1$s after registration. These settings need to match with the %1$s dashboard.', 'pronamic_ideal' ),
 				__( 'Sisow', 'pronamic_ideal' )
 			),
@@ -137,7 +137,7 @@ class Integration extends AbstractGatewayIntegration {
 			'type'        => 'text',
 			'classes'     => array( 'regular-text', 'code' ),
 			'tooltip'     => __( 'Shop ID as mentioned at <strong>My Profile</strong> in the Sisow dashboard.', 'pronamic_ideal' ),
-			/* translators: %s: 0 */
+			/* translators: %s: default code */
 			'description' => sprintf( __( 'Default: <code>%s</code>', 'pronamic_ideal' ), 0 ),
 			'default'     => 0,
 		);
