@@ -373,7 +373,7 @@ class Gateway extends Core_Gateway {
 				$tax_amount = $line->get_tax_amount();
 
 				if ( null !== $tax_amount ) {
-					$request->set_parameter( 'product_tax_' . $x, $this->format_amount( $tax_amount );
+					$request->set_parameter( 'product_tax_' . $x, $this->format_amount( $tax_amount ) );
 				}
 
 				$tax_percentage = $line->get_total_amount()->get_tax_percentage();
