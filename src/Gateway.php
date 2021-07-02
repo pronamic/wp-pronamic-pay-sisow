@@ -174,6 +174,16 @@ class Gateway extends Core_Gateway {
 	}
 
 	/**
+	 * Format amount.
+	 * 
+	 * @param Money $amount Money.
+	 * @return string
+	 */
+	private function format_amount( Money $amount ) {
+		return $amount->get_minor_units()->format( 0, '', '' );
+	}
+
+	/**
 	 * Start
 	 *
 	 * @param Payment $payment Payment.
@@ -201,7 +211,7 @@ class Gateway extends Core_Gateway {
 				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
 				'entrancecode' => $payment->get_entrance_code(),
-				'amount'       => $payment->get_total_amount()->get_minor_units(),
+				'amount'       => $this->format_amount( $payment->get_total_amount() ),
 				'description'  => substr( (string) $payment->get_description(), 0, 32 ),
 				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
 				'returnurl'    => $payment->get_return_url(),
@@ -344,7 +354,7 @@ class Gateway extends Core_Gateway {
 				$unit_price = $line->get_unit_price();
 
 				if ( null !== $unit_price ) {
-					$net_price = $unit_price->get_excluding_tax()->get_minor_units();
+					$net_price = $this->format_amount( $unit_price->get_excluding_tax() );
 				}
 
 				// Request parameters.
@@ -354,8 +364,8 @@ class Gateway extends Core_Gateway {
 						'product_description_' . $x => $line->get_name(),
 						'product_quantity_' . $x    => $line->get_quantity(),
 						'product_netprice_' . $x    => $net_price,
-						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_minor_units(),
-						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_minor_units(),
+						'product_total_' . $x       => $this->format_amount( $line->get_total_amount()->get_including_tax() ),
+						'product_nettotal_' . $x    => $this->format_amount( $line->get_total_amount()->get_excluding_tax() ),
 					)
 				);
 
@@ -363,7 +373,7 @@ class Gateway extends Core_Gateway {
 				$tax_amount = $line->get_tax_amount();
 
 				if ( null !== $tax_amount ) {
-					$request->set_parameter( 'product_tax_' . $x, $tax_amount->get_minor_units() );
+					$request->set_parameter( 'product_tax_' . $x, $this->format_amount( $tax_amount );
 				}
 
 				$tax_percentage = $line->get_total_amount()->get_tax_percentage();
