@@ -10,6 +10,8 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
+use Pronamic\WordPress\Money\Money;
+use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
@@ -140,7 +142,7 @@ class Gateway extends Core_Gateway {
 	/**
 	 * Get supported payment methods
 	 *
-	 * @see Pronamic_WP_Pay_Gateway::get_supported_payment_methods()
+	 * @see Core_Gateway::get_supported_payment_methods()
 	 * @return array<int,string>
 	 */
 	public function get_supported_payment_methods() {
@@ -174,6 +176,16 @@ class Gateway extends Core_Gateway {
 	}
 
 	/**
+	 * Format amount.
+	 *
+	 * @param Money $amount Money.
+	 * @return string
+	 */
+	private function format_amount( Money $amount ) {
+		return $amount->get_minor_units()->format( 0, '', '' );
+	}
+
+	/**
 	 * Start
 	 *
 	 * @param Payment $payment Payment.
@@ -201,7 +213,7 @@ class Gateway extends Core_Gateway {
 				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
 				'entrancecode' => $payment->get_entrance_code(),
-				'amount'       => $payment->get_total_amount()->get_minor_units(),
+				'amount'       => $this->format_amount( $payment->get_total_amount() ),
 				'description'  => substr( (string) $payment->get_description(), 0, 32 ),
 				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
 				'returnurl'    => $payment->get_return_url(),
@@ -324,52 +336,58 @@ class Gateway extends Core_Gateway {
 			$x = 1;
 
 			foreach ( $lines as $line ) {
-				// Product ID.
-				$product_id = $line->get_id();
+				// Product type.
+				$product_type = 'physical';
 
 				switch ( $line->get_type() ) {
 					case PaymentLineType::SHIPPING:
-						$product_id = 'shipping';
+						$product_type = 'shipping_fee';
 
 						break;
+					case PaymentLineType::DISCOUNT:
+						$product_type = 'discount';
+
+						break;
+					case PaymentLineType::DIGITAL:
 					case PaymentLineType::FEE:
-						$product_id = 'paymentfee';
+						$product_id = 'digital';
+
+						break;
+					case PaymentLineType::PHYSICAL:
+						$product_id = 'physical';
 
 						break;
 				}
 
-				// Price.
-				$net_price = null;
+				$request->set_parameter( 'product_id_' . $x, $line->get_id() );
+				$request->set_parameter( 'product_description_' . $x, $line->get_name() );
+				$request->set_parameter( 'product_quantity_' . $x, $line->get_quantity() );
+				$request->set_parameter( 'product_type_' . $x, $product_type );
 
 				$unit_price = $line->get_unit_price();
 
 				if ( null !== $unit_price ) {
-					$net_price = $unit_price->get_excluding_tax()->get_minor_units();
+					$request->set_parameter( 'product_netprice_' . $x, $unit_price instanceof TaxedMoney ? $unit_price->get_excluding_tax() : $unit_price );
 				}
 
-				// Request parameters.
-				$request->merge_parameters(
-					array(
-						'product_id_' . $x          => $product_id,
-						'product_description_' . $x => $line->get_name(),
-						'product_quantity_' . $x    => $line->get_quantity(),
-						'product_netprice_' . $x    => $net_price,
-						'product_total_' . $x       => $line->get_total_amount()->get_including_tax()->get_minor_units(),
-						'product_nettotal_' . $x    => $line->get_total_amount()->get_excluding_tax()->get_minor_units(),
-					)
-				);
+				$total_amount = $line->get_total_amount();
+
+				$request->set_parameter( 'product_total_' . $x, $total_amount instanceof TaxedMoney ? $total_amount->get_including_tax() : $total_amount );
+				$request->set_parameter( 'product_nettotal_' . $x, $total_amount instanceof TaxedMoney ? $total_amount->get_excluding_tax() : $total_amount );
 
 				// Tax request parameters.
 				$tax_amount = $line->get_tax_amount();
 
 				if ( null !== $tax_amount ) {
-					$request->set_parameter( 'product_tax_' . $x, $tax_amount->get_minor_units() );
+					$request->set_parameter( 'product_tax_' . $x, $this->format_amount( $tax_amount ) );
 				}
 
-				$tax_percentage = $line->get_total_amount()->get_tax_percentage();
+				if ( $total_amount instanceof TaxedMoney ) {
+					$tax_percentage = $total_amount->get_tax_percentage();
 
-				if ( null !== $tax_percentage ) {
-					$request->set_parameter( 'product_taxrate_' . $x, strval( $tax_percentage * 100 ) );
+					if ( null !== $tax_percentage ) {
+						$request->set_parameter( 'product_taxrate_' . $x, strval( $tax_percentage * 100 ) );
+					}
 				}
 
 				$x++;
