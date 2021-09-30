@@ -58,7 +58,7 @@ class TransactionParser implements Parser {
 			$amount = Security::filter( $xml->amount );
 
 			if ( null !== $amount ) {
-				$transaction->amount = Util::cents_to_amount( $amount );
+				$transaction->amount = $amount / 100;
 			}
 		}
 
