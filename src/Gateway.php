@@ -208,11 +208,26 @@ class Gateway extends Core_Gateway {
 			$this->config->shop_id
 		);
 
+		/**
+		 * The entrancecode will also be returned in the returnurl for
+		 * internal control purposes with a maximum of 40 characters,
+		 * strict alphanumerical (only charaters and numbers are
+		 * allowd; [A-Za-z0-9]). If not supplied, the purchaseid will be
+		 * used (if possible because spaces are allowed for the
+		 * purchaseid but not for the entrancecode)
+		 *
+		 * @link https://github.com/wp-pay-gateways/sisow/blob/master/documentation/rest540-en.pdf
+		 */
+		$entrance_code = \wp_generate_password( 40, false );
+
+		$payment->set_meta( 'entrance_code', $entrance_code );
+
+		// Parameters.
 		$request->merge_parameters(
 			array(
 				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
-				'entrancecode' => $payment->get_entrance_code(),
+				'entrancecode' => $entrance_code,
 				'amount'       => $this->format_amount( $payment->get_total_amount() ),
 				'description'  => substr( (string) $payment->get_description(), 0, 32 ),
 				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
