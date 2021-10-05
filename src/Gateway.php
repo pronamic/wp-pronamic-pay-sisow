@@ -236,7 +236,7 @@ class Gateway extends Core_Gateway {
 				'notifyurl'    => $payment->get_return_url(),
 				'callbackurl'  => $payment->get_return_url(),
 				// Other parameters.
-				'issuerid'     => $payment->get_issuer(),
+				'issuerid'     => $payment->get_meta( 'issuer' ),
 				'billing_mail' => $payment->get_email(),
 			)
 		);
