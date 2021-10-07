@@ -225,7 +225,7 @@ class Gateway extends Core_Gateway {
 		// Parameters.
 		$request->merge_parameters(
 			array(
-				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
+				'payment'      => Methods::transform( $payment->get_payment_method(), $payment->get_payment_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
 				'entrancecode' => $entrance_code,
 				'amount'       => $this->format_amount( $payment->get_total_amount() ),
@@ -242,10 +242,10 @@ class Gateway extends Core_Gateway {
 		);
 
 		// Payment method.
-		$this->set_payment_method( null === $payment->get_method() ? PaymentMethods::IDEAL : $payment->get_method() );
+		$this->set_payment_method( null === $payment->get_payment_method() ? PaymentMethods::IDEAL : $payment->get_payment_method() );
 
 		// Additional parameters for payment method.
-		if ( PaymentMethods::IDEALQR === $payment->get_method() ) {
+		if ( PaymentMethods::IDEALQR === $payment->get_payment_method() ) {
 			$request->set_parameter( 'qrcode', 'true' );
 		}
 
@@ -293,7 +293,7 @@ class Gateway extends Core_Gateway {
 				);
 
 				// Remove accents from first name for AfterPay.
-				if ( PaymentMethods::AFTERPAY === $payment->get_method() ) {
+				if ( PaymentMethods::AFTERPAY === $payment->get_payment_method() ) {
 					$request->set_parameter( 'billing_firstname', remove_accents( (string) $name->get_first_name() ) );
 				}
 			}
