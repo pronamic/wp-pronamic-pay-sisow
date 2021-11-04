@@ -223,6 +223,8 @@ class Gateway extends Core_Gateway {
 		$payment->set_meta( 'entrance_code', $entrance_code );
 
 		// Parameters.
+		$customer = $payment->get_customer();
+
 		$request->merge_parameters(
 			array(
 				'payment'      => Methods::transform( $payment->get_payment_method(), $payment->get_payment_method() ),
@@ -237,7 +239,7 @@ class Gateway extends Core_Gateway {
 				'callbackurl'  => $payment->get_return_url(),
 				// Other parameters.
 				'issuerid'     => $payment->get_meta( 'issuer' ),
-				'billing_mail' => $payment->get_email(),
+				'billing_mail' => ( null === $customer ) ? null : $customer->get_email(),
 			)
 		);
 
