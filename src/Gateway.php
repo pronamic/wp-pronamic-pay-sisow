@@ -147,7 +147,7 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			PaymentMethods::AFTERPAY,
+			PaymentMethods::AFTERPAY_NL,
 			PaymentMethods::BANK_TRANSFER,
 			PaymentMethods::BANCONTACT,
 			PaymentMethods::BELFIUS,
@@ -295,7 +295,7 @@ class Gateway extends Core_Gateway {
 				);
 
 				// Remove accents from first name for AfterPay.
-				if ( PaymentMethods::AFTERPAY === $payment->get_payment_method() ) {
+				if ( PaymentMethods::AFTERPAY_NL === $payment->get_payment_method() ) {
 					$request->set_parameter( 'billing_firstname', remove_accents( (string) $name->get_first_name() ) );
 				}
 			}

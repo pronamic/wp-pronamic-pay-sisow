@@ -26,6 +26,8 @@ class Methods {
 	/**
 	 * Indicator for 'AfterPay' payment.
 	 *
+	 * Note: this is for AfterPay (afterpay.nl) and not for Afterpay (afterpay.com).
+	 *
 	 * @var string
 	 * @since 2.1.0
 	 */
@@ -175,7 +177,7 @@ class Methods {
 	 * @var array<string,string>
 	 */
 	private static $map = array(
-		PaymentMethods::AFTERPAY         => self::AFTERPAY,
+		PaymentMethods::AFTERPAY_NL      => self::AFTERPAY,
 		PaymentMethods::BANCONTACT       => self::MISTER_CASH,
 		PaymentMethods::BANK_TRANSFER    => self::OVERBOEKING,
 		PaymentMethods::BELFIUS          => self::BELFIUS,
