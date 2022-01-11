@@ -3,7 +3,7 @@
  * Gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -23,7 +23,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 /**
  * Title: Sisow gateway
  * Description:
- * Copyright: 2005-2021 Pronamic
+ * Copyright: 2005-2022 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -147,7 +147,7 @@ class Gateway extends Core_Gateway {
 	 */
 	public function get_supported_payment_methods() {
 		return array(
-			PaymentMethods::AFTERPAY,
+			PaymentMethods::AFTERPAY_NL,
 			PaymentMethods::BANK_TRANSFER,
 			PaymentMethods::BANCONTACT,
 			PaymentMethods::BELFIUS,
@@ -208,11 +208,28 @@ class Gateway extends Core_Gateway {
 			$this->config->shop_id
 		);
 
+		/**
+		 * The entrancecode will also be returned in the returnurl for
+		 * internal control purposes with a maximum of 40 characters,
+		 * strict alphanumerical (only charaters and numbers are
+		 * allowd; [A-Za-z0-9]). If not supplied, the purchaseid will be
+		 * used (if possible because spaces are allowed for the
+		 * purchaseid but not for the entrancecode)
+		 *
+		 * @link https://github.com/wp-pay-gateways/sisow/blob/master/documentation/rest540-en.pdf
+		 */
+		$entrance_code = \wp_generate_password( 40, false );
+
+		$payment->set_meta( 'entrance_code', $entrance_code );
+
+		// Parameters.
+		$customer = $payment->get_customer();
+
 		$request->merge_parameters(
 			array(
-				'payment'      => Methods::transform( $payment->get_method(), $payment->get_method() ),
+				'payment'      => Methods::transform( $payment->get_payment_method(), $payment->get_payment_method() ),
 				'purchaseid'   => substr( $purchase_id, 0, 16 ),
-				'entrancecode' => $payment->get_entrance_code(),
+				'entrancecode' => $entrance_code,
 				'amount'       => $this->format_amount( $payment->get_total_amount() ),
 				'description'  => substr( (string) $payment->get_description(), 0, 32 ),
 				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
@@ -221,16 +238,16 @@ class Gateway extends Core_Gateway {
 				'notifyurl'    => $payment->get_return_url(),
 				'callbackurl'  => $payment->get_return_url(),
 				// Other parameters.
-				'issuerid'     => $payment->get_issuer(),
-				'billing_mail' => $payment->get_email(),
+				'issuerid'     => $payment->get_meta( 'issuer' ),
+				'billing_mail' => ( null === $customer ) ? null : $customer->get_email(),
 			)
 		);
 
 		// Payment method.
-		$this->set_payment_method( null === $payment->get_method() ? PaymentMethods::IDEAL : $payment->get_method() );
+		$this->set_payment_method( null === $payment->get_payment_method() ? PaymentMethods::IDEAL : $payment->get_payment_method() );
 
 		// Additional parameters for payment method.
-		if ( PaymentMethods::IDEALQR === $payment->get_method() ) {
+		if ( PaymentMethods::IDEALQR === $payment->get_payment_method() ) {
 			$request->set_parameter( 'qrcode', 'true' );
 		}
 
@@ -278,7 +295,7 @@ class Gateway extends Core_Gateway {
 				);
 
 				// Remove accents from first name for AfterPay.
-				if ( PaymentMethods::AFTERPAY === $payment->get_method() ) {
+				if ( PaymentMethods::AFTERPAY_NL === $payment->get_payment_method() ) {
 					$request->set_parameter( 'billing_firstname', remove_accents( (string) $name->get_first_name() ) );
 				}
 			}

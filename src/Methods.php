@@ -3,7 +3,7 @@
  * Methods
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Payments
  */
@@ -15,7 +15,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 /**
  * Title: iDEAL Sisow payment methods
  * Description:
- * Copyright: 2005-2021 Pronamic
+ * Copyright: 2005-2022 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -25,6 +25,8 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 class Methods {
 	/**
 	 * Indicator for 'AfterPay' payment.
+	 *
+	 * Note: this is for AfterPay (afterpay.nl) and not for Afterpay (afterpay.com).
 	 *
 	 * @var string
 	 * @since 2.1.0
@@ -175,7 +177,7 @@ class Methods {
 	 * @var array<string,string>
 	 */
 	private static $map = array(
-		PaymentMethods::AFTERPAY         => self::AFTERPAY,
+		PaymentMethods::AFTERPAY_NL      => self::AFTERPAY,
 		PaymentMethods::BANCONTACT       => self::MISTER_CASH,
 		PaymentMethods::BANK_TRANSFER    => self::OVERBOEKING,
 		PaymentMethods::BELFIUS          => self::BELFIUS,
