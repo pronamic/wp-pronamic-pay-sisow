@@ -48,6 +48,8 @@ class Gateway extends Core_Gateway {
 
 		$this->set_method( self::METHOD_HTTP_REDIRECT );
 
+		$this->set_mode( $config->test_mode ? 'test' : 'live' );
+
 		// Supported features.
 		$this->supports = array(
 			'payment_status_request',
