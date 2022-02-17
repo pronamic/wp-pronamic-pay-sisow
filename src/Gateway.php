@@ -98,13 +98,7 @@ class Gateway extends Core_Gateway {
 		$request = new MerchantRequest( $this->config->merchant_id );
 
 		// Get merchant.
-		try {
-			$result = $this->client->get_merchant( $request );
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
-			return $payment_methods;
-		}
+		$result = $this->client->get_merchant( $request );
 
 		if ( false !== $result ) {
 			foreach ( $result->payments as $method ) {
@@ -455,15 +449,9 @@ class Gateway extends Core_Gateway {
 			$this->config->shop_id
 		);
 
-		try {
-			$result = $this->client->get_status( $request );
+		$result = $this->client->get_status( $request );
 
-			if ( false === $result ) {
-				return;
-			}
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
+		if ( false === $result ) {
 			return;
 		}
 
@@ -509,13 +497,7 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Create invoice.
-		try {
-			$result = $this->client->create_invoice( $request );
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
-			return false;
-		}
+		$result = $this->client->create_invoice( $request );
 
 		if ( $result instanceof \Pronamic\WordPress\Pay\Gateways\Sisow\Invoice ) {
 			$payment->set_status( Core_Statuses::SUCCESS );
@@ -551,13 +533,7 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Cancel reservation.
-		try {
-			$result = $this->client->cancel_reservation( $request );
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
-			return false;
-		}
+		$result = $this->client->cancel_reservation( $request );
 
 		if ( false === $result ) {
 			return false;
