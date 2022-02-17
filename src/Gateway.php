@@ -56,7 +56,7 @@ class Gateway extends Core_Gateway {
 
 		// Client.
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
-		$this->client->set_test_mode( self::MODE_TEST === $config->mode );
+		$this->client->set_test_mode( $config->test_mode );
 	}
 
 	/**

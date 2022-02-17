@@ -152,6 +152,9 @@ class Integration extends AbstractGatewayIntegration {
 			'type'     => 'checkbox',
 			'label'    => _x( 'Test Mode', 'sisow', 'pronamic_ideal' ),
 			'tooltip'  => __( 'This requires the option “Testen met behulp van simulator (toestaan)” to be activated in the Sisow account at ‘Mijn Profiel – page Geavanceerd’.', 'pronamic_ideal' ),
+			'default'  => function( $config_id ) {
+				return 'test' === \get_post_meta( $config_id, '_pronamic_gateway_mode', true );
+			}
 		);
 
 		return $fields;
@@ -169,7 +172,14 @@ class Integration extends AbstractGatewayIntegration {
 		$config->merchant_id  = $this->get_meta( $post_id, 'sisow_merchant_id' );
 		$config->merchant_key = $this->get_meta( $post_id, 'sisow_merchant_key' );
 		$config->shop_id      = $this->get_meta( $post_id, 'sisow_shop_id' );
-		$config->mode         = $this->get_meta( $post_id, 'sisow_test_mode' );
+		
+		$value = $this->get_meta( $post_id, 'sisow_test_mode' );
+
+		if ( '' === $value ) {
+			$value = ( 'test' === $this->get_meta( $post_id, 'mode' ) );
+		}
+
+		$config->test_mode = (bool) $value;
 
 		return $config;
 	}
