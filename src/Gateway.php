@@ -39,12 +39,21 @@ class Gateway extends Core_Gateway {
 	protected $client;
 
 	/**
+	 * Config.
+	 * 
+	 * @var Config.
+	 */
+	private $config;
+
+	/**
 	 * Constructs and initialize an Sisow gateway
 	 *
 	 * @param Config $config Config.
 	 */
 	public function __construct( Config $config ) {
-		parent::__construct( $config );
+		parent::__construct();
+
+		$this->config = $config;
 
 		$this->set_method( self::METHOD_HTTP_REDIRECT );
 
@@ -88,7 +97,7 @@ class Gateway extends Core_Gateway {
 	 * @return array<int,string>|null
 	 */
 	public function get_available_payment_methods() {
-		if ( self::MODE_TEST === $this->config->mode ) {
+		if ( $this->config->test_mode ) {
 			return null;
 		}
 
