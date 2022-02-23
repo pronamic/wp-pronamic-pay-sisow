@@ -154,7 +154,7 @@ class Integration extends AbstractGatewayIntegration {
 			'tooltip'  => __( 'This requires the option “Testen met behulp van simulator (toestaan)” to be activated in the Sisow account at ‘Mijn Profiel – page Geavanceerd’.', 'pronamic_ideal' ),
 			'default'  => function( $config_id ) {
 				return 'test' === \get_post_meta( $config_id, '_pronamic_gateway_mode', true );
-			}
+			},
 		);
 
 		return $fields;

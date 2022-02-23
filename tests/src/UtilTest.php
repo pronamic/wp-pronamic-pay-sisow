@@ -10,7 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use WP_UnitTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Title: Sisow util test
@@ -22,7 +22,7 @@ use WP_UnitTestCase;
  * @version 2.0.0
  * @since   1.0.0
  */
-class UtilTest extends WP_UnitTestCase {
+class UtilTest extends TestCase {
 	/**
 	 * Test filtering forbidden charachters.
 	 */

@@ -12,6 +12,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
+use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
@@ -237,7 +238,7 @@ class Gateway extends Core_Gateway {
 				'entrancecode' => $entrance_code,
 				'amount'       => $this->format_amount( $payment->get_total_amount() ),
 				'description'  => substr( (string) $payment->get_description(), 0, 32 ),
-				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
+				'testmode'     => $this->config->test_mode ? 'true' : 'false',
 				'returnurl'    => $payment->get_return_url(),
 				'cancelurl'    => $payment->get_return_url(),
 				'notifyurl'    => $payment->get_return_url(),
@@ -408,7 +409,9 @@ class Gateway extends Core_Gateway {
 					$tax_percentage = $total_amount->get_tax_percentage();
 
 					if ( null !== $tax_percentage ) {
-						$request->set_parameter( 'product_taxrate_' . $x, strval( $tax_percentage * 100 ) );
+						$value = Number::from_string( $tax_percentage )->multiply( Number::from_int( 100 ) )->format( 0, '', '' );
+
+						$request->set_parameter( 'product_taxrate_' . $x, $value );
 					}
 				}
 

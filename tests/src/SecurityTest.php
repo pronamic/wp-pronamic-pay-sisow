@@ -10,7 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use WP_UnitTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Title: Sisow security test
@@ -22,7 +22,7 @@ use WP_UnitTestCase;
  * @version 2.0.0
  * @since   1.0.0
  */
-class SecurityTest extends WP_UnitTestCase {
+class SecurityTest extends TestCase {
 	/**
 	 * Test transaction request signing.
 	 */

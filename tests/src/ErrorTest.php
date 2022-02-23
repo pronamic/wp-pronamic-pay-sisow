@@ -10,7 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Title: Sisow error test
@@ -22,7 +22,7 @@ use PHPUnit_Framework_TestCase;
  * @version 2.0.0
  * @since   1.0.0
  */
-class ErrorTest extends PHPUnit_Framework_TestCase {
+class ErrorTest extends TestCase {
 	/**
 	 * Test error to string.
 	 */
