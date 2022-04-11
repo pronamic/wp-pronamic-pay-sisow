@@ -12,6 +12,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
+use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
@@ -39,14 +40,25 @@ class Gateway extends Core_Gateway {
 	protected $client;
 
 	/**
+	 * Config.
+	 * 
+	 * @var Config.
+	 */
+	private $config;
+
+	/**
 	 * Constructs and initialize an Sisow gateway
 	 *
 	 * @param Config $config Config.
 	 */
 	public function __construct( Config $config ) {
-		parent::__construct( $config );
+		parent::__construct();
+
+		$this->config = $config;
 
 		$this->set_method( self::METHOD_HTTP_REDIRECT );
+
+		$this->set_mode( $config->test_mode ? 'test' : 'live' );
 
 		// Supported features.
 		$this->supports = array(
@@ -56,7 +68,7 @@ class Gateway extends Core_Gateway {
 
 		// Client.
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
-		$this->client->set_test_mode( self::MODE_TEST === $config->mode );
+		$this->client->set_test_mode( $config->test_mode );
 	}
 
 	/**
@@ -86,7 +98,7 @@ class Gateway extends Core_Gateway {
 	 * @return array<int,string>|null
 	 */
 	public function get_available_payment_methods() {
-		if ( self::MODE_TEST === $this->config->mode ) {
+		if ( $this->config->test_mode ) {
 			return null;
 		}
 
@@ -96,13 +108,7 @@ class Gateway extends Core_Gateway {
 		$request = new MerchantRequest( $this->config->merchant_id );
 
 		// Get merchant.
-		try {
-			$result = $this->client->get_merchant( $request );
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
-			return $payment_methods;
-		}
+		$result = $this->client->get_merchant( $request );
 
 		if ( false !== $result ) {
 			foreach ( $result->payments as $method ) {
@@ -232,7 +238,7 @@ class Gateway extends Core_Gateway {
 				'entrancecode' => $entrance_code,
 				'amount'       => $this->format_amount( $payment->get_total_amount() ),
 				'description'  => substr( (string) $payment->get_description(), 0, 32 ),
-				'testmode'     => ( self::MODE_TEST === $this->config->mode ) ? 'true' : 'false',
+				'testmode'     => $this->config->test_mode ? 'true' : 'false',
 				'returnurl'    => $payment->get_return_url(),
 				'cancelurl'    => $payment->get_return_url(),
 				'notifyurl'    => $payment->get_return_url(),
@@ -403,7 +409,9 @@ class Gateway extends Core_Gateway {
 					$tax_percentage = $total_amount->get_tax_percentage();
 
 					if ( null !== $tax_percentage ) {
-						$request->set_parameter( 'product_taxrate_' . $x, strval( $tax_percentage * 100 ) );
+						$value = Number::from_string( $tax_percentage )->multiply( Number::from_int( 100 ) )->format( 0, '', '' );
+
+						$request->set_parameter( 'product_taxrate_' . $x, $value );
 					}
 				}
 
@@ -453,15 +461,9 @@ class Gateway extends Core_Gateway {
 			$this->config->shop_id
 		);
 
-		try {
-			$result = $this->client->get_status( $request );
+		$result = $this->client->get_status( $request );
 
-			if ( false === $result ) {
-				return;
-			}
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
+		if ( false === $result ) {
 			return;
 		}
 
@@ -507,13 +509,7 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Create invoice.
-		try {
-			$result = $this->client->create_invoice( $request );
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
-			return false;
-		}
+		$result = $this->client->create_invoice( $request );
 
 		if ( $result instanceof \Pronamic\WordPress\Pay\Gateways\Sisow\Invoice ) {
 			$payment->set_status( Core_Statuses::SUCCESS );
@@ -549,13 +545,7 @@ class Gateway extends Core_Gateway {
 		$request->set_parameter( 'trxid', $transaction_id );
 
 		// Cancel reservation.
-		try {
-			$result = $this->client->cancel_reservation( $request );
-		} catch ( \Exception $e ) {
-			$this->error = new \WP_Error( 'sisow_error', $e->getMessage() );
-
-			return false;
-		}
+		$result = $this->client->cancel_reservation( $request );
 
 		if ( false === $result ) {
 			return false;

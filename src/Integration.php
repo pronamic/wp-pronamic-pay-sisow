@@ -142,6 +142,21 @@ class Integration extends AbstractGatewayIntegration {
 			'default'     => 0,
 		);
 
+		// Test Mode.
+		$fields[] = array(
+			'section'  => 'general',
+			'filter'   => FILTER_VALIDATE_BOOLEAN,
+			'methods'  => array( 'sisow' ),
+			'meta_key' => '_pronamic_gateway_sisow_test_mode',
+			'title'    => _x( 'Test Mode', 'sisow', 'pronamic_ideal' ),
+			'type'     => 'checkbox',
+			'label'    => _x( 'Test Mode', 'sisow', 'pronamic_ideal' ),
+			'tooltip'  => __( 'This requires the option “Testen met behulp van simulator (toestaan)” to be activated in the Sisow account at ‘Mijn Profiel – page Geavanceerd’.', 'pronamic_ideal' ),
+			'default'  => function( $config_id ) {
+				return 'test' === \get_post_meta( $config_id, '_pronamic_gateway_mode', true );
+			},
+		);
+
 		return $fields;
 	}
 
@@ -157,7 +172,14 @@ class Integration extends AbstractGatewayIntegration {
 		$config->merchant_id  = $this->get_meta( $post_id, 'sisow_merchant_id' );
 		$config->merchant_key = $this->get_meta( $post_id, 'sisow_merchant_key' );
 		$config->shop_id      = $this->get_meta( $post_id, 'sisow_shop_id' );
-		$config->mode         = $this->get_meta( $post_id, 'mode' );
+		
+		$value = $this->get_meta( $post_id, 'sisow_test_mode' );
+
+		if ( '' === $value ) {
+			$value = ( 'test' === $this->get_meta( $post_id, 'mode' ) );
+		}
+
+		$config->test_mode = (bool) $value;
 
 		return $config;
 	}

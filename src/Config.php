@@ -43,4 +43,11 @@ class Config extends GatewayConfig {
 	 * @var string
 	 */
 	public $shop_id;
+
+	/**
+	 * Test mode.
+	 * 
+	 * @var bool
+	 */
+	public $test_mode;
 }
