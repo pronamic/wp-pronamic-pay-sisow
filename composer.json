@@ -33,7 +33,8 @@
 		"allow-plugins": {
 			"roots/wordpress-core-installer": true,
 			"bamarni/composer-bin-plugin": true,
-			"dealerdirect/phpcodesniffer-composer-installer": true
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"composer/installers": true
 		}
 	},
 	"require": {
