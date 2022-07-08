@@ -14,7 +14,9 @@ use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Core\SelectField;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
@@ -69,6 +71,35 @@ class Gateway extends Core_Gateway {
 		// Client.
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
 		$this->client->set_test_mode( $config->test_mode );
+
+		// Payment method iDEAL.
+		$ideal_payment_method = new PaymentMethod( PaymentMethods::IDEAL );
+
+		$ideal_issuer_field = new SelectField( 'ideal-issuer' );
+
+		$ideal_issuer_field->set_options_callback( function() {
+			return $this->get_issuers();
+		} );
+
+		$ideal_payment_method->add_field( $ideal_issuer_field );
+
+		// Payment methods.
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::AFTERPAY_NL ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BANK_TRANSFER ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BANCONTACT ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BELFIUS ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BILLINK ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BUNQ ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::CAPAYABLE ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::IN3 ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::CREDIT_CARD ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::FOCUM ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::GIROPAY ) );
+		$this->register_payment_method( $ideal_payment_method );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::IDEALQR ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::KLARNA_PAY_LATER ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::PAYPAL ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::SOFORT ) );
 	}
 
 	/**
@@ -143,33 +174,6 @@ class Gateway extends Core_Gateway {
 		}
 
 		return $payment_methods;
-	}
-
-	/**
-	 * Get supported payment methods
-	 *
-	 * @see Core_Gateway::get_supported_payment_methods()
-	 * @return array<int,string>
-	 */
-	public function get_supported_payment_methods() {
-		return array(
-			PaymentMethods::AFTERPAY_NL,
-			PaymentMethods::BANK_TRANSFER,
-			PaymentMethods::BANCONTACT,
-			PaymentMethods::BELFIUS,
-			PaymentMethods::BILLINK,
-			PaymentMethods::BUNQ,
-			PaymentMethods::CAPAYABLE,
-			PaymentMethods::IN3,
-			PaymentMethods::CREDIT_CARD,
-			PaymentMethods::FOCUM,
-			PaymentMethods::GIROPAY,
-			PaymentMethods::IDEAL,
-			PaymentMethods::IDEALQR,
-			PaymentMethods::KLARNA_PAY_LATER,
-			PaymentMethods::PAYPAL,
-			PaymentMethods::SOFORT,
-		);
 	}
 
 	/**
