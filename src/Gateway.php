@@ -72,6 +72,13 @@ class Gateway extends Core_Gateway {
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
 		$this->client->set_test_mode( $config->test_mode );
 
+		// Fields.
+		$gender_field = new Field( 'gender' );
+		$gender_field->set_required( true );
+
+		$birthdate_field = new Field( 'birthdate' );
+		$birthdate_field->set_required( true );
+
 		// Payment method iDEAL.
 		$ideal_payment_method = new PaymentMethod( PaymentMethods::IDEAL );
 
@@ -86,15 +93,14 @@ class Gateway extends Core_Gateway {
 		// Payment method AfterPay.
 		$afterpay_payment_method = new PaymentMethod( PaymentMethods::AFTERPAY_NL );
 
-		$gender_field = new Field( 'gender' );
-		$gender_field->set_required( true );
-
 		$afterpay_payment_method->add_field( $gender_field );
-
-		$birthdate_field = new Field( 'birthdate' );
-		$birthdate_field->set_required( true );
-
 		$afterpay_payment_method->add_field( $birthdate_field );
+
+		// Payment method Focum.
+		$focum_payment_method = new PaymentMethod( PaymentMethods::FOCUM );
+
+		$focum_payment_method->add_field( $gender_field );
+		$focum_payment_method->add_field( $birthdate_field );
 
 		// Payment methods.
 		$this->register_payment_method( $afterpay_payment_method );
@@ -106,7 +112,7 @@ class Gateway extends Core_Gateway {
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::CAPAYABLE ) );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::IN3 ) );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::CREDIT_CARD ) );
-		$this->register_payment_method( new PaymentMethod( PaymentMethods::FOCUM ) );
+		$this->register_payment_method( $focum_payment_method );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::GIROPAY ) );
 		$this->register_payment_method( $ideal_payment_method );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::IDEALQR ) );
