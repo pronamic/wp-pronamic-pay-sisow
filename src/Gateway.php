@@ -96,20 +96,32 @@ class Gateway extends Core_Gateway {
 		$afterpay_payment_method->add_field( $gender_field );
 		$afterpay_payment_method->add_field( $birthdate_field );
 
+		// Payment method Billink.
+		$billink_payment_method = new PaymentMethod( PaymentMethods::BILLINK );
+
+		$billink_payment_method->add_field( $gender_field );
+		$billink_payment_method->add_field( $birthdate_field );
+
 		// Payment method Focum.
 		$focum_payment_method = new PaymentMethod( PaymentMethods::FOCUM );
 
 		$focum_payment_method->add_field( $gender_field );
 		$focum_payment_method->add_field( $birthdate_field );
 
+		// Payment method Capayable.
+		$capayable_payment_method = new PaymentMethod( PaymentMethods::CAPAYABLE );
+
+		$capayable_payment_method->add_field( $gender_field );
+		$capayable_payment_method->add_field( $birthdate_field );
+
 		// Payment methods.
 		$this->register_payment_method( $afterpay_payment_method );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::BANK_TRANSFER ) );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::BANCONTACT ) );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::BELFIUS ) );
-		$this->register_payment_method( new PaymentMethod( PaymentMethods::BILLINK ) );
+		$this->register_payment_method( $billink_payment_method );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::BUNQ ) );
-		$this->register_payment_method( new PaymentMethod( PaymentMethods::CAPAYABLE ) );
+		$this->register_payment_method( $capayable_payment_method );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::IN3 ) );
 		$this->register_payment_method( new PaymentMethod( PaymentMethods::CREDIT_CARD ) );
 		$this->register_payment_method( $focum_payment_method );
