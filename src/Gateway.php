@@ -13,6 +13,7 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Number\Number;
+use Pronamic\WordPress\Pay\Core\Field;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
