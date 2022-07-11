@@ -425,13 +425,13 @@ class Gateway extends Core_Gateway {
 				$unit_price = $line->get_unit_price();
 
 				if ( null !== $unit_price ) {
-					$request->set_parameter( 'product_netprice_' . $x, $unit_price instanceof TaxedMoney ? $unit_price->get_excluding_tax() : $unit_price );
+					$request->set_parameter( 'product_netprice_' . $x, $this->format_amount( $unit_price instanceof TaxedMoney ? $unit_price->get_excluding_tax() : $unit_price ) );
 				}
 
 				$total_amount = $line->get_total_amount();
 
-				$request->set_parameter( 'product_total_' . $x, $total_amount instanceof TaxedMoney ? $total_amount->get_including_tax() : $total_amount );
-				$request->set_parameter( 'product_nettotal_' . $x, $total_amount instanceof TaxedMoney ? $total_amount->get_excluding_tax() : $total_amount );
+				$request->set_parameter( 'product_total_' . $x, $this->format_amount( $total_amount instanceof TaxedMoney ? $total_amount->get_including_tax() : $total_amount ) );
+				$request->set_parameter( 'product_nettotal_' . $x, $this->format_amount( $total_amount instanceof TaxedMoney ? $total_amount->get_excluding_tax() : $total_amount ) );
 
 				// Tax request parameters.
 				$tax_amount = $line->get_tax_amount();
