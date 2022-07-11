@@ -405,11 +405,11 @@ class Gateway extends Core_Gateway {
 						break;
 					case PaymentLineType::DIGITAL:
 					case PaymentLineType::FEE:
-						$product_id = 'digital';
+						$product_type = 'digital';
 
 						break;
 					case PaymentLineType::PHYSICAL:
-						$product_id = 'physical';
+						$product_type = 'physical';
 
 						break;
 				}
