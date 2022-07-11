@@ -284,9 +284,6 @@ class Gateway extends Core_Gateway {
 			)
 		);
 
-		// Payment method.
-		$this->set_payment_method( null === $payment->get_payment_method() ? PaymentMethods::IDEAL : $payment->get_payment_method() );
-
 		// Additional parameters for payment method.
 		if ( PaymentMethods::IDEALQR === $payment->get_payment_method() ) {
 			$request->set_parameter( 'qrcode', 'true' );
