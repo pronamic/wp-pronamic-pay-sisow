@@ -208,15 +208,6 @@ class Gateway extends Core_Gateway {
 	}
 
 	/**
-	 * Is payment method required to start transaction?
-	 *
-	 * @see Core_Gateway::payment_method_is_required()
-	 */
-	public function payment_method_is_required() {
-		return true;
-	}
-
-	/**
 	 * Format amount.
 	 *
 	 * @param Money $amount Money.
