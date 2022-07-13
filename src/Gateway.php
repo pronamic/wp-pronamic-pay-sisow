@@ -13,8 +13,11 @@ namespace Pronamic\WordPress\Pay\Gateways\Sisow;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Number\Number;
+use Pronamic\WordPress\Pay\Core\Field;
 use Pronamic\WordPress\Pay\Core\Gateway as Core_Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethod;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Core\SelectField;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Banks\BankAccountDetails;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
@@ -69,15 +72,74 @@ class Gateway extends Core_Gateway {
 		// Client.
 		$this->client = new Client( $config->merchant_id, $config->merchant_key );
 		$this->client->set_test_mode( $config->test_mode );
+
+		// Fields.
+		$gender_field = new Field( 'gender' );
+		$gender_field->set_required( true );
+
+		$birthdate_field = new Field( 'birthdate' );
+		$birthdate_field->set_required( true );
+
+		// Payment method iDEAL.
+		$ideal_payment_method = new PaymentMethod( PaymentMethods::IDEAL );
+
+		$ideal_issuer_field = new SelectField( 'ideal-issuer' );
+
+		$ideal_issuer_field->set_options_callback( function() {
+			return $this->get_ideal_issuers();
+		} );
+
+		$ideal_payment_method->add_field( $ideal_issuer_field );
+
+		// Payment method AfterPay.
+		$afterpay_payment_method = new PaymentMethod( PaymentMethods::AFTERPAY_NL );
+
+		$afterpay_payment_method->add_field( $gender_field );
+		$afterpay_payment_method->add_field( $birthdate_field );
+
+		// Payment method Billink.
+		$billink_payment_method = new PaymentMethod( PaymentMethods::BILLINK );
+
+		$billink_payment_method->add_field( $gender_field );
+		$billink_payment_method->add_field( $birthdate_field );
+
+		// Payment method Focum.
+		$focum_payment_method = new PaymentMethod( PaymentMethods::FOCUM );
+
+		$focum_payment_method->add_field( $gender_field );
+		$focum_payment_method->add_field( $birthdate_field );
+
+		// Payment method Capayable.
+		$capayable_payment_method = new PaymentMethod( PaymentMethods::CAPAYABLE );
+
+		$capayable_payment_method->add_field( $gender_field );
+		$capayable_payment_method->add_field( $birthdate_field );
+
+		// Payment methods.
+		$this->register_payment_method( $afterpay_payment_method );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BANK_TRANSFER ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BANCONTACT ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BELFIUS ) );
+		$this->register_payment_method( $billink_payment_method );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::BUNQ ) );
+		$this->register_payment_method( $capayable_payment_method );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::IN3 ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::CREDIT_CARD ) );
+		$this->register_payment_method( $focum_payment_method );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::GIROPAY ) );
+		$this->register_payment_method( $ideal_payment_method );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::IDEALQR ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::KLARNA_PAY_LATER ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::PAYPAL ) );
+		$this->register_payment_method( new PaymentMethod( PaymentMethods::SOFORT ) );
 	}
 
 	/**
-	 * Get issuers
+	 * Get iDEAL issuers.
 	 *
-	 * @see Core_Gateway::get_issuers()
 	 * @return array<int, array<string, array<int|string, string>>>
 	 */
-	public function get_issuers() {
+	private function get_ideal_issuers() {
 		$groups = array();
 
 		$result = $this->client->get_directory();
@@ -143,42 +205,6 @@ class Gateway extends Core_Gateway {
 		}
 
 		return $payment_methods;
-	}
-
-	/**
-	 * Get supported payment methods
-	 *
-	 * @see Core_Gateway::get_supported_payment_methods()
-	 * @return array<int,string>
-	 */
-	public function get_supported_payment_methods() {
-		return array(
-			PaymentMethods::AFTERPAY_NL,
-			PaymentMethods::BANK_TRANSFER,
-			PaymentMethods::BANCONTACT,
-			PaymentMethods::BELFIUS,
-			PaymentMethods::BILLINK,
-			PaymentMethods::BUNQ,
-			PaymentMethods::CAPAYABLE,
-			PaymentMethods::IN3,
-			PaymentMethods::CREDIT_CARD,
-			PaymentMethods::FOCUM,
-			PaymentMethods::GIROPAY,
-			PaymentMethods::IDEAL,
-			PaymentMethods::IDEALQR,
-			PaymentMethods::KLARNA_PAY_LATER,
-			PaymentMethods::PAYPAL,
-			PaymentMethods::SOFORT,
-		);
-	}
-
-	/**
-	 * Is payment method required to start transaction?
-	 *
-	 * @see Core_Gateway::payment_method_is_required()
-	 */
-	public function payment_method_is_required() {
-		return true;
 	}
 
 	/**
@@ -248,9 +274,6 @@ class Gateway extends Core_Gateway {
 				'billing_mail' => ( null === $customer ) ? null : $customer->get_email(),
 			)
 		);
-
-		// Payment method.
-		$this->set_payment_method( null === $payment->get_payment_method() ? PaymentMethods::IDEAL : $payment->get_payment_method() );
 
 		// Additional parameters for payment method.
 		if ( PaymentMethods::IDEALQR === $payment->get_payment_method() ) {
@@ -373,11 +396,11 @@ class Gateway extends Core_Gateway {
 						break;
 					case PaymentLineType::DIGITAL:
 					case PaymentLineType::FEE:
-						$product_id = 'digital';
+						$product_type = 'digital';
 
 						break;
 					case PaymentLineType::PHYSICAL:
-						$product_id = 'physical';
+						$product_type = 'physical';
 
 						break;
 				}
@@ -390,13 +413,13 @@ class Gateway extends Core_Gateway {
 				$unit_price = $line->get_unit_price();
 
 				if ( null !== $unit_price ) {
-					$request->set_parameter( 'product_netprice_' . $x, $unit_price instanceof TaxedMoney ? $unit_price->get_excluding_tax() : $unit_price );
+					$request->set_parameter( 'product_netprice_' . $x, $this->format_amount( $unit_price instanceof TaxedMoney ? $unit_price->get_excluding_tax() : $unit_price ) );
 				}
 
 				$total_amount = $line->get_total_amount();
 
-				$request->set_parameter( 'product_total_' . $x, $total_amount instanceof TaxedMoney ? $total_amount->get_including_tax() : $total_amount );
-				$request->set_parameter( 'product_nettotal_' . $x, $total_amount instanceof TaxedMoney ? $total_amount->get_excluding_tax() : $total_amount );
+				$request->set_parameter( 'product_total_' . $x, $this->format_amount( $total_amount instanceof TaxedMoney ? $total_amount->get_including_tax() : $total_amount ) );
+				$request->set_parameter( 'product_nettotal_' . $x, $this->format_amount( $total_amount instanceof TaxedMoney ? $total_amount->get_excluding_tax() : $total_amount ) );
 
 				// Tax request parameters.
 				$tax_amount = $line->get_tax_amount();
