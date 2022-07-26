@@ -1,7 +1,7 @@
 {
 	"name": "wp-pay-gateways/sisow",
-	"description": "Sisow driver for the WordPress payment processing library.",
-	"keywords": ["wordpress", "wp", "pay", "sisow", "gateway", "pronamic"],
+	"description": "✗ [DEPRECATED] Sisow driver for the WordPress payment processing library.",
+	"keywords": ["wordpress", "wp", "pay", "sisow", "gateway", "pronamic", "deprecated"],
 	"homepage": "http://www.wp-pay.org/gateways/sisow/",
 	"license": "GPL-3.0-or-later",
 	"authors": [

@@ -7,7 +7,7 @@
 <h1 align="center">WordPress Pay » Gateway » Sisow</h3>
 
 <p align="center">
-	Sisow driver for the WordPress payment processing library.
+	✗ [DEPRECATED] Sisow driver for the WordPress payment processing library.
 </p>
 
 ## Table of contents
